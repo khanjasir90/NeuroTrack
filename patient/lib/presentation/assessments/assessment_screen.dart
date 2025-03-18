@@ -4,8 +4,7 @@ import 'package:patient/provider/assessment_provider.dart';
 import 'package:provider/provider.dart';
 
 class AssessmentScreen extends StatefulWidget {
-  final String assessmentId;
-  const AssessmentScreen({super.key, required this.assessmentId});
+  const AssessmentScreen({super.key});
 
   @override
   AssessmentScreenState createState() => AssessmentScreenState();
@@ -15,8 +14,10 @@ class AssessmentScreenState extends State<AssessmentScreen> {
   @override
   void initState() {
     super.initState();
-    Provider.of<AssessmentProvider>(context, listen: false)
-        .fetchAssessmentById(widget.assessmentId);
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      Provider.of<AssessmentProvider>(context, listen: false)
+          .fetchAssessmentBySelectedId();
+    });
   }
 
   @override
