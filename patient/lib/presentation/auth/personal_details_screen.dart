@@ -1,5 +1,6 @@
 import 'package:country_picker/country_picker.dart';
 import 'package:flutter/material.dart';
+import 'package:patient/presentation/assessments/assessment_screen.dart';
 
 class PersonalDetailsScreen extends StatefulWidget {
   const PersonalDetailsScreen({super.key});
@@ -36,13 +37,29 @@ class _PersonalDetailsScreenState extends State<PersonalDetailsScreen> {
         padding: const EdgeInsets.fromLTRB(20, 20, 20, 40),
         child: FilledButton(
           onPressed: () {
-            if (_formKey.currentState?.validate() ?? false) {
-              if (isAssessmentForChild) {
-                // TODO: Call Child API and route accordingly
-              } else {
-                // TODO: Call Adult API and route accordingly
-              }
-            }
+     if (_formKey.currentState?.validate() ?? false) {
+       const String defaultAssessmentId = "5fe9ef2e-be2b-4a25-9a25-c7237c609da4";
+  if (isAssessmentForChild) {
+    Navigator.pushReplacement(
+      context,
+      MaterialPageRoute(
+        builder: (context) => const AssessmentScreen(
+          assessmentId: defaultAssessmentId,
+        ),
+      ),
+    );
+  } else {
+    Navigator.pushReplacement(
+      context,
+      MaterialPageRoute(
+        builder: (context) => const AssessmentScreen(
+          assessmentId: defaultAssessmentId,
+        ),
+      ),
+    );
+  }
+}
+
           },
           child: const Text(
             'Continue',

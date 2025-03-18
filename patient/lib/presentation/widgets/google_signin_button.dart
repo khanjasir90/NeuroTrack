@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:patient/presentation/auth/personal_details_screen.dart';
 
 class GoogleSignInButton extends StatelessWidget {
   const GoogleSignInButton({super.key});
@@ -13,6 +14,12 @@ class GoogleSignInButton extends StatelessWidget {
         height: 50, // Adjusted height for better appearance
         child: ElevatedButton(
           onPressed: () {
+
+            Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (context) => const PersonalDetailsScreen()),
+        );
+           
             // Implement Google Sign-in logic here
           },
           style: ElevatedButton.styleFrom(
