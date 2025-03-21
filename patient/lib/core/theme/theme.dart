@@ -33,6 +33,30 @@ class AppTheme {
           color: subtitleColor,
         ),
       ),
+      appBarTheme: AppBarTheme(
+        elevation: 0,
+        titleTextStyle: GoogleFonts.poppins(
+          fontSize: 20,
+          fontWeight: FontWeight.bold,
+          color: textColor,
+        ),
+        iconTheme: const IconThemeData(color: textColor),
+      ),
+      checkboxTheme: CheckboxThemeData(
+        checkColor: const WidgetStatePropertyAll(Colors.white),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(4),
+        ),
+        side: const BorderSide(
+          color: Color.fromRGBO(139, 139, 139, 1),
+          width: 1,
+        ),
+      ),
+      progressIndicatorTheme: const ProgressIndicatorThemeData(
+        color: primaryColor,
+        linearTrackColor: Color.fromRGBO(99, 102, 241, 0.15),
+        linearMinHeight: 6,
+      ),
       colorScheme: const ColorScheme.light(
         primary: primaryColor,
         secondary: secondaryColor,

@@ -116,12 +116,14 @@ class _PersonalDetailsScreenState extends State<PersonalDetailsScreen> {
                 const SizedBox(height: 20),
                 _buildDropDown(
                   headerText: '  Specialization',
-                  dropdownItems: therapistDataProvider.specializationDropdownItems,
+                  dropdownItems:
+                      therapistDataProvider.specializationDropdownItems,
                 ),
                 const SizedBox(height: 20),
                 _buildDropDown(
                   headerText: '  Regulatory Body',
-                  dropdownItems: therapistDataProvider.regulatoryBodyDropdownItems,
+                  dropdownItems:
+                      therapistDataProvider.regulatoryBodyDropdownItems,
                 ),
                 const SizedBox(height: 20),
                 _buildTextField(
@@ -227,7 +229,7 @@ class _PersonalDetailsScreenState extends State<PersonalDetailsScreen> {
             color: Colors.grey.shade600,
           ),
           expandedInsets: const EdgeInsets.all(0),
-                    dropdownMenuEntries: dropdownItems,
+          dropdownMenuEntries: dropdownItems,
         ),
       ],
     );

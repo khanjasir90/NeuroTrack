@@ -1,5 +1,10 @@
+
 import 'package:flutter/material.dart';
+
 import 'package:patient/presentation/auth/personal_details_screen.dart';
+
+import '../auth/personal_details_screen.dart';
+
 
 class GoogleSignInButton extends StatelessWidget {
   const GoogleSignInButton({super.key});
@@ -8,10 +13,10 @@ class GoogleSignInButton extends StatelessWidget {
   Widget build(BuildContext context) {
     return Padding(
       padding:
-          const EdgeInsets.symmetric(horizontal: 20), // Add horizontal padding
+          const EdgeInsets.symmetric(horizontal: 20), 
       child: SizedBox(
-        width: double.infinity, // Makes the button expand to full width
-        height: 50, // Adjusted height for better appearance
+        width: double.infinity, 
+        height: 50, 
         child: ElevatedButton(
           onPressed: () {
 
@@ -21,25 +26,29 @@ class GoogleSignInButton extends StatelessWidget {
         );
            
             // Implement Google Sign-in logic here
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => const PersonalDetailsScreen()),
+            );
           },
           style: ElevatedButton.styleFrom(
             backgroundColor: Colors.white,
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(30),
             ),
-            elevation: 2, // Small shadow effect
+            elevation: 2, 
             padding: const EdgeInsets.symmetric(vertical: 12),
           ),
           child: Row(
-            mainAxisSize: MainAxisSize.min, // Prevent unnecessary stretching
-            mainAxisAlignment: MainAxisAlignment.center, // Center elements
+            mainAxisSize: MainAxisSize.min, 
+            mainAxisAlignment: MainAxisAlignment.center, 
             children: [
               Image.asset(
-                'assets/google_logo.png', // Ensure the correct path
+                'assets/google_logo.png',
                 height: 24,
                 width: 24,
               ),
-              const SizedBox(width: 10), // Space between icon and text
+              const SizedBox(width: 10), 
               const Text(
                 'Continue with Google',
                 style: TextStyle(
