@@ -71,6 +71,17 @@ CREATE TABLE therapy_goal (
     therapy_date INT8
 );
 
+-- Create the assessments table
+CREATE TABLE assessments (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  created_at TIMESTAMPTZ DEFAULT NOW(),
+  name TEXT NOT NULL,
+  description TEXT,
+  category TEXT,
+  cutoff_score INT2,
+  questions JSONB NOT NULL
+);
+
 -- Indexes on foreign keys for better performance
 CREATE INDEX idx_patient_therapist_id ON patient(therapist_id);
 CREATE INDEX idx_session_therapist_id ON session(therapist_id);

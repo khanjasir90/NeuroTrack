@@ -1,8 +1,11 @@
+
+
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../widgets/google_signin_button.dart';
 import '../widgets/welcome_header.dart';
+
 
 class AuthScreen extends StatefulWidget {
   const AuthScreen({super.key});
@@ -45,7 +48,7 @@ class _AuthScreenState extends State<AuthScreen> {
       if (_currentPage < _contents.length - 1) {
         _currentPage++;
       } else {
-        _currentPage = 0; // Reset to first page when reaching the end
+        _currentPage = 0;
       }
       _pageController.animateToPage(
         _currentPage,
@@ -67,14 +70,12 @@ class _AuthScreenState extends State<AuthScreen> {
     return Scaffold(
       body: Column(
         children: [
-          // Custom Welcome Header
+  
           const WelcomeHeader(),
 
-          // Carousel and bottom content
           Expanded(
             child: Stack(
               children: [
-                // PageView for carousel
                 PageView.builder(
                   controller: _pageController,
                   itemCount: _contents.length,
@@ -88,7 +89,6 @@ class _AuthScreenState extends State<AuthScreen> {
                   },
                 ),
 
-                // Pagination dots
                 Positioned(
                   bottom: 120,
                   left: 0,
@@ -102,7 +102,6 @@ class _AuthScreenState extends State<AuthScreen> {
                   ),
                 ),
 
-                // Google Sign-in Button
                 const Positioned(
                   bottom: 40,
                   left: 0,
@@ -121,7 +120,6 @@ class _AuthScreenState extends State<AuthScreen> {
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        // Illustration
         Image.asset(content.image, height: 200),
         const SizedBox(height: 35),
         Text(
@@ -145,7 +143,7 @@ class _AuthScreenState extends State<AuthScreen> {
             ),
           ),
         ),
-        const SizedBox(height: 60), // Space for dots and button
+        const SizedBox(height: 60), 
       ],
     );
   }
@@ -164,7 +162,6 @@ class _AuthScreenState extends State<AuthScreen> {
   }
 }
 
-// Model class for onboarding content
 class OnboardingContent {
   final String image;
   final String title;

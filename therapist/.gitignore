@@ -41,3 +41,8 @@ app.*.map.json
 /android/app/debug
 /android/app/profile
 /android/app/release
+
+
+# android native build 
+
+/android/app/.cxx/Debug/2o2s201s
