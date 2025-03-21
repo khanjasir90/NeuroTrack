@@ -2,6 +2,108 @@ import 'package:flutter/material.dart';
 import 'package:patient/core/theme/theme.dart';
 import 'package:patient/provider/assessment_provider.dart';
 import 'package:provider/provider.dart';
+import 'package:patient/presentation/result/result.dart';
+    //  final questions = [
+    //                         {
+    //                           "text":
+    //                               "I often notice small sounds when others do not",
+    //                           "options": [
+    //                             {"text": "Definitely agree", "score": 1},
+    //                             {"text": "Slightly agree", "score": 1},
+    //                             {"text": "Slightly disagree", "score": 0},
+    //                             {"text": "Definitely disagree", "score": 0}
+    //                           ]
+    //                         },
+    //                         {
+    //                           "text":
+    //                               "I usually concentrate more on the whole picture, rather than the small details",
+    //                           "options": [
+    //                             {"text": "Definitely agree", "score": 0},
+    //                             {"text": "Slightly agree", "score": 0},
+    //                             {"text": "Slightly disagree", "score": 1},
+    //                             {"text": "Definitely disagree", "score": 1}
+    //                           ]
+    //                         },
+    //                         {
+    //                           "text":
+    //                               "I find it easy to do more than one thing at once",
+    //                           "options": [
+    //                             {"text": "Definitely agree", "score": 0},
+    //                             {"text": "Slightly agree", "score": 0},
+    //                             {"text": "Slightly disagree", "score": 1},
+    //                             {"text": "Definitely disagree", "score": 1}
+    //                           ]
+    //                         },
+    //                         {
+    //                           "text":
+    //                               "I find it difficult to work out people's intentions",
+    //                           "options": [
+    //                             {"text": "Definitely agree", "score": 1},
+    //                             {"text": "Slightly agree", "score": 1},
+    //                             {"text": "Slightly disagree", "score": 0},
+    //                             {"text": "Definitely disagree", "score": 0}
+    //                           ]
+    //                         },
+    //                         // Add the remaining 6 questions here following the same structure
+    //                         {
+    //                           "text": "I enjoy social occasions",
+    //                           "options": [
+    //                             {"text": "Definitely agree", "score": 0},
+    //                             {"text": "Slightly agree", "score": 0},
+    //                             {"text": "Slightly disagree", "score": 1},
+    //                             {"text": "Definitely disagree", "score": 1}
+    //                           ]
+    //                         },
+    //                         {
+    //                           "text":
+    //                               "New situations make me feel anxious",
+    //                           "options": [
+    //                             {"text": "Definitely agree", "score": 1},
+    //                             {"text": "Slightly agree", "score": 1},
+    //                             {"text": "Slightly disagree", "score": 0},
+    //                             {"text": "Definitely disagree", "score": 0}
+    //                           ]
+    //                         },
+    //                         {
+    //                           "text":
+    //                               "I frequently get strongly absorbed in one thing",
+    //                           "options": [
+    //                             {"text": "Definitely agree", "score": 1},
+    //                             {"text": "Slightly agree", "score": 1},
+    //                             {"text": "Slightly disagree", "score": 0},
+    //                             {"text": "Definitely disagree", "score": 0}
+    //                           ]
+    //                         },
+    //                         {
+    //                           "text":
+    //                               "I often don't know how to keep a conversation going",
+    //                           "options": [
+    //                             {"text": "Definitely agree", "score": 1},
+    //                             {"text": "Slightly agree", "score": 1},
+    //                             {"text": "Slightly disagree", "score": 0},
+    //                             {"text": "Definitely disagree", "score": 0}
+    //                           ]
+    //                         },
+    //                         {
+    //                           "text":
+    //                               "I find it hard to make new friends",
+    //                           "options": [
+    //                             {"text": "Definitely agree", "score": 1},
+    //                             {"text": "Slightly agree", "score": 1},
+    //                             {"text": "Slightly disagree", "score": 0},
+    //                             {"text": "Definitely disagree", "score": 0}
+    //                           ]
+    //                         },
+    //                         {
+    //                           "text": "I notice patterns in things all the time",
+    //                           "options": [
+    //                             {"text": "Definitely agree", "score": 1},
+    //                             {"text": "Slightly agree", "score": 1},
+    //                             {"text": "Slightly disagree", "score": 0},
+    //                             {"text": "Definitely disagree", "score": 0}
+    //                           ]
+    //                         },
+    //                       ];
 
 class AssessmentScreen extends StatefulWidget {
   const AssessmentScreen({super.key});
@@ -66,7 +168,7 @@ class AssessmentScreenState extends State<AssessmentScreen> {
                           final question =
                               provider.assessment!['questions'][index];
                           return QuestionCard(
-                            question: question, 
+                            question: question,
                             questionIndex: index,
                             onAnswerSelected: (value) {
                               provider.selectAnswer(index, value);
@@ -85,8 +187,29 @@ class AssessmentScreenState extends State<AssessmentScreen> {
                       height: 50,
                       child: ElevatedButton(
                         onPressed: () {
+                          final assessmentProvider =
+                              Provider.of<AssessmentProvider>(context,
+                                  listen: false);
+                          final selectedAnswers =
+                              assessmentProvider.selectedAnswers;
+                          final questionsList = provider.assessment!['questions'] as List ;
+                              
 
-                          // Implement Submit Assessment logic here
+                          final List<Map<String, String>> responses = [];
+                          for (int i = 0; i < questionsList.length; i++) {
+                            responses.add({
+                              'question': questionsList[i]['text'] as String,
+                              'answer': selectedAnswers[i] ?? '', // Handle cases where no answer is selected
+                            });
+                          }
+
+                          Navigator.pushReplacement(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => ResultScreen(
+                                  responses: responses,patientId: "550e8400-e29b-41d4-a716-446655440001"),
+                            ),
+                          );
                         },
                         style: ElevatedButton.styleFrom(
                           backgroundColor: AppTheme.secondaryColor,
@@ -117,7 +240,6 @@ class AssessmentScreenState extends State<AssessmentScreen> {
   }
 }
 
-// Reusable QuestionCard Widget with Custom Checkbox
 class QuestionCard extends StatelessWidget {
   final Map<String, dynamic> question;
   final int questionIndex;
@@ -133,58 +255,61 @@ class QuestionCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final provider = Provider.of<AssessmentProvider>(context, listen: false);
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      mainAxisAlignment: MainAxisAlignment.start,
-      children: [
-        const SizedBox(height: 30),
-        Text(
-          question['text'] as String,
-          style: const TextStyle(
-            fontSize: 16,
-            color: AppTheme.textColor,
-            fontWeight: FontWeight.w500,
-          ),
-        ),
-        const SizedBox(height: 10),
-        ...List<Map<String, dynamic>>.from(question['options']).map((option) {
-          final optionText = option['text'] as String;
-          final isSelected =
-              provider.selectedAnswers[questionIndex] == optionText;
-          return SizedBox(
-            height: 30,
-            child: Row(
-              children: [
-                Checkbox(
-                  value: isSelected,
-                  onChanged: (bool? value) {
-                    if (value == true) {
-                      onAnswerSelected(optionText);
-                    } else {
-                      onAnswerSelected('');
-                    }
-                  },
-                  activeColor: AppTheme.secondaryColor,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(6.0),
-                  ),
-                  side: const BorderSide(
-                    color: Color(0xFF666666),
-                    width: 1.5,
-                  ),
-                ),
-                Text(
-                  optionText,
-                  style: const TextStyle(
-                    fontSize: 14,
-                    color: AppTheme.subtitleColor,
-                  ),
-                ),
-              ],
+
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 12.0),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            question['text'] as String, // Displaying the question text
+            style: const TextStyle(
+              fontSize: 16,
+              color: AppTheme.textColor,
+              fontWeight: FontWeight.w500,
             ),
-          );
-        }),
-      ],
+          ),
+          const SizedBox(height: 10),
+          ...List<Map<String, dynamic>>.from(question['options']).map((option) {
+            final optionText = option['text'] as String;
+            final isSelected =
+                provider.selectedAnswers[questionIndex] == optionText;
+
+            return GestureDetector(
+              onTap: () {
+                onAnswerSelected(optionText);
+              },
+              child: Row(
+                children: [
+                  Checkbox(
+                    value: isSelected,
+                    onChanged: (bool? value) {
+                      onAnswerSelected(value == true ? optionText : '');
+                    },
+                    activeColor: AppTheme.secondaryColor,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(6.0),
+                    ),
+                    side: const BorderSide(
+                      color: Color(0xFF666666),
+                      width: 1.5,
+                    ),
+                  ),
+                  Expanded(
+                    child: Text(
+                      optionText,
+                      style: const TextStyle(
+                        fontSize: 14,
+                        color: AppTheme.subtitleColor,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            );
+          }),
+        ],
+      ),
     );
   }
 }
