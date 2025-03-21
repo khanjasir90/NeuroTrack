@@ -41,24 +41,12 @@ class _PersonalDetailsScreenState extends State<PersonalDetailsScreen> {
      if (_formKey.currentState?.validate() ?? false) {
        
   if (isAssessmentForChild) {
-    Navigator.pushReplacement(
-      context,
-      MaterialPageRoute(
-        builder: (context) => const AssessmentsListScreen(
-         
-        ),
-      ),
-    );
+   _buildChildForm();
   } else {
-    Navigator.pushReplacement(
-      context,
-      MaterialPageRoute(
-        builder: (context) => const AssessmentsListScreen(
-          
-        ),
-      ),
-    );
+    _buildAdultForm();
   }
+   
+  
 }
 
           },
