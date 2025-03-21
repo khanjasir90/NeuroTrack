@@ -1,5 +1,3 @@
-
-
 import 'package:country_picker/country_picker.dart';
 import 'package:flutter/material.dart';
 
@@ -7,7 +5,6 @@ import 'package:patient/presentation/assessments/assessment_screen.dart';
 import 'package:patient/presentation/assessments/assessments_list_screen.dart';
 
 import 'package:patient/presentation/home/home_screen.dart';
-import 'package:patient/presentation/home/home_screen_slider.dart';
 
 
 class PersonalDetailsScreen extends StatefulWidget {
@@ -46,16 +43,23 @@ class _PersonalDetailsScreenState extends State<PersonalDetailsScreen> {
         child: FilledButton(
           onPressed: () {
 
-     if (_formKey.currentState?.validate() ?? false) {
-       
-  if (isAssessmentForChild) {
-   _buildChildForm();
-  } else {
-    _buildAdultForm();
-  }
-   
-  
-}
+            if (_formKey.currentState?.validate() ?? false) {
+              String userName = isAssessmentForChild
+                  ? childNameController.text
+                  : adultNameController.text;
+              if (isAssessmentForChild) {
+                // TODO: Call Child API and route accordingly
+              } else {
+                // TODO: Call Adult API and route accordingly
+              }
+              Navigator.of(context).pushReplacement(
+                MaterialPageRoute(
+                  builder: (context) => HomeScreen(userName: userName),
+                  //       builder: (context) => AutismLevelSlider(currentLevel: 1, // Replace with dynamic data from backend
+                  // maxLevel: 10,),
+                ),
+              );
+            }
 
           },
           child: const Text(
@@ -153,7 +157,7 @@ class _PersonalDetailsScreenState extends State<PersonalDetailsScreen> {
             if (value == null || value.isEmpty) {
               return 'Please enter your phone number';
             }
-          
+
             if (!RegExp(r'^\+?[0-9]{10,15}$')
                 .hasMatch(value.replaceAll(RegExp(r'\s+'), ''))) {
               return 'Please enter a valid phone number';
@@ -230,7 +234,10 @@ class _PersonalDetailsScreenState extends State<PersonalDetailsScreen> {
                       const SizedBox(width: 10),
                       Text(
                         selectedCountry?.name ?? '',
-                        style: const TextStyle(fontSize: 15, color: Colors.black,),
+                        style: const TextStyle(
+                          fontSize: 15,
+                          color: Colors.black,
+                        ),
                       ),
                       const Spacer(),
                       Icon(
@@ -289,11 +296,11 @@ class _PersonalDetailsScreenState extends State<PersonalDetailsScreen> {
             if (age == null || age <= 0) {
               return 'Please enter a valid age';
             }
-            return null;  
+            return null;
           },
-        ), 
+        ),
         const SizedBox(height: 20),
-            _buildDropDown(
+        _buildDropDown(
             headerText: '  Relation with patient',
             initialSelection: '',
             dropdownItems: [
@@ -318,7 +325,6 @@ class _PersonalDetailsScreenState extends State<PersonalDetailsScreen> {
                 selectedChildGender = value;
               });
             }),
-        
         const SizedBox(height: 20),
         _buildTextField(
           fieldName: 'guardianPhone',
@@ -330,7 +336,7 @@ class _PersonalDetailsScreenState extends State<PersonalDetailsScreen> {
             if (value == null || value.isEmpty) {
               return 'Please enter your phone number';
             }
-            
+
             if (!RegExp(r'^\+?[0-9]{10,15}$')
                 .hasMatch(value.replaceAll(RegExp(r'\s+'), ''))) {
               return 'Please enter a valid phone number';
