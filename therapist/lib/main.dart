@@ -1,8 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:provider/provider.dart';
+
+import 'package:supabase_flutter/supabase_flutter.dart';
+import 'package:therapist/presentation/splash_screen.dart';
+
+import './presentation/auth/auth_screen.dart';
+
 import 'package:therapist/core/theme/theme.dart';
 import './provider/session_provider.dart';
+
 import './provider/auth_provider.dart';
 import './provider/home_provider.dart';
 import './provider/therapist_provider.dart';
@@ -11,11 +20,31 @@ import './repository/supabase_consultation_repository.dart';
 import './presentation/home/home_screen.dart';
 import './presentation/widget/splash_screen.dart';
 
-void main() {
+Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await dotenv.load(fileName: ".env");
+  await Supabase.initialize(
+    url: dotenv.env['SUPABASE_URL']!,
+    anonKey: dotenv.env['SUPABASE_ANON_KEY']!,
+  );
+
   SystemChrome.setSystemUIOverlayStyle(
     const SystemUiOverlayStyle(
-      statusBarColor: Colors.transparent,
+      statusBarColor: Colors.white,
       statusBarIconBrightness: Brightness.dark,
+      systemNavigationBarColor: Colors.white,
+      systemNavigationBarIconBrightness: Brightness.dark,
+    ),
+  );
+
+  runApp(
+    MultiProvider(
+      providers: [
+        ChangeNotifierProvider(create: (context) => AuthProvider()),
+        ChangeNotifierProvider(create: (context) => HomeProvider()),
+        ChangeNotifierProvider(create: (context) => TherapistDataProvider())
+      ],
+      child: const MyApp(),
     ),
   );
   
@@ -32,35 +61,12 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MultiProvider(
-      providers: [
-        ChangeNotifierProvider(create: (context) => SessionProvider()),
-        ChangeNotifierProvider(create: (context) => AuthProvider()),
-        ChangeNotifierProvider(create: (context) => HomeProvider()),
-        ChangeNotifierProvider(create: (context) => TherapistDataProvider()),
-        // Add the consultation provider
-        ChangeNotifierProvider(
-          create: (context) => ConsultationProvider(
-            SupabaseConsultationRepository(supabaseClient: null),
-          )..fetchConsultationRequests(),
-        ),
-      ],
-      child: TherapyApp(),
+    return MaterialApp(
+      debugShowCheckedModeBanner: false,
+      title: 'Therapist App',
+      theme: ThemeData.light(),
+      home: const SplashScreen(),
     );
-  );
+  
 }
 
-class TherapyApp extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    // Get authentication state
-    final authProvider = Provider.of<AuthProvider>(context);
-    
-    return MaterialApp(
-      title: 'Therapist Dashboard',
-      debugShowCheckedModeBanner: false,
-      theme: AppTheme.lightTheme(), // Using your theme
-      home: authProvider.isAuthenticated ? const HomeScreen() : SplashScreen(),
-    );
-  }
-}

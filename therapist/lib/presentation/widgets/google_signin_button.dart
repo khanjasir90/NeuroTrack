@@ -1,17 +1,6 @@
-
 import 'package:flutter/material.dart';
-
-
-import 'package:patient/presentation/auth/personal_details_screen.dart';
-
-import 'package:patient/presentation/auth/personal_details_screen.dart';
-import 'package:patient/provider/auth_provider.dart';
 import 'package:provider/provider.dart';
-
-
-import '../auth/personal_details_screen.dart';
-
-
+import 'package:therapist/provider/auth_provider.dart';
 class GoogleSignInButton extends StatelessWidget {
   const GoogleSignInButton({Key? key}) : super(key: key);
 
@@ -23,9 +12,7 @@ class GoogleSignInButton extends StatelessWidget {
         width: double.infinity,
         height: 50,
         child: ElevatedButton(
-
-          onPressed: () => _handleGoogleSignIn(context),
-
+          onPressed: () =>  _handleGoogleSignIn(context),
           style: ElevatedButton.styleFrom(
             backgroundColor: Colors.white,
             shape: RoundedRectangleBorder(
@@ -37,7 +24,6 @@ class GoogleSignInButton extends StatelessWidget {
           child: Row(
             mainAxisSize: MainAxisSize.min,
             mainAxisAlignment: MainAxisAlignment.center,
-
             children: [
               Image.asset(
                 'assets/google_logo.png',
@@ -59,9 +45,7 @@ class GoogleSignInButton extends StatelessWidget {
       ),
     );
   }
-
-
-
+  
 Future<void> _handleGoogleSignIn(BuildContext context) async {
   final authProvider = context.read<AuthProvider>(); // Store provider reference
 
@@ -76,3 +60,5 @@ Future<void> _handleGoogleSignIn(BuildContext context) async {
     }
   }
 }
+
+

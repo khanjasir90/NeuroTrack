@@ -4,13 +4,13 @@ import 'package:provider/provider.dart';
 import '../../provider/assessment_provider.dart';
 
 class TherapyGoalsScreen extends StatefulWidget {
-  const TherapyGoalsScreen({Key? key}) : super(key: key);
+  const TherapyGoalsScreen({super.key});
 
   @override
-  _TherapyGoalsScreenState createState() => _TherapyGoalsScreenState();
+  TherapyGoalsScreenState createState() => TherapyGoalsScreenState();
 }
 
-class _TherapyGoalsScreenState extends State<TherapyGoalsScreen> {
+class TherapyGoalsScreenState extends State<TherapyGoalsScreen> {
   int selectedTabIndex =
       0; // 0 for Goals, 1 for Achievements, 2 for Observations
   DateTime selectedDate = DateTime.now();
