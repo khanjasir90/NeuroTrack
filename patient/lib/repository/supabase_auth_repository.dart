@@ -19,8 +19,9 @@ class SupabaseAuthRepository implements AuthRepository {
   @override
   Future<ActionResult> storePersonalInfo(PersonalInfoEntity personalInfoEntity) async {
     try {
+      final patientId = _supabaseClient.auth.currentSession?.user.id;
       await _supabaseClient.from('patient')
-        .insert(personalInfoEntity.toMap());
+        .insert(personalInfoEntity.copyWith(patientId: patientId).toMap());
 
       return ActionResultSuccess(
         data: 'Personal information stored successfully',
