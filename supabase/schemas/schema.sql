@@ -79,7 +79,19 @@ CREATE TABLE assessments (
   description TEXT,
   category TEXT,
   cutoff_score INT2,
+  image_url TEXT,
   questions JSONB NOT NULL
+);
+
+-- Create the assessment_results table
+
+CREATE TABLE assessment_results (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  created_at TIMESTAMPTZ DEFAULT NOW(),
+  assessment_id UUID REFERENCES assessments(id),
+  patient_id UUID REFERENCES auth.users(id),
+  submission JSONB,
+  result JSONB
 );
 
 -- Indexes on foreign keys for better performance

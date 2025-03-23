@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../provider/session_provider.dart';
-import '../sessions/widgets/session_card.dart';
+import 'widgets/session_card.dart';
 
 class SessionScreen extends StatelessWidget {
   const SessionScreen({super.key});

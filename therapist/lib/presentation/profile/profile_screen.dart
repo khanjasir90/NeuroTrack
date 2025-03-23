@@ -1,13 +1,95 @@
 import 'package:flutter/material.dart';
+import 'widgets/profile_option.dart'; 
 
 class ProfileScreen extends StatelessWidget {
-  const ProfileScreen({Key? key}) : super(key: key);
+  const ProfileScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return const Scaffold(
-      body: Center(
-        child: Text('Profile Screen'),
+    return Scaffold(
+      body: SafeArea(
+        child: Column(
+          children: [
+            Container(
+              color: Colors.white,
+              padding: const EdgeInsets.all(16.0),
+              alignment: Alignment.centerLeft,
+              child: const Text(
+                "Profile",
+                style: TextStyle(
+                  fontSize: 24,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16.0),
+              child: Container(
+                padding: const EdgeInsets.all(20.0),
+                decoration: BoxDecoration(
+                  color: const Color(0xFFF2EAF5),
+                  borderRadius: BorderRadius.circular(20),
+                ),
+                constraints: const BoxConstraints(minHeight: 160),
+                child: Row(
+                  children: [
+                    const CircleAvatar(
+                      radius: 35,
+                      backgroundImage: AssetImage('assets/rohit.png'),
+                    ),
+                    const SizedBox(width: 10),
+
+                    /// **Wrap Column with Expanded to prevent overflow**
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Text(
+                            "Mohammed Mohsin",
+                            style: const TextStyle(
+                              fontSize: 18,
+                              fontWeight: FontWeight.bold,
+                            ),
+                            overflow: TextOverflow.ellipsis, // Prevents text overflow
+                          ),
+                          Text(
+                            "mohsin@gmail.com",
+                            style: const TextStyle(fontSize: 16, color: Colors.grey),
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                          Text(
+                            "+91 1234567890",
+                            style: const TextStyle(fontSize: 16, color: Colors.grey),
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+
+            /// **Ensure the rest of the content fits properly**
+            Expanded(
+              child: Container(
+                color: Colors.white,
+                child: SingleChildScrollView(
+                  child: Column(
+                    children: const [
+                      ProfileOption(title: "About Us"),
+                      ProfileOption(title: "Terms & Conditions"),
+                      ProfileOption(title: "Privacy Policy"),
+                      ProfileOption(title: "Contact Admin"),
+                      ProfileOption(title: "Log Out", isLogout: true),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }

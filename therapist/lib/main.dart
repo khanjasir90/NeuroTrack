@@ -1,24 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:provider/provider.dart';
-
 import 'package:supabase_flutter/supabase_flutter.dart';
-import 'package:therapist/presentation/splash_screen.dart';
 
-import './presentation/auth/auth_screen.dart';
-
-import 'package:therapist/core/theme/theme.dart';
-import './provider/session_provider.dart';
-
-import './provider/auth_provider.dart';
-import './provider/home_provider.dart';
-import './provider/therapist_provider.dart';
-import './provider/consultation_provider.dart';
-import './repository/supabase_consultation_repository.dart';
-import './presentation/home/home_screen.dart';
-import './presentation/widget/splash_screen.dart';
+import 'presentation/splash_screen.dart';
+import 'provider/auth_provider.dart';
+import 'provider/home_provider.dart';
+import 'provider/therapist_provider.dart';
+import 'repository/supabase_consultation_repository.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -47,12 +37,12 @@ Future<void> main() async {
       child: const MyApp(),
     ),
   );
-  
+
   // Create the repository for consultations
   final consultationRepository = SupabaseConsultationRepository(
     supabaseClient: null,
   );
-  
+
   runApp(const MyApp());
 }
 
@@ -67,6 +57,5 @@ class MyApp extends StatelessWidget {
       theme: ThemeData.light(),
       home: const SplashScreen(),
     );
-  
+  }
 }
-

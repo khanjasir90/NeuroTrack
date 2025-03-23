@@ -1,12 +1,20 @@
 import 'package:flutter/material.dart';
+import 'package:patient/core/core.dart';
 import 'package:patient/core/theme/theme.dart';
+import 'package:patient/model/assessment_models/assessment_models.dart';
+import 'package:patient/presentation/widgets/snackbar_service.dart';
 import 'package:patient/provider/assessment_provider.dart';
 import 'package:provider/provider.dart';
 import 'package:patient/presentation/result/result.dart';
 
 
 class AssessmentScreen extends StatefulWidget {
-  const AssessmentScreen({super.key});
+  const AssessmentScreen({
+    super.key,
+    required this.assessment,
+  });
+
+  final AssessmentModel assessment;
 
   @override
   AssessmentScreenState createState() => AssessmentScreenState();
@@ -16,25 +24,28 @@ class AssessmentScreenState extends State<AssessmentScreen> {
   @override
   void initState() {
     super.initState();
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      Provider.of<AssessmentProvider>(context, listen: false)
-          .fetchAssessmentBySelectedId();
+      final assessmentProvider = context.read<AssessmentProvider>();
+      if(assessmentProvider.submitAssessmentStatus.isSuccess) {
+        SnackbarService.showSuccess('${assessmentProvider.assessmentResultModel?.message}');
+      } else if(assessmentProvider.submitAssessmentStatus.isFailure) {
+        SnackbarService.showError('Something went wrong. Please try again later.');
+      }
     });
   }
 
   @override
   Widget build(BuildContext context) {
+    Provider.of<AssessmentProvider>(context, listen: true).submitAssessmentStatus;
     return Scaffold(
       body: SafeArea(
         child: Consumer<AssessmentProvider>(
           builder: (context, provider, child) {
-            if (provider.assessment == null) {
-              return const Center(
-                child: CircularProgressIndicator(
-                  color: AppTheme.secondaryColor,
-                ),
-              );
-            }
             return Padding(
               padding:
                   const EdgeInsets.symmetric(horizontal: 16.0, vertical: 20.0),
@@ -42,9 +53,9 @@ class AssessmentScreenState extends State<AssessmentScreen> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   const SizedBox(height: 8),
-                  const Text(
-                    "Autism Quotient (AQ)",
-                    style: TextStyle(
+                  Text(
+                    widget.assessment.name,
+                    style: const TextStyle(
                       fontSize: 25,
                       fontWeight: FontWeight.bold,
                       color: Colors.black,
@@ -62,16 +73,18 @@ class AssessmentScreenState extends State<AssessmentScreen> {
                     child: Padding(
                       padding: const EdgeInsets.only(left: 16.0),
                       child: ListView.builder(
-                        itemCount:
-                            (provider.assessment!['questions'] as List).length,
+                        itemCount: widget.assessment.questions.length,
                         itemBuilder: (context, index) {
-                          final question =
-                              provider.assessment!['questions'][index];
+                          final question = widget.assessment.questions[index];
                           return QuestionCard(
                             question: question,
                             questionIndex: index,
-                            onAnswerSelected: (value) {
-                              provider.selectAnswer(index, value);
+                            onAnswerSelected: (String optionId) {
+                              context.read<AssessmentProvider>()
+                              .assessmentAnswers = AssessmentQuestionAnswerModel(
+                                questionId: question.questionId,
+                                answerId: optionId,
+                              );
                             },
                           );
                         },
@@ -87,29 +100,9 @@ class AssessmentScreenState extends State<AssessmentScreen> {
                       height: 50,
                       child: ElevatedButton(
                         onPressed: () {
-                          final assessmentProvider =
-                              Provider.of<AssessmentProvider>(context,
-                                  listen: false);
-                          final selectedAnswers =
-                              assessmentProvider.selectedAnswers;
-                          final questionsList = provider.assessment!['questions'] as List ;
-                              
 
-                          final List<Map<String, String>> responses = [];
-                          for (int i = 0; i < questionsList.length; i++) {
-                            responses.add({
-                              'question': questionsList[i]['text'] as String,
-                              'answer': selectedAnswers[i] ?? '', // Handle cases where no answer is selected
-                            });
-                          }
+                          context.read<AssessmentProvider>().submitAssessment();
 
-                          Navigator.pushReplacement(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => ResultScreen(
-                                  responses: responses,patientId: "550e8400-e29b-41d4-a716-446655440001"),
-                            ),
-                          );
                         },
                         style: ElevatedButton.styleFrom(
                           backgroundColor: AppTheme.secondaryColor,
@@ -141,7 +134,7 @@ class AssessmentScreenState extends State<AssessmentScreen> {
 }
 
 class QuestionCard extends StatelessWidget {
-  final Map<String, dynamic> question;
+  final AssessmentQuestionModel question;
   final int questionIndex;
   final ValueChanged<String> onAnswerSelected;
 
@@ -154,46 +147,49 @@ class QuestionCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final provider = Provider.of<AssessmentProvider>(context, listen: false);
 
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 12.0),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            question['text'] as String, // Displaying the question text
-            style: const TextStyle(
-              fontSize: 16,
-              color: AppTheme.textColor,
-              fontWeight: FontWeight.w500,
-            ),
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      mainAxisAlignment: MainAxisAlignment.start,
+      children: [
+        const SizedBox(height: 30),
+        Text(
+          question.text,
+          style: const TextStyle(
+            fontSize: 16,
+            color: AppTheme.textColor,
+            fontWeight: FontWeight.w500,
           ),
-          const SizedBox(height: 10),
-          ...List<Map<String, dynamic>>.from(question['options']).map((option) {
-            final optionText = option['text'] as String;
-            final isSelected =
-                provider.selectedAnswers[questionIndex] == optionText;
+        ),
+        const SizedBox(height: 10),
+        ...question.options.map((option) {
+          final assessmentAnswers = context.read<AssessmentProvider>().assessmentAnswerModel;
+          final optionText = option.text;
+          final isSelected =
+              assessmentAnswers?.questions.any((element) =>
+                  element.questionId == question.questionId &&
+                  element.answerId == option.optionId) ?? false;
+          return SizedBox(
+            height: 30,
+            child: Row(
+              children: [
+                Checkbox(
+                  value: isSelected,
+                  onChanged: (bool? value) {
+                    if (value == true) {
+                      onAnswerSelected(option.optionId);
+                    } else {
+                      onAnswerSelected('');
+                    }
+                  },
+                  activeColor: AppTheme.secondaryColor,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(6.0),
+                  ),
+                  side: const BorderSide(
+                    color: Color(0xFF666666),
+                    width: 1.5,
 
-            return GestureDetector(
-              onTap: () {
-                onAnswerSelected(optionText);
-              },
-              child: Row(
-                children: [
-                  Checkbox(
-                    value: isSelected,
-                    onChanged: (bool? value) {
-                      onAnswerSelected(value == true ? optionText : '');
-                    },
-                    activeColor: AppTheme.secondaryColor,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(6.0),
-                    ),
-                    side: const BorderSide(
-                      color: Color(0xFF666666),
-                      width: 1.5,
-                    ),
                   ),
                   Expanded(
                     child: Text(

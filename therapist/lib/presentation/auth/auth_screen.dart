@@ -3,7 +3,7 @@ import 'dart:async';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
-import 'package:therapist/presentation/widgets/google_signin_button.dart';
+import 'package:therapist/presentation/auth/widgets/google_signin_button.dart';
 import '../home/home_screen.dart';
 
 class AuthScreen extends StatefulWidget {
