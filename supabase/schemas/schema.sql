@@ -83,6 +83,17 @@ CREATE TABLE assessments (
   questions JSONB NOT NULL
 );
 
+-- Create the assessment_results table
+
+CREATE TABLE assessment_results (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  created_at TIMESTAMPTZ DEFAULT NOW(),
+  assessment_id UUID REFERENCES assessments(id),
+  patient_id UUID REFERENCES auth.users(id),
+  submission JSONB,
+  result JSONB
+);
+
 -- Indexes on foreign keys for better performance
 CREATE INDEX idx_patient_therapist_id ON patient(therapist_id);
 CREATE INDEX idx_session_therapist_id ON session(therapist_id);
