@@ -413,34 +413,7 @@ class _ResultScreenState extends State<ResultScreen> with SingleTickerProviderSt
           ),
         ),
         
-        // Recommendations Section
-        SliverToBoxAdapter(
-          child: Padding(
-            padding: EdgeInsets.symmetric(horizontal: 20),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  "Your Recommendations",
-                  style: TextStyle(
-                    fontSize: 20,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.black87,
-                  ),
-                ),
-                SizedBox(height: 5),
-                Text(
-                  "Personalized for your needs",
-                  style: TextStyle(
-                    fontSize: 14,
-                    color: Colors.grey[600],
-                  ),
-                ),
-                SizedBox(height: 16),
-              ],
-            ),
-          ),
-        ),
+      
         
         // Activities and Goals cards in horizontal scroll
         SliverToBoxAdapter(
@@ -467,15 +440,7 @@ class _ResultScreenState extends State<ResultScreen> with SingleTickerProviderSt
                   Colors.green.shade800,
                   navigateToTherapyGoals,
                 ),
-                SizedBox(width: 16),
-                _buildRecommendationCard(
-                  "Support Groups",
-                  "Connect with others on similar journeys",
-                  "assets/illustration.png", // Use appropriate asset
-                  Colors.blue.shade100,
-                  Colors.blue.shade800,
-                  () {}, // Add navigation
-                ),
+               
               ],
             ),
           ),
@@ -537,77 +502,7 @@ class _ResultScreenState extends State<ResultScreen> with SingleTickerProviderSt
           ),
         ),
         
-        // Next Steps Section
-        SliverToBoxAdapter(
-          child: Container(
-            margin: EdgeInsets.fromLTRB(20, 30, 20, 80),
-            padding: EdgeInsets.all(20),
-            decoration: BoxDecoration(
-              gradient: LinearGradient(
-                colors: [Colors.green.shade50, Colors.blue.shade50],
-                begin: Alignment.topLeft,
-                end: Alignment.bottomRight,
-              ),
-              borderRadius: BorderRadius.circular(20),
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.grey.shade200,
-                  blurRadius: 10,
-                  spreadRadius: 2,
-                ),
-              ],
-            ),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  "Next Steps",
-                  style: TextStyle(
-                    fontSize: 18,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.black87,
-                  ),
-                ),
-                SizedBox(height: 16),
-                _buildNextStepItem(
-                  "1",
-                  "Schedule a consultation",
-                  "Book an appointment with one of our specialists"
-                ),
-                _buildNextStepItem(
-                  "2",
-                  "Follow daily activities",
-                  "Complete the recommended exercises regularly"
-                ),
-                _buildNextStepItem(
-                  "3",
-                  "Track your progress",
-                  "Monitor improvements and adjustments needed"
-                ),
-                SizedBox(height: 20),
-                ElevatedButton(
-                  onPressed: () {},
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.green,
-                    foregroundColor: Colors.white,
-                    elevation: 0,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                    minimumSize: Size(double.infinity, 50),
-                  ),
-                  child: Text(
-                    "CREATE MY CARE PLAN",
-                    style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      letterSpacing: 1,
-                    ),
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ),
+     
       ],
     );
   }
