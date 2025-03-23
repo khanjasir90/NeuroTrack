@@ -3,12 +3,14 @@ import 'package:flutter/services.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:provider/provider.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
+import 'package:therapist/provider/consultation_provider.dart';
+import 'package:therapist/provider/session_provider.dart'; // Add this import
+import 'package:therapist/repository/supabase_consultation_repository.dart';
 
 import 'presentation/splash_screen.dart';
 import 'provider/auth_provider.dart';
 import 'provider/home_provider.dart';
 import 'provider/therapist_provider.dart';
-import 'repository/supabase_consultation_repository.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -27,23 +29,26 @@ Future<void> main() async {
     ),
   );
 
+  // Create the repository for consultations
+  final consultationRepository = SupabaseConsultationRepository(
+    supabaseClient: Supabase.instance.client, // Pass the actual client
+  );
+
   runApp(
     MultiProvider(
       providers: [
         ChangeNotifierProvider(create: (context) => AuthProvider()),
         ChangeNotifierProvider(create: (context) => HomeProvider()),
-        ChangeNotifierProvider(create: (context) => TherapistDataProvider())
+        ChangeNotifierProvider(create: (context) => TherapistDataProvider()),
+        ChangeNotifierProvider(
+          create: (context) => ConsultationProvider(consultationRepository),
+        ),
+        // Add SessionProvider
+        ChangeNotifierProvider(create: (context) => SessionProvider()),
       ],
       child: const MyApp(),
     ),
   );
-
-  // Create the repository for consultations
-  final consultationRepository = SupabaseConsultationRepository(
-    supabaseClient: null,
-  );
-
-  runApp(const MyApp());
 }
 
 class MyApp extends StatelessWidget {

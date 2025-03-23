@@ -1,0 +1,20 @@
+{
+  "buildFiles": [
+    "/Users/euclidstellar/development/flutter/packages/flutter_tools/gradle/src/main/groovy/CMakeLists.txt"
+  ],
+  "cleanCommandsComponents": [
+    [
+      "/Users/euclidstellar/Library/Android/sdk/cmake/3.22.1/bin/ninja",
+      "-C",
+      "/Users/euclidstellar/Downloads/NeuroTrack/therapist/android/app/.cxx/Debug/4b4e2112/arm64-v8a",
+      "clean"
+    ]
+  ],
+  "buildTargetsCommandComponents": [
+    "/Users/euclidstellar/Library/Android/sdk/cmake/3.22.1/bin/ninja",
+    "-C",
+    "/Users/euclidstellar/Downloads/NeuroTrack/therapist/android/app/.cxx/Debug/4b4e2112/arm64-v8a",
+    "{LIST_OF_TARGETS_TO_BUILD}"
+  ],
+  "libraries": {}
+}
