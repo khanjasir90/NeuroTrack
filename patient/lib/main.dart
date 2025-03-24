@@ -2,8 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:patient/core/theme/theme.dart';
-import 'package:patient/presentation/home/home_screen.dart';
-
 import 'package:patient/presentation/splash_screen.dart';
 import 'package:patient/presentation/widgets/snackbar_service.dart';
 import 'package:patient/provider/appointments_provider.dart';
@@ -64,8 +62,6 @@ class MyApp extends StatelessWidget {
         debugShowCheckedModeBanner: false,
         title: 'Patient App',
         theme: AppTheme.lightTheme(),
-        home: const HomeScreen(
-          userName: "aqib",
-        ));
+        home: const SplashScreen());
   }
 }

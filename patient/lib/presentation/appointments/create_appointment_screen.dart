@@ -170,42 +170,21 @@ class _CreateAppointmentScreenState extends State<CreateAppointmentScreen> {
     final appointmentProvider =
         Provider.of<AppointmentsProvider>(context, listen: false);
 
-    // Generate time slots from 9 AM to 5 PM
-    final List<String> timeSlots = [];
-    const startTime = TimeOfDay(hour: 9, minute: 0);
-    const endTime = TimeOfDay(hour: 17, minute: 0);
+    // Fetch available slots with context
+    appointmentProvider.fetchAvailableSlots(context);
 
-    for (int hour = startTime.hour; hour <= endTime.hour; hour++) {
-      for (int minute = 0; minute < 60; minute += 30) {
-        if (hour == endTime.hour && minute > 0) continue;
-
-        final time = TimeOfDay(hour: hour, minute: minute);
-        final formattedTime = _formatTimeOfDay(time, context);
-        timeSlots.add(formattedTime);
-      }
-    }
-
-    // Show a modal bottom sheet with time slots
+    // Show modal bottom sheet with slots
     await showModalBottomSheet(
       context: context,
       isScrollControlled: true,
       backgroundColor: Colors.transparent,
       builder: (context) {
         return TimeSlotBottomSheet(
-          timeSlots: timeSlots,
-          selectedTimeSlot: appointmentProvider.selectedTimeSlot,
           onTimeSelected: (timeSlot) {
-            print(timeSlot);
             appointmentProvider.setSelectedTimeSlot(timeSlot);
-            // Navigator.pop(context);
           },
         );
       },
     );
-  }
-
-//Helper method to format TimeOfDay
-  String _formatTimeOfDay(TimeOfDay time, BuildContext context) {
-    return MaterialLocalizations.of(context).formatTimeOfDay(time);
   }
 }

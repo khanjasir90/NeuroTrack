@@ -4,14 +4,10 @@ import 'package:patient/provider/appointments_provider.dart';
 import 'package:provider/provider.dart';
 
 class TimeSlotBottomSheet extends StatelessWidget {
-  final List<String> timeSlots;
-  final String? selectedTimeSlot;
   final Function(String) onTimeSelected;
 
   const TimeSlotBottomSheet({
     super.key,
-    required this.timeSlots,
-    this.selectedTimeSlot,
     required this.onTimeSelected,
   });
 
@@ -22,6 +18,11 @@ class TimeSlotBottomSheet extends StatelessWidget {
 
     return Consumer<AppointmentsProvider>(
       builder: (context, appointmentsProvider, child) {
+        // Ensure available slots are loaded
+        if (appointmentsProvider.timeSlots.isEmpty) {
+          appointmentsProvider.fetchAvailableSlots(context);
+        }
+
         return Container(
           height: size.height * 0.7,
           decoration: const BoxDecoration(
@@ -58,7 +59,7 @@ class TimeSlotBottomSheet extends StatelessWidget {
                     ),
                     const Spacer(),
                     IconButton(
-                      onPressed: () => Navigator.pop(context), // Pop on cancel
+                      onPressed: () => Navigator.pop(context),
                       icon: Container(
                         padding: const EdgeInsets.all(6),
                         decoration: BoxDecoration(
@@ -91,17 +92,21 @@ class TimeSlotBottomSheet extends StatelessWidget {
                     crossAxisSpacing: 10,
                     mainAxisSpacing: 10,
                   ),
-                  itemCount: timeSlots.length,
+                  itemCount: appointmentsProvider.timeSlots.length,
                   itemBuilder: (context, index) {
-                    final timeSlot = timeSlots[index];
+                    final slot = appointmentsProvider.timeSlots[index];
+                    final timeSlot = slot['time'];
+                    final isAvailable = slot['available'];
                     final isSelected =
                         appointmentsProvider.selectedTimeSlot == timeSlot;
 
                     return GestureDetector(
-                      onTap: () {
-                        // Update the selected time slot in the appointmentsProvider
-                        appointmentsProvider.setSelectedTimeSlot(timeSlot);
-                      },
+                      onTap: isAvailable
+                          ? () {
+                              appointmentsProvider
+                                  .setSelectedTimeSlot(timeSlot);
+                            }
+                          : null,
                       child: Container(
                         decoration: BoxDecoration(
                           color: isSelected
@@ -111,7 +116,9 @@ class TimeSlotBottomSheet extends StatelessWidget {
                           border: Border.all(
                             color: isSelected
                                 ? AppTheme.secondaryColor
-                                : Colors.grey.shade200,
+                                : isAvailable
+                                    ? Colors.grey.shade200
+                                    : Colors.grey.shade300,
                             width: 1,
                           ),
                         ),
@@ -123,7 +130,9 @@ class TimeSlotBottomSheet extends StatelessWidget {
                               fontWeight: FontWeight.w500,
                               color: isSelected
                                   ? AppTheme.secondaryColor
-                                  : Colors.black87,
+                                  : isAvailable
+                                      ? Colors.black87
+                                      : Colors.grey,
                             ),
                           ),
                         ),
@@ -143,12 +152,13 @@ class TimeSlotBottomSheet extends StatelessWidget {
                 child: SizedBox(
                   width: double.infinity,
                   child: ElevatedButton(
-                    onPressed: () {
-                      if (appointmentsProvider.selectedTimeSlot.isNotEmpty) {
-                        onTimeSelected(appointmentsProvider.selectedTimeSlot);
-                        Navigator.pop(context); // Pop on confirm
-                      }
-                    },
+                    onPressed: appointmentsProvider.selectedTimeSlot.isNotEmpty
+                        ? () {
+                            onTimeSelected(
+                                appointmentsProvider.selectedTimeSlot);
+                            Navigator.pop(context);
+                          }
+                        : null,
                     style: ElevatedButton.styleFrom(
                       backgroundColor: AppTheme.secondaryColor,
                       foregroundColor: Colors.white,
