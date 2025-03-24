@@ -68,7 +68,7 @@ class TimeSlotBottomSheet extends StatelessWidget {
                         child: const Icon(
                           Icons.close_rounded,
                           size: 18,
-                          color: Colors.grey,
+                          color: AppTheme.secondaryColor,
                         ),
                       ),
                     ),

@@ -195,6 +195,7 @@ class _CreateAppointmentScreenState extends State<CreateAppointmentScreen> {
           timeSlots: timeSlots,
           selectedTimeSlot: appointmentProvider.selectedTimeSlot,
           onTimeSelected: (timeSlot) {
+            print(timeSlot);
             appointmentProvider.setSelectedTimeSlot(timeSlot);
             // Navigator.pop(context);
           },
@@ -203,7 +204,7 @@ class _CreateAppointmentScreenState extends State<CreateAppointmentScreen> {
     );
   }
 
-// Helper method to format TimeOfDay
+//Helper method to format TimeOfDay
   String _formatTimeOfDay(TimeOfDay time, BuildContext context) {
     return MaterialLocalizations.of(context).formatTimeOfDay(time);
   }

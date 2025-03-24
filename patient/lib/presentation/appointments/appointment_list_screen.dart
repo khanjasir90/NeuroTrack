@@ -137,9 +137,7 @@ class _AppointmentListScreenState extends State<AppointmentListScreen> {
                                       ),
                                       const SizedBox(height: 6),
                                       Text(
-                                        DateFormat('MMM d, yyyy - h:mm a')
-                                            .format(
-                                                appointment.appointmentDate),
+                                        '${DateFormat('MMM d, yyyy').format(appointment.appointmentDate)} - ${appointment.timeSlot}',
                                         style: TextStyle(
                                           fontSize: 14,
                                           color: Colors.grey[600],
