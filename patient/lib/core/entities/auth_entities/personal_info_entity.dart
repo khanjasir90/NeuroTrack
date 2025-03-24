@@ -1,6 +1,7 @@
 
 
 import 'package:dart_mappable/dart_mappable.dart';
+import 'package:patient/model/auth_models/personal_info_model.dart';
 
 part 'personal_info_entity.mapper.dart';
 
@@ -53,4 +54,20 @@ class PersonalInfoEntity with PersonalInfoEntityMappable {
     this.country,
     this.gender,
   });
+
+  PersonalInfoModel toModel() {
+    return PersonalInfoModel(
+      patientId: patientId,
+      patientName: patientName,
+      age: age,
+      isAdult: isAdult,
+      phoneNo: phoneNo,
+      email: email,
+      guardianName: guardianName ?? '',
+      guardianRelation: guardianRelation ?? '',
+      country: country ?? '',
+      gender: gender ?? '',
+    );
+  }
+
 }

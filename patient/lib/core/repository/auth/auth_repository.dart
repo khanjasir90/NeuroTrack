@@ -26,4 +26,22 @@ abstract interface class AuthRepository {
   /// - If an error occurs while inserting the record, it is caught and returned as a failure.
   
   Future<ActionResult> storePersonalInfo(PersonalInfoEntity personalInfoEntity);
+
+  /// Checks if the patient already exists in the `patient` table.
+  /// 
+  /// This method checks if the patient already exists in the `patient` table
+  /// using the `patient_id` from the [PersonalInfoEntity].
+  /// 
+  /// - **Returns:**
+  /// - A [Future] of [ActionResult], which can either be:
+  /// - [ActionResultSuccess] with a success message and status code `200` if the patient
+  /// exists in the `patient` table.
+  /// - [ActionResultFailure] with an error message and status code `400` if the patient
+  /// does not exist in the `patient` table.
+  /// 
+  /// - **Exceptions:**
+  /// - If an error occurs while checking if the patient exists, it is caught and returned as a failure.
+
+  Future<ActionResult> checkIfPatientExists();
+
 }

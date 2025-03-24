@@ -35,7 +35,7 @@ class PatientScheduleAppointmentEntityMapper
       Field('therapistId', _$therapistId, key: r'therapist_id');
   static int _$mode(PatientScheduleAppointmentEntity v) => v.mode;
   static const Field<PatientScheduleAppointmentEntity, int> _f$mode =
-      Field('mode', _$mode, key: r'model');
+      Field('mode', _$mode);
   static int _$duration(PatientScheduleAppointmentEntity v) => v.duration;
   static const Field<PatientScheduleAppointmentEntity, int> _f$duration =
       Field('duration', _$duration);

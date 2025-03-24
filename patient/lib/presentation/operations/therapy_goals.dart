@@ -18,10 +18,11 @@ class TherapyGoalsScreenState extends State<TherapyGoalsScreen> {
   @override
   void initState() {
     super.initState();
-    Future.microtask(() {
-      Provider.of<AssessmentProvider>(context, listen: false)
-          .fetchAssessmentBySelectedId();
-    });
+    // Refactor this code to use existing provider `allAssessment` instead of fetching data again
+    // Future.microtask(() {
+    //   Provider.of<AssessmentProvider>(context, listen: false)
+    //       .fetchAssessmentBySelectedId();
+    // });
   }
 
   @override
@@ -225,7 +226,7 @@ class TherapyGoalsScreenState extends State<TherapyGoalsScreen> {
 
   Widget _buildContent(int index) {
     final assessmentProvider = Provider.of<AssessmentProvider>(context);
-    final assessment = assessmentProvider.assessment;
+    final assessment = null;//assessmentProvider.assessment;
 
     if (assessment == null || !assessment.containsKey('questions')) {
       return Center(

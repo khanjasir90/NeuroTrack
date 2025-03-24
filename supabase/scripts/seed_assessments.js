@@ -15,6 +15,7 @@ const assessments = [
     description: "A brief screening tool for autism spectrum traits in adults aged 16 and over. It consists of 10 statements to assess behaviors and preferences.",
     category: "Autism Assessment",
     cutoff_score: 6,
+    image_url: "https://gezbvdcskabwweanvfhu.supabase.co/storage/v1/object/public/neurotrack//aq10_icon.png",
     questions: [
       {
         question_id: generateRandomUUID(),
@@ -123,6 +124,7 @@ const assessments = [
     description: "A 25-item self-report measure designed to assess camouflaging strategies in individuals aged 16 years and older.",
     category: "Autism Assessment",
     cutoff_score: 100,
+    image_url: "https://gezbvdcskabwweanvfhu.supabase.co/storage/v1/object/public/neurotrack//autism_icon.png",
     questions: [
       {
         question_id: generateRandomUUID(),

@@ -1,18 +1,17 @@
 import 'package:flutter/material.dart';
-import 'package:patient/presentation/assessments/models/assessment_card_model.dart';
 
 class AssessmentIcon extends StatelessWidget {
-  final AssessmentCardModel assessment;
+  final String icon;
 
   const AssessmentIcon({
     super.key,
-    required this.assessment,
+    required this.icon,
   });
 
   @override
   Widget build(BuildContext context) {
-    return Image.asset(
-      assessment.iconPath,
+    return Image.network(
+      icon,
       width: 80,
       height: 80,
       fit: BoxFit.contain,

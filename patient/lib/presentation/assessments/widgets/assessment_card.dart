@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:patient/core/theme/theme.dart';
+import 'package:patient/model/assessment_models/assessment_models.dart';
 import 'package:patient/presentation/assessments/models/assessment_card_model.dart';
 import 'package:patient/presentation/assessments/widgets/assessment_icon.dart';
 
 class AssessmentCard extends StatelessWidget {
-  final AssessmentCardModel assessment;
+  final AssessmentModel assessment;
   final VoidCallback onTap;
 
   const AssessmentCard({
@@ -33,7 +34,7 @@ class AssessmentCard extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      assessment.title,
+                      assessment.name,
                       style: const TextStyle(
                         fontSize: 16,
                         fontWeight: FontWeight.w700,
@@ -52,7 +53,7 @@ class AssessmentCard extends StatelessWidget {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.end,
                       children: [
-                        AssessmentIcon(assessment: assessment),
+                        AssessmentIcon(icon: assessment.imageUrl,),
                       ],
                     ),
                   ],

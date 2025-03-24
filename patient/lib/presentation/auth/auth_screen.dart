@@ -3,11 +3,14 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:patient/presentation/auth/personal_details_screen.dart';
+import 'package:patient/presentation/home/home_screen.dart';
 import 'package:patient/presentation/widgets/google_signin_button.dart';
+import 'package:patient/presentation/widgets/snackbar_service.dart';
+import 'package:patient/provider/auth_provider.dart';
+import 'package:provider/provider.dart';
 import '../widgets/welcome_header.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
-import 'package:flutter_dotenv/flutter_dotenv.dart';
-import 'package:patient/presentation/auth/personal_details_screen.dart';
 
 
 class AuthScreen extends StatefulWidget {
@@ -21,21 +24,22 @@ class _AuthScreenState extends State<AuthScreen> {
   final PageController _pageController = PageController(initialPage: 0);
   int _currentPage = 0;
   late Timer _timer;
+  bool hasNavigated = false;
   final supabase = Supabase.instance.client;
   StreamSubscription<AuthState>? _authSubscription;
 
   final List<OnboardingContent> _contents = [
-    OnboardingContent(
+    const OnboardingContent(
       image: 'assets/illustration.png',
       title: 'Daily Activities',
       description: 'Personalized Daily Activities, Tracked Effortlessly!',
     ),
-    OnboardingContent(
+    const OnboardingContent(
       image: 'assets/illustration1.png',
       title: 'Therapy Goals',
       description: 'Set and achieve your therapy goals with ease!',
     ),
-    OnboardingContent(
+    const OnboardingContent(
       image: 'assets/illustration2.png',
       title: 'Health Tracking',
       description: 'Monitor your health metrics with ease and accuracy!',
@@ -64,18 +68,8 @@ class _AuthScreenState extends State<AuthScreen> {
     final fullName = session.user.userMetadata?['full_name'];
     final email = session.user.email ?? 'Unknown User';
 
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text('Signed in as ${fullName ?? email}'),
-        duration: const Duration(seconds: 2),
-      ),
-    );
-
-    Navigator.of(context).pushReplacement(
-      MaterialPageRoute(
-        builder: (context) => const PersonalDetailsScreen(),
-      ),
-    );
+    SnackbarService.showSuccess('Signed in as ${fullName ?? email}');
+    context.read<AuthProvider>().checkIfPatientExists();
   }
 
   void _startAutoScroll() {
@@ -102,7 +96,33 @@ class _AuthScreenState extends State<AuthScreen> {
   }
 
   @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      final authProvider = context.read<AuthProvider>();
+      Widget? nextScreen;
+
+      if (authProvider.authNavigationStatus.isHome) {
+        final userName = supabase.auth.currentSession?.user.userMetadata?['full_name'];
+        nextScreen = HomeScreen(userName: userName ?? 'User');
+      } else if (authProvider.authNavigationStatus.isPersonalDetails) {
+        nextScreen = const PersonalDetailsScreen();
+      } else if(authProvider.authNavigationStatus.isError) {
+        SnackbarService.showError('An error occurred. Please try again.');
+        return;
+      }
+
+      if (nextScreen != null) {
+        Navigator.pushReplacement(
+            context, MaterialPageRoute(builder: (_) => nextScreen!));
+      }
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
+    Provider.of<AuthProvider>(context, listen: true).authNavigationStatus;
     return Scaffold(
       body: Column(
         children: [
@@ -132,11 +152,14 @@ class _AuthScreenState extends State<AuthScreen> {
                   ),
                 ),
 
-                const Positioned(
+                // Google Sign-in Button
+                Positioned(
                   bottom: 40,
                   left: 0,
                   right: 0,
-                  child: GoogleSignInButton(),
+                  child: GoogleSignInButton(
+                    onPressed: () => context.read<AuthProvider>().signInWithGoogle(),
+                  ),
                 ),
               ],
             ),
