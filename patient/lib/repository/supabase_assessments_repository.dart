@@ -3,7 +3,7 @@ import 'package:patient/core/entities/assessment_entities/assessment_answer_enti
 import 'package:patient/core/entities/assessment_entities/assessment_entity.dart';
 import 'package:patient/core/entities/assessment_entities/assessment_result_entity.dart'
     show AssessmentResultEntityMapper;
-import 'package:patient/core/repository/assessment_repository.dart';
+import 'package:patient/core/repository/assessment/assessment_repository.dart';
 import 'package:patient/core/result/result.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 

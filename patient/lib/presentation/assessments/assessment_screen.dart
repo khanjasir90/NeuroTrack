@@ -29,17 +29,20 @@ class AssessmentScreenState extends State<AssessmentScreen> {
     super.didChangeDependencies();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       final assessmentProvider = context.read<AssessmentProvider>();
-      if(assessmentProvider.submitAssessmentStatus.isSuccess) {
-        SnackbarService.showSuccess('${assessmentProvider.assessmentResultModel?.message}');
-      } else if(assessmentProvider.submitAssessmentStatus.isFailure) {
-        SnackbarService.showError('Something went wrong. Please try again later.');
+      if (assessmentProvider.submitAssessmentStatus.isSuccess) {
+        SnackbarService.showSuccess(
+            '${assessmentProvider.assessmentResultModel?.message}');
+      } else if (assessmentProvider.submitAssessmentStatus.isFailure) {
+        SnackbarService.showError(
+            'Something went wrong. Please try again later.');
       }
     });
   }
 
   @override
   Widget build(BuildContext context) {
-    Provider.of<AssessmentProvider>(context, listen: true).submitAssessmentStatus;
+    Provider.of<AssessmentProvider>(context, listen: true)
+        .submitAssessmentStatus;
     return Scaffold(
       body: SafeArea(
         child: Consumer<AssessmentProvider>(
@@ -78,8 +81,10 @@ class AssessmentScreenState extends State<AssessmentScreen> {
                             question: question,
                             questionIndex: index,
                             onAnswerSelected: (String optionId) {
-                              context.read<AssessmentProvider>()
-                              .assessmentAnswers = AssessmentQuestionAnswerModel(
+                              context
+                                      .read<AssessmentProvider>()
+                                      .assessmentAnswers =
+                                  AssessmentQuestionAnswerModel(
                                 questionId: question.questionId,
                                 answerId: optionId,
                               );
@@ -159,12 +164,13 @@ class QuestionCard extends StatelessWidget {
         ),
         const SizedBox(height: 10),
         ...question.options.map((option) {
-          final assessmentAnswers = context.read<AssessmentProvider>().assessmentAnswerModel;
+          final assessmentAnswers =
+              context.read<AssessmentProvider>().assessmentAnswerModel;
           final optionText = option.text;
-          final isSelected =
-              assessmentAnswers?.questions.any((element) =>
+          final isSelected = assessmentAnswers?.questions.any((element) =>
                   element.questionId == question.questionId &&
-                  element.answerId == option.optionId) ?? false;
+                  element.answerId == option.optionId) ??
+              false;
           return SizedBox(
             height: 30,
             child: Row(
