@@ -23,10 +23,13 @@ class _TherapyGoalsScreenState extends State<TherapyGoalsScreen> {
 
   AppBar _getAppBar() {
     return AppBar(
-      leading: Image.asset(
-        'assets/arrow_left.png',
-        width: 24,
-        height: 24,
+      leading: GestureDetector(
+        onTap: () => Navigator.of(context).pop(),
+        child: Image.asset(
+          'assets/arrow_left.png',
+          width: 24,
+          height: 24,
+        ),
       ),
       title: const Text(
         'Tailored Goals',

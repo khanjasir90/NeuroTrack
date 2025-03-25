@@ -10,12 +10,38 @@ class TherapyProvider extends ChangeNotifier {
 
   final TherapyRepository _therapyRepository;
 
+  String? _patientId;
+  String? get patientId => _patientId;
+
   List<TherapyTypeModel> _therapyTypes = [];
   List<TherapyTypeModel> get therapyTypes => _therapyTypes;
 
   String? _selectedTherapyType;
   String? get selectedTherapyType => _selectedTherapyType;
 
+  List<TherapyModel> _therapyGoals = [];
+  List<TherapyModel> get therapyGoals => _therapyGoals;
+
+  List<TherapyModel> _therapyObservations = [];
+  List<TherapyModel> get therapyObservations => _therapyObservations;
+
+  List<TherapyModel> _therapyRegressions = [];
+  List<TherapyModel> get therapyRegressions => _therapyRegressions;
+
+  List<TherapyModel> _therapyActivities = [];
+  List<TherapyModel> get therapyActivities => _therapyActivities;
+
+  List<TherapyModel> _selectedTherapyGoals = [];
+  List<TherapyModel> get selectedTherapyGoals => _selectedTherapyGoals;
+
+  List<TherapyModel> _selectedTherapyObservations = [];
+  List<TherapyModel> get selectedTherapyObservations => _selectedTherapyObservations;
+
+  List<TherapyModel> _selectedTherapyRegressions = [];
+  List<TherapyModel> get selectedTherapyRegressions => _selectedTherapyRegressions;
+
+  List<TherapyModel> _selectedTherapyActivities = [];
+  List<TherapyModel> get selectedTherapyActivities => _selectedTherapyActivities;
 
   void getThearpyType() async {
     final ActionResult result = await _therapyRepository.getTherapyTypes();
@@ -28,8 +54,17 @@ class TherapyProvider extends ChangeNotifier {
     }
   }
 
+  set setPatientId(String patientId) {
+    _patientId = patientId;
+    notifyListeners();
+  }
+
   set setSelectedTherapyType(String therapyType) {
     _selectedTherapyType = therapyType;
+    _selectedTherapyActivities = [];
+    _selectedTherapyGoals = [];
+    _selectedTherapyObservations = [];
+    _selectedTherapyRegressions = [];
     notifyListeners();
   }
 
@@ -60,4 +95,99 @@ class TherapyProvider extends ChangeNotifier {
     await _therapyRepository.addTherapyActivities(therapyId, activity);
   }
 
+  void getTherapyGoals() async {
+    final therapyId = _getTherapyIdFromSelectedTherapy();
+    final ActionResult result = await _therapyRepository.getAllGoals(therapyId);
+    if(result is ActionResultSuccess) {
+      _therapyGoals = result.data;
+      notifyListeners();
+    } else {
+      _therapyGoals = [];
+      notifyListeners();
+    }
+  }
+
+  void getTherapyObservations() async {
+    final therapyId = _getTherapyIdFromSelectedTherapy();
+    final ActionResult result = await _therapyRepository.getAllObservations(therapyId);
+    if(result is ActionResultSuccess) {
+      _therapyObservations = result.data;
+      notifyListeners();
+    } else {
+      _therapyObservations = [];
+      notifyListeners();
+    }
+  }
+
+  void getTherapyRegressions() async {
+    final therapyId = _getTherapyIdFromSelectedTherapy();
+    final ActionResult result = await _therapyRepository.getAllRegressions(therapyId);
+    if(result is ActionResultSuccess) {
+      _therapyRegressions = result.data;
+      notifyListeners();
+    } else {
+      _therapyRegressions = [];
+      notifyListeners();
+    }
+  }
+
+  void getTherapyActivities() async {
+    final therapyId = _getTherapyIdFromSelectedTherapy();
+    final ActionResult result = await _therapyRepository.getAllActivities(therapyId);
+    if(result is ActionResultSuccess) {
+      _therapyActivities = result.data;
+      notifyListeners();
+    } else {
+      _therapyActivities = [];
+      notifyListeners();
+    }
+  }
+
+  void resetTherapyData() {
+    _therapyGoals = [];
+    _therapyObservations = [];
+    _therapyRegressions = [];
+    _therapyActivities = [];
+    notifyListeners();
+  }
+
+  void addToSelectedGoals(TherapyModel therapyModel) {
+    _selectedTherapyGoals.add(therapyModel);
+    notifyListeners();
+  }
+
+  void removeFromSelectedGoals(TherapyModel therapyModel) {
+    _selectedTherapyGoals.removeWhere((element) => element.id == therapyModel.id);
+    notifyListeners();
+  }
+
+  void addToSelectedObservations(TherapyModel therapyModel) {
+    _selectedTherapyObservations.add(therapyModel);
+    notifyListeners();
+  }
+  
+  void removeFromSelectedObservations(TherapyModel therapyModel) {
+    _selectedTherapyObservations.removeWhere((element) => element.id == therapyModel.id);
+    notifyListeners();
+  }
+
+  void addToSelectedRegressions(TherapyModel therapyModel) {
+    _selectedTherapyRegressions.add(therapyModel);
+    notifyListeners();
+  }
+
+  void removeFromSelectedRegressions(TherapyModel therapyModel) {
+    _selectedTherapyRegressions.removeWhere((element) => element.id == therapyModel.id);
+    notifyListeners();
+  }
+
+  void addToSelectedActivities(TherapyModel therapyModel) {
+    _selectedTherapyActivities.add(therapyModel);
+    notifyListeners();
+  }
+
+  void removeFromSelectedActivities(TherapyModel therapyModel) {
+    _selectedTherapyActivities.removeWhere((element) => element.id == therapyModel.id);
+    notifyListeners();
+  }
 }
