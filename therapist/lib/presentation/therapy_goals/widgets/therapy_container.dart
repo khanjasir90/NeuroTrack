@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:therapist/model/model.dart';
 import 'package:therapist/presentation/therapy_goals/widgets/therapy_dotted_empty_container.dart';
 
 enum TherapyDetailsType {
@@ -20,7 +21,7 @@ class TherapyContainer extends StatelessWidget {
   });
 
   final TherapyDetailsType therapyDetailsType;
-  final List<String> therapyInfo;
+  final List<TherapyModel> therapyInfo;
 
   @override
   Widget build(BuildContext context) {
@@ -52,7 +53,7 @@ class TherapyContainer extends StatelessWidget {
             (info) => Container(
               padding: const EdgeInsets.only(top: 10),
               child: Text(
-                info,
+                info.name,
                 style: const TextStyle(
                   fontSize: 14,
                   fontWeight: FontWeight.w500,

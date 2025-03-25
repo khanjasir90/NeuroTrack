@@ -69,22 +69,42 @@ class _TherapyGoalsScreenState extends State<TherapyGoalsScreen> {
               icon: Icons.calendar_month_outlined,
               onTap: () {},
             ),
-            const TherapyContainer(
-              therapyDetailsType: TherapyDetailsType.goals,
-              therapyInfo: [], // ['Brush Teeth', 'Reading Books', 'Exercise'],
+            Consumer<TherapyProvider>(
+              builder: (context, provider, child) {
+                return TherapyContainer(
+                  therapyDetailsType: TherapyDetailsType.goals,
+                  therapyInfo: provider
+                      .selectedTherapyGoals, 
+                );
+              },
             ),
-            const TherapyContainer(
-              therapyDetailsType: TherapyDetailsType.observation,
-              therapyInfo: ['Brush Teeth', 'Reading Books', 'Exercise'],
+            Consumer<TherapyProvider>(
+              builder: (context, provider, child) {
+                return TherapyContainer(
+                  therapyDetailsType: TherapyDetailsType.observation,
+                  therapyInfo: provider
+                      .selectedTherapyObservations, 
+                );
+              },
             ),
-            const TherapyContainer(
-              therapyDetailsType: TherapyDetailsType.regression,
-              therapyInfo: [], //['Brush Teeth', 'Reading Books', 'Exercise'],
+            Consumer<TherapyProvider>(
+              builder: (context, provider, child) {
+                return TherapyContainer(
+                  therapyDetailsType: TherapyDetailsType.regression,
+                  therapyInfo: provider
+                      .selectedTherapyRegressions, 
+                );
+              },
             ),
-            const TherapyContainer(
-              therapyDetailsType: TherapyDetailsType.activities,
-              therapyInfo: ['Brush Teeth', 'Reading Books', 'Exercise'],
-            ),
+            Consumer<TherapyProvider>(
+              builder: (context, provider, child) {
+                return TherapyContainer(
+                  therapyDetailsType: TherapyDetailsType.activities,
+                  therapyInfo: provider
+                      .selectedTherapyActivities,
+                );
+              },
+            ), 
           ],
         ),
       ),
