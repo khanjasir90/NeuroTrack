@@ -19,6 +19,9 @@ class TherapyProvider extends ChangeNotifier {
   String? _selectedTherapyType;
   String? get selectedTherapyType => _selectedTherapyType;
 
+  DateTime? _selectedDateTime;
+  DateTime? get selectedDateTime => _selectedDateTime;
+
   List<TherapyModel> _therapyGoals = [];
   List<TherapyModel> get therapyGoals => _therapyGoals;
 
@@ -65,6 +68,11 @@ class TherapyProvider extends ChangeNotifier {
     _selectedTherapyGoals = [];
     _selectedTherapyObservations = [];
     _selectedTherapyRegressions = [];
+    notifyListeners();
+  }
+
+  setSelectedDateTime(DateTime dateTime) {
+    _selectedDateTime = dateTime;
     notifyListeners();
   }
 

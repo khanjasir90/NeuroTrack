@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
+import 'package:therapist/core/theme/theme.dart';
 import 'package:therapist/presentation/therapy_goals/widgets/save_therapy_button.dart';
 import 'package:therapist/presentation/therapy_goals/widgets/therapy_container.dart';
 import 'package:therapist/presentation/therapy_goals/widgets/therapy_date_time_picker.dart';
@@ -14,7 +16,6 @@ class TherapyGoalsScreen extends StatefulWidget {
 }
 
 class _TherapyGoalsScreenState extends State<TherapyGoalsScreen> {
-
   @override
   void initState() {
     super.initState();
@@ -40,6 +41,33 @@ class _TherapyGoalsScreenState extends State<TherapyGoalsScreen> {
     );
   }
 
+  Future<void> _selectDate() async {
+    final therapyProvider = context.read<TherapyProvider>();
+
+    final DateTime? dateTime = await showDatePicker(
+      context: context,
+      initialDate: DateTime.now(),
+      firstDate: DateTime.now(),
+      lastDate: DateTime.now().add(const Duration(days: 365)),
+      builder: (context, child) {
+        return Theme(
+          data: Theme.of(context).copyWith(
+            colorScheme: const ColorScheme.light(
+              primary: AppTheme.primaryColor,
+              onPrimary: Colors.white,
+              onSurface: AppTheme.textColor,
+            ),
+          ),
+          child: child!,
+        );
+      },
+    );
+
+    if (dateTime != null) {
+      therapyProvider.setSelectedDateTime(dateTime);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -56,28 +84,38 @@ class _TherapyGoalsScreenState extends State<TherapyGoalsScreen> {
         child: Column(
           spacing: 30,
           children: [
+            Consumer<TherapyProvider>(builder: (context, provider, child) {
+              return TherapyTypeField(
+                selectedTherapyType: provider.selectedTherapyType,
+                therapyType: provider.therapyTypes,
+                onChanged: (value) {
+                  provider.setSelectedTherapyType = value ?? '';
+                },
+              );
+            }),
             Consumer<TherapyProvider>(
-              builder: (context, provider,child) {
-                return TherapyTypeField(
-                  selectedTherapyType: provider.selectedTherapyType,
-                  therapyType: provider.therapyTypes,
-                  onChanged: (value) {
-                    provider.setSelectedTherapyType = value ?? '';
-                  },
+              builder: (context, provider, child) {
+
+                String? selectedDateTime() {
+                  if(provider.selectedDateTime != null) {
+                    return DateFormat('dd MMM yyyy').format(provider.selectedDateTime!);
+                  }
+                  return null;
+                }
+
+                return TherapyDateTimePicker(
+                  value: selectedDateTime(),
+                  label: 'Therapy Date',
+                  icon: Icons.calendar_month_outlined,
+                  onTap: _selectDate,
                 );
-              }
-            ),
-            TherapyDateTimePicker(
-              label: 'Therapy Date',
-              icon: Icons.calendar_month_outlined,
-              onTap: () {},
+              },
             ),
             Consumer<TherapyProvider>(
               builder: (context, provider, child) {
                 return TherapyContainer(
                   therapyDetailsType: TherapyDetailsType.goals,
-                  therapyInfo: provider
-                      .selectedTherapyGoals, 
+                  therapyInfo: provider.selectedTherapyGoals,
                 );
               },
             ),
@@ -85,8 +123,7 @@ class _TherapyGoalsScreenState extends State<TherapyGoalsScreen> {
               builder: (context, provider, child) {
                 return TherapyContainer(
                   therapyDetailsType: TherapyDetailsType.observation,
-                  therapyInfo: provider
-                      .selectedTherapyObservations, 
+                  therapyInfo: provider.selectedTherapyObservations,
                 );
               },
             ),
@@ -94,8 +131,7 @@ class _TherapyGoalsScreenState extends State<TherapyGoalsScreen> {
               builder: (context, provider, child) {
                 return TherapyContainer(
                   therapyDetailsType: TherapyDetailsType.regression,
-                  therapyInfo: provider
-                      .selectedTherapyRegressions, 
+                  therapyInfo: provider.selectedTherapyRegressions,
                 );
               },
             ),
@@ -103,11 +139,10 @@ class _TherapyGoalsScreenState extends State<TherapyGoalsScreen> {
               builder: (context, provider, child) {
                 return TherapyContainer(
                   therapyDetailsType: TherapyDetailsType.activities,
-                  therapyInfo: provider
-                      .selectedTherapyActivities,
+                  therapyInfo: provider.selectedTherapyActivities,
                 );
               },
-            ), 
+            ),
           ],
         ),
       ),
