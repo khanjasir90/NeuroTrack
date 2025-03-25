@@ -1,11 +1,25 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:therapist/presentation/therapy_goals/widgets/save_therapy_button.dart';
 import 'package:therapist/presentation/therapy_goals/widgets/therapy_container.dart';
 import 'package:therapist/presentation/therapy_goals/widgets/therapy_date_time_picker.dart';
 import 'package:therapist/presentation/therapy_goals/widgets/therapy_type_field.dart';
+import 'package:therapist/provider/therapy_provider.dart';
 
-class TherapyGoalsScreen extends StatelessWidget {
+class TherapyGoalsScreen extends StatefulWidget {
   const TherapyGoalsScreen({super.key});
+
+  @override
+  State<TherapyGoalsScreen> createState() => _TherapyGoalsScreenState();
+}
+
+class _TherapyGoalsScreenState extends State<TherapyGoalsScreen> {
+
+  @override
+  void initState() {
+    super.initState();
+    context.read<TherapyProvider>().getThearpyType();
+  }
 
   AppBar _getAppBar() {
     return AppBar(
@@ -39,7 +53,17 @@ class TherapyGoalsScreen extends StatelessWidget {
         child: Column(
           spacing: 30,
           children: [
-            const TherapyTypeField(),
+            Consumer<TherapyProvider>(
+              builder: (context, provider,child) {
+                return TherapyTypeField(
+                  selectedTherapyType: provider.selectedTherapyType,
+                  therapyType: provider.therapyTypes,
+                  onChanged: (value) {
+                    provider.setSelectedTherapyType = value ?? '';
+                  },
+                );
+              }
+            ),
             TherapyDateTimePicker(
               label: 'Therapy Date',
               icon: Icons.calendar_month_outlined,
