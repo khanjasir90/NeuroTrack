@@ -63,6 +63,7 @@ CREATE TABLE therapy_goal (
     therapy_mode INT2,
     duration INT4,
     therapy_type INT2,
+    therapy_id REFERENCES therapy(id)
     goals JSONB,
     observations JSONB,
     regressions JSONB,
@@ -92,6 +93,46 @@ CREATE TABLE assessment_results (
   patient_id UUID REFERENCES auth.users(id),
   submission JSONB,
   result JSONB
+);
+
+-- Therapy Table 
+CREATE TABLE therapy (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    created_at TIMESTAMPTZ DEFAULT NOW(),
+    name TEXT NOT NULL UNIQUE,
+    description TEXT
+);
+
+-- Therapy Goals Master Table
+CREATE TABLE goal_master (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    created_at TIMESTAMPTZ DEFAULT NOW(),
+    goal_text TEXT NOT NULL,
+    applicable_therapies UUID[] NOT NULL
+);
+
+-- Observations Master Table
+CREATE TABLE observation_master (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    created_at TIMESTAMPTZ DEFAULT NOW(),
+    observation_text TEXT NOT NULL,
+    applicable_therapies UUID[] NOT NULL,
+);
+
+-- Regressions Master Table
+CREATE TABLE regression_master (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    created_at TIMESTAMPTZ DEFAULT NOW(),
+    regression_text TEXT NOT NULL,
+    applicable_therapies UUID[] NOT NULL
+);
+
+-- Activities Master Table
+CREATE TABLE activity_master (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    created_at TIMESTAMPTZ DEFAULT NOW(),
+    activity_text TEXT NOT NULL,
+    applicable_therapies UUID[] NOT NULL,
 );
 
 -- Indexes on foreign keys for better performance
