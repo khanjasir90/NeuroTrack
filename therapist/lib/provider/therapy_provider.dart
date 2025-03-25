@@ -32,4 +32,32 @@ class TherapyProvider extends ChangeNotifier {
     _selectedTherapyType = therapyType;
     notifyListeners();
   }
+
+  String _getTherapyIdFromSelectedTherapy() {
+    final therapyType = _therapyTypes.firstWhere((element) => element.name == _selectedTherapyType);
+    return therapyType.therapyId;
+  }
+
+  void addTherapyGoals(String goal) async {
+    final therapyId = _getTherapyIdFromSelectedTherapy();
+    await _therapyRepository.addTherapyGoals(therapyId,goal);
+    notifyListeners();
+  }
+
+  void addTherapyObservations(String observation) async {
+    final therapyId = _getTherapyIdFromSelectedTherapy();
+    await _therapyRepository.addTherapyObservations(therapyId, observation);
+    notifyListeners();
+  }
+
+  void addTherapyRegressions(String regression) async {
+    final therapyId = _getTherapyIdFromSelectedTherapy();
+    await _therapyRepository.addTherapyRegressions(therapyId, regression);
+  }
+
+  void addTherapyActivities(String activity) async {
+    final therapyId = _getTherapyIdFromSelectedTherapy();
+    await _therapyRepository.addTherapyActivities(therapyId, activity);
+  }
+
 }

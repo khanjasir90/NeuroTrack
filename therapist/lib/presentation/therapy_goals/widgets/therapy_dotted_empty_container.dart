@@ -9,6 +9,15 @@ class TherapyDottedEmptyContainer extends StatelessWidget {
 
   final TherapyDetailsType therapyDetailsType;
 
+  void _addFromExistingTherapyDetails(BuildContext context) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => AddTherapyDetailsScreen(therapyDetailsType : therapyDetailsType),
+      ),
+    );
+  }
+
   String get _getTherapyDetailsText {
     switch (therapyDetailsType) {
       case TherapyDetailsType.goals:
@@ -20,15 +29,6 @@ class TherapyDottedEmptyContainer extends StatelessWidget {
       case TherapyDetailsType.activities:
         return 'Add Activities';
     }
-  }
-
-  void _addFromExistingTherapyDetails(BuildContext context) {
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) => AddTherapyDetailsScreen(title: _getTherapyDetailsText),
-      ),
-    );
   }
 
   @override
