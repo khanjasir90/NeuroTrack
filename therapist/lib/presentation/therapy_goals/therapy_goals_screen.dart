@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:therapist/presentation/therapy_goals/widgets/save_therapy_button.dart';
 import 'package:therapist/presentation/therapy_goals/widgets/therapy_container.dart';
+import 'package:therapist/presentation/therapy_goals/widgets/therapy_date_time_picker.dart';
+import 'package:therapist/presentation/therapy_goals/widgets/therapy_type_field.dart';
 
 class TherapyGoalsScreen extends StatelessWidget {
   const TherapyGoalsScreen({super.key});
@@ -32,24 +34,30 @@ class TherapyGoalsScreen extends StatelessWidget {
           onPressed: () {},
         ),
       ),
-      body: const SingleChildScrollView(
-        padding: EdgeInsets.only(left: 22, right: 22, top: 22),
+      body: SingleChildScrollView(
+        padding: const EdgeInsets.only(left: 22, right: 22, top: 22),
         child: Column(
           spacing: 30,
           children: [
-            TherapyContainer(
+            const TherapyTypeField(),
+            TherapyDateTimePicker(
+              label: 'Therapy Date',
+              icon: Icons.calendar_month_outlined,
+              onTap: () {},
+            ),
+            const TherapyContainer(
               therapyDetailsType: TherapyDetailsType.goals,
               therapyInfo: [], // ['Brush Teeth', 'Reading Books', 'Exercise'],
             ),
-            TherapyContainer(
+            const TherapyContainer(
               therapyDetailsType: TherapyDetailsType.observation,
               therapyInfo: ['Brush Teeth', 'Reading Books', 'Exercise'],
             ),
-            TherapyContainer(
+            const TherapyContainer(
               therapyDetailsType: TherapyDetailsType.regression,
               therapyInfo: [], //['Brush Teeth', 'Reading Books', 'Exercise'],
             ),
-            TherapyContainer(
+            const TherapyContainer(
               therapyDetailsType: TherapyDetailsType.activities,
               therapyInfo: ['Brush Teeth', 'Reading Books', 'Exercise'],
             ),
