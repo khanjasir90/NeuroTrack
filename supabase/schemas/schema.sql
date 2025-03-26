@@ -46,8 +46,8 @@ CREATE TABLE session (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     created_at TIMESTAMPTZ DEFAULT NOW(),
     timestamp TIMESTAMPTZ NOT NULL,
-    therapist_id UUID REFERENCES therapist(id), -- Fixed to reference therapist.id
-    patient_id UUID REFERENCES patient(id),     -- Fixed to reference patient.id
+    therapist_id UUID REFERENCES therapist(id),
+    patient_id UUID REFERENCES patient(id),
     mode INT2,
     duration INT4,
     name TEXT,
@@ -59,17 +59,16 @@ CREATE TABLE therapy_goal (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     created_at TIMESTAMPTZ DEFAULT NOW(),
     performed_on TIMESTAMPTZ,
-    therapist_id UUID REFERENCES therapist(id), -- Fixed to reference therapist.id
+    therapist_id UUID REFERENCES therapist(id), 
     therapy_mode INT2,
     duration INT4,
     therapy_type INT2,
-    therapy_id REFERENCES therapy(id)
+    therapy_type_id UUID REFERENCES therapy_type(id),
     goals JSONB,
     observations JSONB,
     regressions JSONB,
     activities JSONB,
-    patient_id UUID REFERENCES patient(id),     -- Fixed to reference patient.id
-    therapy_date INT8
+    patient_id UUID REFERENCES patient(id)
 );
 
 -- Create the assessments table
