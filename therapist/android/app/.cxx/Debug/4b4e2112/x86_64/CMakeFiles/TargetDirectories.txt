@@ -1,2 +1,0 @@
-/Users/euclidstellar/Downloads/NeuroTrack/therapist/android/app/.cxx/Debug/4b4e2112/x86_64/CMakeFiles/edit_cache.dir
-/Users/euclidstellar/Downloads/NeuroTrack/therapist/android/app/.cxx/Debug/4b4e2112/x86_64/CMakeFiles/rebuild_cache.dir
