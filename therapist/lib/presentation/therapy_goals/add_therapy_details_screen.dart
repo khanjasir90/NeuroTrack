@@ -251,7 +251,7 @@ class _BuildOptionTile extends StatelessWidget {
           value: isSelected,
           onChanged: onChanged,
         ),
-        Text(name),
+        Expanded(child: Text(name, softWrap: true,)),
       ],
     );
   }
