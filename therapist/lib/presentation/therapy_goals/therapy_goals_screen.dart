@@ -6,6 +6,7 @@ import 'package:therapist/presentation/therapy_goals/widgets/save_therapy_button
 import 'package:therapist/presentation/therapy_goals/widgets/therapy_container.dart';
 import 'package:therapist/presentation/therapy_goals/widgets/therapy_date_time_picker.dart';
 import 'package:therapist/presentation/therapy_goals/widgets/therapy_type_field.dart';
+import 'package:therapist/presentation/widgets/snackbar_service.dart';
 import 'package:therapist/provider/therapy_provider.dart';
 
 class TherapyGoalsScreen extends StatefulWidget {
@@ -22,10 +23,37 @@ class _TherapyGoalsScreenState extends State<TherapyGoalsScreen> {
     context.read<TherapyProvider>().getThearpyType();
   }
 
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      final therapyProvider = context.read<TherapyProvider>();
+      if (therapyProvider.saveTherapyStatus.isSuccess) {
+        SnackbarService.showSuccess('Therapy details saved successfully.');
+        _navigateToHomeScreen();
+        _resetAllFields();
+      } else if (therapyProvider.saveTherapyStatus.isFailure) {
+        SnackbarService.showError('Something went wrong. Please try again later.');
+      }
+    });
+  }
+
+  void _navigateToHomeScreen() {
+    Navigator.of(context).pop();
+  }
+
+  void _resetAllFields() {
+    context.read<TherapyProvider>().resetAllFields();
+  }
+
   AppBar _getAppBar() {
     return AppBar(
       leading: GestureDetector(
-        onTap: () => Navigator.of(context).pop(),
+        onTap: () {
+          _resetAllFields();
+          _navigateToHomeScreen();
+        },
         child: Image.asset(
           'assets/arrow_left.png',
           width: 24,
@@ -68,15 +96,21 @@ class _TherapyGoalsScreenState extends State<TherapyGoalsScreen> {
     }
   }
 
+  void _onSaveTherapyDetails() {
+    final therapyProvider = context.read<TherapyProvider>();
+    therapyProvider.saveTherapyDetails();
+  }
+
   @override
   Widget build(BuildContext context) {
+    Provider.of<TherapyProvider>(context, listen: true).saveTherapyStatus;
     return Scaffold(
       appBar: _getAppBar(),
       bottomNavigationBar: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 22, vertical: 25),
         child: SaveTherapyButton(
           text: 'Save Therapy Details',
-          onPressed: () {},
+          onPressed: _onSaveTherapyDetails,
         ),
       ),
       body: SingleChildScrollView(

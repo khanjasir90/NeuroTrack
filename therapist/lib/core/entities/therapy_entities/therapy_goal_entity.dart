@@ -10,10 +10,10 @@ class TherapyGoalEntity with TherapyGoalEntityMappable {
   final DateTime performedOn;
 
   @MappableField(key: 'therapist_id')
-  final String therapistId;
+  final String? therapistId;
 
-  @MappableField(key: 'therapy_id')
-  final String therapyId;
+  @MappableField(key: 'therapy_type_id')
+  final String therapyTypeId;
 
   @MappableField(key: 'goals')
   final List<TherapyModel> goals;
@@ -27,18 +27,15 @@ class TherapyGoalEntity with TherapyGoalEntityMappable {
   @MappableField(key: 'activities')
   final List<TherapyModel> activities;
 
-  @MappableField(key: 'therapy_date')
-  final String therapyDate;
 
 
   TherapyGoalEntity({
     required this.performedOn,
-    required this.therapistId,
-    required this.therapyId,
+    this.therapistId,
+    required this.therapyTypeId,
     required this.goals,
     required this.observations,
     required this.regressions,
     required this.activities,
-    required this.therapyDate
   });
 }

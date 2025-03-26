@@ -1,4 +1,4 @@
-import 'package:therapist/core/result/action_result.dart';
+import 'package:therapist/core/core.dart';
 
 abstract interface class TherapyRepository {
   Future<ActionResult> getTherapyTypes();
@@ -10,4 +10,5 @@ abstract interface class TherapyRepository {
   Future<ActionResult> getAllObservations(String therapyTypeId);
   Future<ActionResult> getAllRegressions(String therapyTypeId);
   Future<ActionResult> getAllActivities(String therapyTypeId);
+  Future<ActionResult> saveTherapyGoals(TherapyGoalEntity therapyGoalEntity);
 }

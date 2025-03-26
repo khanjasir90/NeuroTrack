@@ -198,6 +198,13 @@ class _AddTherapyDetailsScreenState extends State<AddTherapyDetailsScreen> {
       body: Consumer<TherapyProvider>(
         builder: (context, provider, child) {
           final data = _getTherapyDataAsPerSelection();
+
+          if(data.isEmpty) {
+            return const Center(
+              child: Text('No data found'),
+            );
+          }
+
           return SingleChildScrollView(
             child: Column(
                 spacing: 2,

@@ -2,6 +2,20 @@ import 'package:flutter/material.dart';
 import 'package:therapist/core/core.dart';
 import 'package:therapist/model/model.dart';
 
+enum SaveTherapyStatus {
+  initial,
+  loading,
+  success,
+  failure,
+}
+
+extension SaveTherapyStatusX on SaveTherapyStatus {
+  bool get isInitial => this == SaveTherapyStatus.initial;
+  bool get isLoading => this == SaveTherapyStatus.loading;
+  bool get isSuccess => this == SaveTherapyStatus.success;
+  bool get isFailure => this == SaveTherapyStatus.failure;
+}
+
 class TherapyProvider extends ChangeNotifier {
 
   TherapyProvider({
@@ -45,6 +59,12 @@ class TherapyProvider extends ChangeNotifier {
 
   List<TherapyModel> _selectedTherapyActivities = [];
   List<TherapyModel> get selectedTherapyActivities => _selectedTherapyActivities;
+
+  SaveTherapyStatus _saveTherapyStatus = SaveTherapyStatus.initial;
+  SaveTherapyStatus get saveTherapyStatus => _saveTherapyStatus;
+
+  String _saveTherapyErrorMessage = '';
+  String get saveTherapyErrorMessage => _saveTherapyErrorMessage;
 
   void getThearpyType() async {
     final ActionResult result = await _therapyRepository.getTherapyTypes();
@@ -198,4 +218,49 @@ class TherapyProvider extends ChangeNotifier {
     _selectedTherapyActivities.removeWhere((element) => element.id == therapyModel.id);
     notifyListeners();
   }
+
+  void saveTherapyDetails() async {
+    _saveTherapyStatus = SaveTherapyStatus.loading;
+    final therapyGoalModel = TherapyGoalModel(
+      performedOn: _selectedDateTime ?? DateTime.now(),
+      therapyTypeId: _getTherapyIdFromSelectedTherapy(),
+      goals: _selectedTherapyGoals,
+      observations: _selectedTherapyObservations,
+      regressions: _selectedTherapyRegressions,
+      activities: _selectedTherapyActivities,
+    );
+
+    final ActionResult result = await _therapyRepository.saveTherapyGoals(therapyGoalModel.toEntity());
+
+    if(result is ActionResultSuccess) {
+      _saveTherapyStatus = SaveTherapyStatus.success;
+      _saveTherapyErrorMessage = '';
+      notifyListeners();
+    } else {
+      _saveTherapyStatus = SaveTherapyStatus.failure;
+      _saveTherapyErrorMessage = result.errorMessage.toString();
+      notifyListeners();
+    }
+  }
+
+  void resetAllFields() {
+    _patientId = null;
+    _therapyTypes = [];
+    _selectedTherapyType = null;
+    _selectedDateTime = null;
+    _therapyGoals = [];
+    _therapyObservations = [];
+    _therapyRegressions = [];
+    _therapyActivities = [];
+    _selectedTherapyGoals = [];
+    _selectedTherapyObservations = [];
+    _selectedTherapyRegressions = [];
+    _selectedTherapyActivities = [];
+    _saveTherapyStatus = SaveTherapyStatus.initial;
+    _saveTherapyErrorMessage = '';
+    notifyListeners();
+  }
+
+
+
 }

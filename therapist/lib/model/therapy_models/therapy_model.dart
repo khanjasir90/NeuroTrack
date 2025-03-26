@@ -1,4 +1,5 @@
 import 'package:dart_mappable/dart_mappable.dart';
+import 'package:therapist/core/core.dart';
 
 part 'therapy_model.mapper.dart';
 
@@ -13,5 +14,12 @@ class TherapyModel with TherapyModelMappable {
     required this.id,
     required this.name,
   });
+
+  TherapyEntity toEntity() {
+    return TherapyEntity(
+      id: id,
+      name: name,
+    );
+  }
 
 }
