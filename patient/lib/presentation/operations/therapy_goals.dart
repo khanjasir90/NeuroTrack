@@ -55,10 +55,12 @@ class TherapyGoalsScreenState extends State<TherapyGoalsScreen> {
                     height: 20,
                     width: isToday ? screenWidth * 0.25 : screenWidth * 0.2,
                     child: Container(
-                      constraints: BoxConstraints(minHeight: 30, maxHeight: 40),
+                      constraints:
+                          const BoxConstraints(minHeight: 30, maxHeight: 40),
                       alignment: Alignment.center,
                       decoration: BoxDecoration(
-                        color: isSelected ? Color(0xFF7A86F8) : Colors.white,
+                        color:
+                            isSelected ? const Color(0xFF7A86F8) : Colors.white,
                         borderRadius: BorderRadius.circular(10),
                         border: Border.all(color: Colors.grey.shade300),
                       ),
@@ -225,8 +227,8 @@ class TherapyGoalsScreenState extends State<TherapyGoalsScreen> {
   }
 
   Widget _buildContent(int index) {
-    final assessmentProvider = Provider.of<AssessmentProvider>(context);
-    final assessment = null;//assessmentProvider.assessment;
+    // final assessmentProvider = Provider.of<AssessmentProvider>(context);
+    const assessment = null; //assessmentProvider.assessment;
 
     if (assessment == null || !assessment.containsKey('questions')) {
       return Center(
