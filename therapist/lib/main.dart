@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:provider/provider.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
+
 import 'package:therapist/core/repository/auth/auth_repository.dart';
 import 'package:therapist/core/repository/therapist/therapist_repository.dart';
 import 'package:therapist/provider/consultation_provider.dart';
@@ -10,6 +11,10 @@ import 'package:therapist/provider/session_provider.dart'; // Add this import
 import 'package:therapist/repository/supabase_auth_repository.dart';
 import 'package:therapist/repository/supabase_consultation_repository.dart';
 import 'package:therapist/repository/supabase_therapist_repository.dart';
+
+import 'package:therapist/provider/consultation_provider.dart';
+import 'package:therapist/provider/session_provider.dart';
+
 
 import 'presentation/splash_screen.dart';
 import 'provider/auth_provider.dart';
@@ -70,11 +75,15 @@ Future<void> main() async {
           ),
         ),
         // Add SessionProvider
+
+        ChangeNotifierProvider(create: (context) => TherapistDataProvider()),
+        ChangeNotifierProvider(create: (context) => ConsultationProvider(SupabaseConsultationRepository())),
         ChangeNotifierProvider(create: (context) => SessionProvider()),
       ],
       child: const MyApp(),
     ),
   );
+
 }
 
 class MyApp extends StatelessWidget {

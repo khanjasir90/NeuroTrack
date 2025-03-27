@@ -90,14 +90,25 @@ Deno.serve( async (req) => {
       }
 
       const isAutistic = totalScore >= assessment.cutoff_score;
+      
+      const responseData = {
+        assessment_score: totalScore,
+        is_autistic: isAutistic,
+        message: isAutistic
+          ? "The assessment indicates a likelihood of autism. Further evaluation is recommended."
+          : "The assessment does not indicate autism, but professional consultation is advised if needed.",
+      };
+
+      await supabase.from('assessment_results')
+            .insert({
+              'assessment_id': assessment_id,
+              'submission': answered_questions,
+              'patient_id': (await supabase.auth.getSession()).data.session?.user.id,
+              'result': responseData,
+            });
 
       return new Response(
-        JSON.stringify({
-           assessment_score: totalScore,
-           is_autistic: isAutistic,
-           message: isAutistic ? "The assessment indicates a likelihood of autism. Further evaluation is recommended."
-                    : "The assessment does not indicate autism, but professional consultation is advised if needed.",
-        }),{
+        JSON.stringify(responseData),{
           headers: { "Content-Type": "application/json" },
           status: 200,
         },
