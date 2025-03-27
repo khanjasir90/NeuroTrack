@@ -3,6 +3,8 @@ import 'package:flutter/services.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:provider/provider.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
+import 'package:therapist/provider/consultation_provider.dart';
+import 'package:therapist/provider/session_provider.dart';
 
 import 'presentation/splash_screen.dart';
 import 'provider/auth_provider.dart';
@@ -32,18 +34,14 @@ Future<void> main() async {
       providers: [
         ChangeNotifierProvider(create: (context) => AuthProvider()),
         ChangeNotifierProvider(create: (context) => HomeProvider()),
-        ChangeNotifierProvider(create: (context) => TherapistDataProvider())
+        ChangeNotifierProvider(create: (context) => TherapistDataProvider()),
+        ChangeNotifierProvider(create: (context) => ConsultationProvider(SupabaseConsultationRepository())),
+        ChangeNotifierProvider(create: (context) => SessionProvider()),
       ],
       child: const MyApp(),
     ),
   );
 
-  // Create the repository for consultations
-  final consultationRepository = SupabaseConsultationRepository(
-    supabaseClient: null,
-  );
-
-  runApp(const MyApp());
 }
 
 class MyApp extends StatelessWidget {
