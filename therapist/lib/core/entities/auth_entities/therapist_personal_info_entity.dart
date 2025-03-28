@@ -4,7 +4,7 @@ part 'therapist_personal_info_entity.mapper.dart';
 
 @MappableClass()
 class TherapistPersonalInfoEntity with TherapistPersonalInfoEntityMappable {
-  final String? id;
+  final String id;
   @MappableField(key: 'name')
   final String name;
   @MappableField(key: 'age')
