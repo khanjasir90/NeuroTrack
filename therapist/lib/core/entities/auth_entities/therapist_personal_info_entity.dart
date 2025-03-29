@@ -25,7 +25,7 @@ class TherapistPersonalInfoEntity with TherapistPersonalInfoEntityMappable {
   final List<String> therapies;
 
   const TherapistPersonalInfoEntity({
-    this.id,
+    required this.id,
     required this.name,
     required this.age,
     required this.gender,
