@@ -2,13 +2,19 @@ import 'package:flutter/material.dart';
 import 'package:therapist/core/entities/auth_entities/therapist_personal_info_entity.dart';
 import 'package:therapist/core/repository/auth/auth_repository.dart';
 import 'package:therapist/core/result/result.dart';
+import 'package:therapist/presentation/auth/personal_details_screen.dart';
+import 'package:therapist/presentation/home/home_screen.dart';
+import 'package:supabase/supabase.dart';
 
 class AuthProvider extends ChangeNotifier {
   final AuthRepository _authRepository;
+  final SupabaseClient _supabaseClient;
 
   AuthProvider({
     required AuthRepository authRepository,
-  }) : _authRepository = authRepository;
+    required SupabaseClient supabaseClient,
+  }) : _authRepository = authRepository,
+       _supabaseClient = supabaseClient;
 
   bool _isLoading = false;
   bool get isLoading => _isLoading;
@@ -88,5 +94,53 @@ class AuthProvider extends ChangeNotifier {
     _userId = await _authRepository.getUserId();
     _isAuthenticated = _userId != null;
     notifyListeners();
+  }
+
+  Future<bool> checkIfUserIsNew() async {
+    if (_userId == null) {
+      return true; 
+    }
+    
+    _isLoading = true;
+    notifyListeners();
+    
+    try {
+      final result = await _authRepository.checkIfUserIsNew(_userId!);
+      
+      if (result is ActionResultSuccess) {
+        final data = result.data as Map<String, dynamic>;
+        _isNewUser = data['is_new_user'] ?? true;
+      } else if (result is ActionResultFailure) {
+        _errorMessage = result.errorMessage!;
+        _isNewUser = true;
+      }
+    } catch (e) {
+      _errorMessage = e.toString();
+      _isNewUser = true;
+    }
+    
+    _isLoading = false;
+    notifyListeners();
+    return _isNewUser;
+  }
+
+  Map<String, dynamic>? getUserMetadata() {
+    return _supabaseClient.auth.currentSession?.user.userMetadata;
+  }
+
+  void navigateBasedOnUserStatus(BuildContext context) {
+    if (_isNewUser) {
+      Navigator.of(context).pushReplacement(
+        MaterialPageRoute(
+          builder: (context) => const PersonalDetailsScreen(),
+        ),
+      );
+    } else {
+      Navigator.of(context).pushReplacement(
+        MaterialPageRoute(
+          builder: (context) => const HomeScreen(),
+        ),
+      );
+    }
   }
 }

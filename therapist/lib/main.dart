@@ -53,6 +53,7 @@ Future<void> main() async {
         ChangeNotifierProvider<AuthProvider>(
           create: (context) => AuthProvider(
             authRepository: context.read<AuthRepository>(),
+            supabaseClient: context.read<SupabaseClient>(),
           ),
         ),
         // Therapist Repository and Provider

@@ -6,6 +6,8 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:therapist/presentation/auth/personal_details_screen.dart';
 import 'package:therapist/presentation/auth/widgets/google_signin_button.dart';
 import '../home/home_screen.dart';
+import 'package:provider/provider.dart';
+import 'package:therapist/provider/auth_provider.dart';
 
 class AuthScreen extends StatefulWidget {
   const AuthScreen({super.key});
@@ -30,7 +32,7 @@ class _AuthScreenState extends State<AuthScreen> {
 
   void _initializeAuthListener() {
     _authSubscription = supabase.auth.onAuthStateChange.listen((data) {
-      final session = supabase.auth.currentSession;
+      final session = data.session;
       if (session != null && mounted) {
         WidgetsBinding.instance.addPostFrameCallback((_) {
           _handleSuccessfulAuth(session);
@@ -40,46 +42,24 @@ class _AuthScreenState extends State<AuthScreen> {
   }
 
   Future<void> _handleSuccessfulAuth(Session session) async {
+    final authProvider = Provider.of<AuthProvider>(context, listen: false);
+
+    await authProvider.checkAuthentication();
+    final isNewUser = await authProvider.checkIfUserIsNew();
+
     final fullName = session.user.userMetadata?['full_name'];
     final email = session.user.email ?? 'Unknown User';
-     print(fullName);
-    print(email);
-    debugPrint("User authenticated, navigating to HomeScreen");
-    
-    final userId = session.user.id;
-  final therapistData = await supabase
-      .from('therapist')
-      .select()
-      .eq('id', userId)
-      .maybeSingle();
   
-  final bool isNewUser = therapistData == null;
-
     if (mounted) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text('Signed in as ${fullName ?? email}'),
-        duration: const Duration(seconds: 2),
-      ),
-    );
-    
-    if (isNewUser) {
-      // New user - go to personal details screen
-      Navigator.of(context).pushReplacement(
-        MaterialPageRoute(
-          builder: (context) => const PersonalDetailsScreen(),
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Signed in as ${fullName ?? email}'),
+          duration: const Duration(seconds: 2),
         ),
       );
-    } else {
-      // Existing user - go to home screen
-      Navigator.of(context).pushReplacement(
-        MaterialPageRoute(
-          builder: (context) => const HomeScreen(),
-        ),
-      );
+      authProvider.navigateBasedOnUserStatus(context);
     }
   }
-}
 
   void _startAutoScroll() {
     _timer = Timer.periodic(const Duration(seconds: 3), (Timer timer) {

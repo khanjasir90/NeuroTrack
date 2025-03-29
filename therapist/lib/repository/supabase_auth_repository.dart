@@ -147,4 +147,31 @@ class SupabaseAuthRepository implements AuthRepository {
     }
   }
 
+  @override
+  Future<ActionResult> checkIfUserIsNew(String userId) async {
+    try {
+      // Query the therapist table to check if user exists
+      final therapistData = await _supabaseClient
+        .from('therapist')
+        .select()
+        .eq('id', userId)
+        .maybeSingle();
+      
+      final bool isNewUser = therapistData == null;
+      
+      return ActionResultSuccess(
+        data: {
+          'is_new_user': isNewUser,
+        },
+        statusCode: 200,
+      );
+    } catch (e) {
+      print('Error checking if user is new: $e');
+      return ActionResultFailure(
+        errorMessage: e.toString(),
+        statusCode: 400,
+      );
+    }
+  }
+
 }

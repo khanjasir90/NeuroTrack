@@ -26,4 +26,7 @@ abstract interface class AuthRepository {
   Future<ActionResult> storePersonalInfo(TherapistPersonalInfoEntity personalInfoEntity);
   Future<String?> getUserId();
   
+  // Add this new method
+  Future<ActionResult> checkIfUserIsNew(String userId);
+  
 }
