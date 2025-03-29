@@ -91,6 +91,7 @@ class _PersonalDetailsScreenState extends State<PersonalDetailsScreen> {
                       licenseNumber: licenseController.text,
                       specialization: selectedSpecialization!,
                       therapies: selectedTherapies,
+                      id: authProvider.userId!,
                     );
 
                     // Save to Supabase

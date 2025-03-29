@@ -77,7 +77,7 @@ Future<void> main() async {
         ),
         // Add SessionProvider
 
-        ChangeNotifierProvider(create: (context) => TherapistDataProvider()),
+        ChangeNotifierProvider(create: (context) => TherapistDataProvider(therapistRepository: context.read<TherapistRepository>())),
         ChangeNotifierProvider(create: (context) => ConsultationProvider(SupabaseConsultationRepository())),
         ChangeNotifierProvider(create: (context) => SessionProvider()),
       ],
