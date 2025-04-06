@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:easy_date_timeline/easy_date_timeline.dart';
-import 'package:provider/provider.dart';
-import '../../provider/assessment_provider.dart';
+import '../../gen/assets.gen.dart';
 
 class TherapyGoalsScreen extends StatefulWidget {
   const TherapyGoalsScreen({super.key});
@@ -100,9 +99,10 @@ class TherapyGoalsScreenState extends State<TherapyGoalsScreen> {
                 children: [
                   Row(
                     children: [
-                      const CircleAvatar(
+                      CircleAvatar(
                         radius: 24,
-                        backgroundImage: AssetImage('assets/therapist_img.png'),
+                        backgroundImage:
+                            Assets.placeholders.therapistImg.provider(),
                       ),
                       const SizedBox(width: 12),
                       Column(
