@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:therapist/presentation/auth/widgets/therapist_time_picker.dart';
 
 import '../../core/common/chips_input_field.dart';
 import '../../core/entities/auth_entities/therapist_personal_info_entity.dart';
@@ -286,8 +287,11 @@ class _PersonalDetailsScreenState extends State<PersonalDetailsScreen> {
                       });
                     },
                   ),
-                  
-                const SizedBox(height: 40),
+                TherapistTimePicker(
+                  onTimeSelected: (start, end) {
+                    print("Start: ${start.format(context)}, End: ${end.format(context)}");
+                  },
+                ),
               ],
             ),
           ),
