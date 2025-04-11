@@ -42,18 +42,4 @@ class TherapistPersonalInfoEntity with TherapistPersonalInfoEntityMappable {
     required this.startAvailabilityTime,
     required this.endAvailabilityTime,
   });
-
-  // Map<String, dynamic> toMap() {
-  //   return {
-  //     'name': name,
-  //     'age': age,
-  //     'gender': gender,
-  //     'profession_id': professionId,
-  //     'profession_name': professionName,
-  //     'regulatory_body': regulatoryBody,
-  //     'license_number': licenseNumber,
-  //     'specialization': specialization,
-  //     'therapies': therapies,
-  //   };
-  // }
 }
