@@ -30,6 +30,8 @@ class _PersonalDetailsScreenState extends State<PersonalDetailsScreen> {
   String? selectedProfessionName;
   String? selectedRegulatoryBody;
   String? selectedSpecialization;
+  String? selectedAvailabilityStartTime;
+  String? selectedAvailabilityEndTime;
 
   @override
   void initState() {
@@ -48,6 +50,19 @@ class _PersonalDetailsScreenState extends State<PersonalDetailsScreen> {
     super.dispose();
   }
 
+  bool get _checkIfMandatoryFieldsFilled {
+    if (selectedProfessionId == null ||
+        selectedGender.isEmpty ||
+        selectedRegulatoryBody == null ||
+        selectedSpecialization == null ||
+        selectedTherapies.isEmpty ||
+        selectedAvailabilityStartTime == null ||
+        selectedAvailabilityEndTime == null) {
+      return false;
+    }
+    return true;
+  }
+
   @override
   Widget build(BuildContext context) {
     // Use the providers
@@ -63,15 +78,9 @@ class _PersonalDetailsScreenState extends State<PersonalDetailsScreen> {
       bottomNavigationBar: Padding(
         padding: const EdgeInsets.fromLTRB(20, 20, 20, 40),
         child: FilledButton(
-          onPressed: authProvider.isLoading
-              ? null
-              : () async {
+          onPressed:() async {
                   if (_formKey.currentState?.validate() ?? false) {
-                    if (selectedProfessionId == null ||
-                        selectedGender.isEmpty ||
-                        selectedRegulatoryBody == null ||
-                        selectedSpecialization == null ||
-                        selectedTherapies.isEmpty) {
+                    if (!_checkIfMandatoryFieldsFilled) {
                       ScaffoldMessenger.of(context).showSnackBar(
                         const SnackBar(
                           content: Text('Please fill in all fields'),
@@ -93,6 +102,8 @@ class _PersonalDetailsScreenState extends State<PersonalDetailsScreen> {
                       specialization: selectedSpecialization!,
                       therapies: selectedTherapies,
                       id: authProvider.userId!,
+                      startAvailabilityTime: selectedAvailabilityStartTime!,
+                      endAvailabilityTime: selectedAvailabilityEndTime!,
                     );
 
                     // Save to Supabase
@@ -289,7 +300,10 @@ class _PersonalDetailsScreenState extends State<PersonalDetailsScreen> {
                   ),
                 TherapistTimePicker(
                   onTimeSelected: (start, end) {
-                    print("Start: ${start.format(context)}, End: ${end.format(context)}");
+                    setState(() {
+                        selectedAvailabilityStartTime = start.format(context);
+                        selectedAvailabilityEndTime = end.format(context);
+                    });
                   },
                 ),
               ],
