@@ -49,10 +49,9 @@ class _TherapistTimePickerState extends State<TherapistTimePicker> {
 
   String _formatTime(TimeOfDay? time) {
     if (time == null) return "Select";
-    final hour = time.hourOfPeriod.toString().padLeft(2, '0');
+    final hour = time.hour.toString().padLeft(2, '0');
     final minute = time.minute.toString().padLeft(2, '0');
-    final period = time.period == DayPeriod.am ? "AM" : "PM";
-    return "$hour:$minute $period";
+    return "$hour:$minute";
   }
 
   @override
