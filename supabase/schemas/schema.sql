@@ -30,7 +30,9 @@ CREATE TABLE therapist (
     gender TEXT,
     offered_therapies TEXT[],
     age INT2,
-    regulatory_body TEXT
+    regulatory_body TEXT,
+    start_availability_time TEXT,
+    end_availability_time TEXT,
 );
 
 -- Create the package table
@@ -48,6 +50,7 @@ CREATE TABLE session (
     timestamp TIMESTAMPTZ NOT NULL,
     therapist_id UUID REFERENCES therapist(id),
     patient_id UUID REFERENCES patient(id),
+    is_consultation BOOLEAN DEFAULT FALSE,
     mode INT2,
     duration INT4,
     name TEXT,

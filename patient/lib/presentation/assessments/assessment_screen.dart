@@ -197,6 +197,8 @@ class QuestionCard extends StatelessWidget {
                     width: 1.5,
 
                   ),
+
+                ),
                   Expanded(
                     child: Text(
                       optionText,
@@ -211,7 +213,6 @@ class QuestionCard extends StatelessWidget {
             );
           }),
         ],
-      ),
-    );
+      );
   }
 }

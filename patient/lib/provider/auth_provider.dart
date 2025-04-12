@@ -6,7 +6,9 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:patient/core/repository/auth/auth.dart';
 import 'package:patient/core/utils/utils.dart';
+import 'package:patient/model/auth_models/auth_model.dart';
 import 'package:patient/model/auth_models/personal_info_model.dart';
+import 'package:patient/model/auth_models/therapist_model.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 import '../core/result/result.dart';
@@ -43,6 +45,25 @@ class AuthProvider extends ChangeNotifier {
 
   AuthNavigationStatus _authNavigationStatus = AuthNavigationStatus.unknown;
   AuthNavigationStatus get authNavigationStatus => _authNavigationStatus;
+
+  List<TherapistModel> _therapistList = [];
+  List<TherapistModel> get therapistList => _therapistList;
+  set therapistList(List<TherapistModel> value) {
+    _therapistList = value;
+    notifyListeners();
+  }
+
+  List<String> _availableBookingSlots = [];
+  List<String> get availableBookingSlots => _availableBookingSlots;
+  set availableBookingSlots(List<String> value) {
+    _availableBookingSlots = value;
+    notifyListeners();
+  }
+  ApiStatus _availableBookingSlotsStatus = ApiStatus.initial;
+  ApiStatus get availableBookingSlotsStatus => _availableBookingSlotsStatus;
+
+  ApiStatus _bookConsulationStatus = ApiStatus.initial; 
+  ApiStatus get bookConsulationStatus => _bookConsulationStatus;
 
   Future<void> signInWithGoogle() async {
     try {
@@ -128,6 +149,93 @@ class AuthProvider extends ChangeNotifier {
       _apiStatus = ApiStatus.failure;
       _apiErrorMessage = result.errorMessage ?? 'An error occurred. Please try again.';
     }
+    notifyListeners();
+  }
+
+  void getAllTherapist() async {
+    _apiStatus = ApiStatus.initial;
+    _apiErrorMessage = '';
+    notifyListeners();
+    final ActionResult result = await _authRepository.getAllAvailableTherapist();
+      if(result is ActionResultSuccess) {
+        therapistList = result.data as List<TherapistModel>;
+        _apiStatus = ApiStatus.success;
+      } else {
+        _apiStatus = ApiStatus.failure;
+        _apiErrorMessage = result.errorMessage ?? 'An error occurred. Please try again.';
+        notifyListeners();
+      }
+  }
+
+  void getAvailableBookingSlotsForTherapist(
+    String therapistId,
+    DateTime date) async {
+    _availableBookingSlotsStatus = ApiStatus.initial;
+    _availableBookingSlots = [];
+    notifyListeners();
+    final therapistData = therapistList.firstWhere((element) => element.id == therapistId);
+    final ActionResult result = await _authRepository.getAvailableBookingSlotsForTherapist(
+      therapistId,
+      date,
+      therapistData.startAvailabilityTime,
+      therapistData.endAvailabilityTime,
+    );
+      if(result is ActionResultSuccess) {
+        _availableBookingSlots = result.data as List<String>;
+        _availableBookingSlotsStatus = ApiStatus.success;
+        notifyListeners();
+      } else {
+        _availableBookingSlotsStatus = ApiStatus.failure;
+        notifyListeners();
+      }
+  }
+
+  void bookConsultation(String therapistId, DateTime date, int index) async  {
+    final consultationModel = ConsultationRequestModel(
+      timestamp: _updateTime(date, availableBookingSlots[index]),
+      therapistId: therapistId,
+      isConsultation: true,
+      duration: 30,
+      name: 'Consultation Session with the Therapist'
+    );
+
+    _bookConsulationStatus = ApiStatus.initial;
+
+    notifyListeners();
+
+    final ActionResult result = await _authRepository.bookConsultation(consultationModel.toEntity());
+
+    if(result is ActionResultSuccess) {
+      _bookConsulationStatus = ApiStatus.success;
+      notifyListeners();
+    } else {
+      _bookConsulationStatus = ApiStatus.failure;
+      notifyListeners();
+    }
+  }
+
+ DateTime _updateTime(DateTime date, String timeStr) {
+  final timeParts = timeStr.split(' ');
+  final time = timeParts[0]; 
+  final period = timeParts[1].toUpperCase();
+
+  final parts = time.split(':');
+  int hour = int.parse(parts[0]);
+  final minute = int.parse(parts[1]);
+
+  if (period == 'PM' && hour != 12) {
+    hour += 12;
+  } else if (period == 'AM' && hour == 12) {
+    hour = 0;
+  }
+
+  return DateTime(date.year, date.month, date.day, hour, minute);
+}
+
+
+
+  void resetBookingSlots() {
+    _availableBookingSlots = [];
     notifyListeners();
   }
 
