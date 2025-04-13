@@ -146,7 +146,7 @@ class SupabaseAuthRepository implements AuthRepository {
     try {
       final updateConsultationRequestEntity =
           consultationRequestEntity.copyWith(
-       patientId:  '5929f9bb-e294-4812-ae08-4a1c10ca7123',//_supabaseClient.auth.currentUser!.id,
+       patientId: _supabaseClient.auth.currentUser!.id,
         mode: 1,
         status: 'pending',
       );
