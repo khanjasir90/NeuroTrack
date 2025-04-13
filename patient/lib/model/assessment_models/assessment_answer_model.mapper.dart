@@ -22,6 +22,9 @@ class AssessmentAnswerModelMapper
   @override
   final String id = 'AssessmentAnswerModel';
 
+  static String? _$patientId(AssessmentAnswerModel v) => v.patientId;
+  static const Field<AssessmentAnswerModel, String> _f$patientId =
+      Field('patientId', _$patientId, key: r'patient_id', opt: true);
   static String _$assessmentId(AssessmentAnswerModel v) => v.assessmentId;
   static const Field<AssessmentAnswerModel, String> _f$assessmentId =
       Field('assessmentId', _$assessmentId, key: r'assessment_id');
@@ -33,12 +36,14 @@ class AssessmentAnswerModelMapper
 
   @override
   final MappableFields<AssessmentAnswerModel> fields = const {
+    #patientId: _f$patientId,
     #assessmentId: _f$assessmentId,
     #questions: _f$questions,
   };
 
   static AssessmentAnswerModel _instantiate(DecodingData data) {
     return AssessmentAnswerModel(
+        patientId: data.dec(_f$patientId),
         assessmentId: data.dec(_f$assessmentId),
         questions: data.dec(_f$questions));
   }
@@ -67,9 +72,9 @@ mixin AssessmentAnswerModelMappable {
   }
 
   AssessmentAnswerModelCopyWith<AssessmentAnswerModel, AssessmentAnswerModel,
-          AssessmentAnswerModel>
-      get copyWith => _AssessmentAnswerModelCopyWithImpl(
-          this as AssessmentAnswerModel, $identity, $identity);
+      AssessmentAnswerModel> get copyWith => _AssessmentAnswerModelCopyWithImpl<
+          AssessmentAnswerModel, AssessmentAnswerModel>(
+      this as AssessmentAnswerModel, $identity, $identity);
   @override
   String toString() {
     return AssessmentAnswerModelMapper.ensureInitialized()
@@ -92,8 +97,8 @@ mixin AssessmentAnswerModelMappable {
 extension AssessmentAnswerModelValueCopy<$R, $Out>
     on ObjectCopyWith<$R, AssessmentAnswerModel, $Out> {
   AssessmentAnswerModelCopyWith<$R, AssessmentAnswerModel, $Out>
-      get $asAssessmentAnswerModel =>
-          $base.as((v, t, t2) => _AssessmentAnswerModelCopyWithImpl(v, t, t2));
+      get $asAssessmentAnswerModel => $base.as(
+          (v, t, t2) => _AssessmentAnswerModelCopyWithImpl<$R, $Out>(v, t, t2));
 }
 
 abstract class AssessmentAnswerModelCopyWith<
@@ -106,7 +111,9 @@ abstract class AssessmentAnswerModelCopyWith<
       AssessmentQuestionAnswerModelCopyWith<$R, AssessmentQuestionAnswerModel,
           AssessmentQuestionAnswerModel>> get questions;
   $R call(
-      {String? assessmentId, List<AssessmentQuestionAnswerModel>? questions});
+      {String? patientId,
+      String? assessmentId,
+      List<AssessmentQuestionAnswerModel>? questions});
   AssessmentAnswerModelCopyWith<$R2, $In, $Out2> $chain<$R2, $Out2>(
       Then<$Out2, $R2> t);
 }
@@ -130,19 +137,22 @@ class _AssessmentAnswerModelCopyWithImpl<$R, $Out>
       (v) => call(questions: v));
   @override
   $R call(
-          {String? assessmentId,
+          {Object? patientId = $none,
+          String? assessmentId,
           List<AssessmentQuestionAnswerModel>? questions}) =>
       $apply(FieldCopyWithData({
+        if (patientId != $none) #patientId: patientId,
         if (assessmentId != null) #assessmentId: assessmentId,
         if (questions != null) #questions: questions
       }));
   @override
   AssessmentAnswerModel $make(CopyWithData data) => AssessmentAnswerModel(
+      patientId: data.get(#patientId, or: $value.patientId),
       assessmentId: data.get(#assessmentId, or: $value.assessmentId),
       questions: data.get(#questions, or: $value.questions));
 
   @override
   AssessmentAnswerModelCopyWith<$R2, AssessmentAnswerModel, $Out2>
       $chain<$R2, $Out2>(Then<$Out2, $R2> t) =>
-          _AssessmentAnswerModelCopyWithImpl($value, $cast, t);
+          _AssessmentAnswerModelCopyWithImpl<$R2, $Out2>($value, $cast, t);
 }

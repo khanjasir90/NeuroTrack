@@ -119,6 +119,7 @@ class _AuthScreenState extends State<AuthScreen> {
       }
 
       if (nextScreen != null) {
+        context.read<AuthProvider>().resetNavigationStatus();
         Navigator.pushReplacement(
             context, MaterialPageRoute(builder: (_) => nextScreen!));
       }

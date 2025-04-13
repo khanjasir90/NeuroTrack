@@ -250,24 +250,27 @@ class AuthProvider extends ChangeNotifier {
   }
 
  DateTime _updateTime(DateTime date, String timeStr) {
-  final timeParts = timeStr.split(' ');
-  final time = timeParts[0]; 
-  final period = timeParts[1].toUpperCase();
+    final timeParts = timeStr.split(' ');
+    final time = timeParts[0];
+    final period = timeParts[1].toUpperCase();
 
-  final parts = time.split(':');
-  int hour = int.parse(parts[0]);
-  final minute = int.parse(parts[1]);
+    final parts = time.split(':');
+    int hour = int.parse(parts[0]);
+    final minute = int.parse(parts[1]);
 
-  if (period == 'PM' && hour != 12) {
-    hour += 12;
-  } else if (period == 'AM' && hour == 12) {
-    hour = 0;
+    if (period == 'PM' && hour != 12) {
+      hour += 12;
+    } else if (period == 'AM' && hour == 12) {
+      hour = 0;
+    }
+
+    return DateTime(date.year, date.month, date.day, hour, minute);
   }
 
-  return DateTime(date.year, date.month, date.day, hour, minute);
-}
-
-
+  void resetNavigationStatus() {
+    _authNavigationStatus = AuthNavigationStatus.unknown;
+    notifyListeners();
+  }
 
   void resetBookingSlots() {
     _availableBookingSlots = [];
