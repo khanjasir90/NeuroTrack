@@ -76,12 +76,10 @@ class UpdatesScreen extends StatelessWidget {
                         children: [
                           ClipRRect(
                             borderRadius: BorderRadius.circular(12),
-                            child: Image.asset(
-                              video['thumbnail']!,
+                            child: Assets.placeholders.thumbnail1.image(
                               width: 200,
                               height: 130,
-                              fit: BoxFit.cover,
-                            ),
+                            ),  
                           ),
                           const SizedBox(height: 15),
                           Text(
@@ -129,12 +127,10 @@ class UpdatesScreen extends StatelessWidget {
                           children: [
                             ClipRRect(
                               borderRadius: BorderRadius.circular(8),
-                              child: Image.asset(
-                                article['thumbnail']!,
-                                width: 60,
-                                height: 60,
-                                fit: BoxFit.cover,
-                              ),
+                              child: Assets.placeholders.thumbnail1.image(
+                              width: 200,
+                              height: 130,
+                            ),  
                             ),
                             const SizedBox(width: 10),
                             Expanded(

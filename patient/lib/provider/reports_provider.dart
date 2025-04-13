@@ -2,11 +2,18 @@ import 'package:flutter/material.dart';
 
 import '../gen/assets.gen.dart';
 
+enum MilestoneCardType {
+  completed,
+  missed,
+  regressed,
+}
+
 class ReportsProvider with ChangeNotifier {
   // Milestone Cards Data
   final List<Map<String, dynamic>> _milestoneCards = [
     {
       'iconPath': Assets.icons.icCompleted,
+      'type': MilestoneCardType.completed,
       'iconColor': Color(0xff36662C),
       'backgroundColor': Color(0xFFF5FAF4),
       'value': '2,000',
@@ -15,6 +22,7 @@ class ReportsProvider with ChangeNotifier {
     },
     {
       'iconPath': Assets.icons.icMissed,
+      'type': MilestoneCardType.missed,
       'iconColor': Color(0xffFFA400),
       'backgroundColor': Color(0xFFFFF5E3),
       'value': '10',
@@ -23,6 +31,7 @@ class ReportsProvider with ChangeNotifier {
     },
     {
       'iconPath': Assets.icons.icRegressed,
+      'type': MilestoneCardType.regressed,
       'iconColor': Color(0xffFF3939),
       'backgroundColor': Color(0xFFFFEAEA),
       'value': '500',

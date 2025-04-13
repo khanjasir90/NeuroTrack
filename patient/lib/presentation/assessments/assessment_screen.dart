@@ -197,7 +197,8 @@ class QuestionCard extends StatelessWidget {
                     width: 1.5,
 
                   ),
-                  Expanded(
+                ),
+                 Expanded(
                     child: Text(
                       optionText,
                       style: const TextStyle(
@@ -205,13 +206,12 @@ class QuestionCard extends StatelessWidget {
                         color: AppTheme.subtitleColor,
                       ),
                     ),
-                  ),
+                  ),  
                 ],
               ),
             );
           }),
         ],
-      ),
-    );
+      );
   }
 }
