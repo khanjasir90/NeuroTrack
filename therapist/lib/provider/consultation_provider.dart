@@ -2,22 +2,27 @@ import 'package:flutter/foundation.dart';
 import 'package:therapist/core/entities/consultation/consultation_request_entity.dart';
 import 'package:therapist/core/repository/consultation/consultation_repository.dart';
 import 'package:therapist/core/result/result.dart';
+import 'package:therapist/core/utils/api_status_enum.dart';
+import 'package:therapist/model/consultation/consultation_request_model.dart';
 
 class ConsultationProvider extends ChangeNotifier {
   final ConsultationRepository _consultationRepository;
-  List<ConsultationRequestEntity> _consultationRequests = [];
+  List<ConsultationRequestModel> _consultationRequests = [];
   bool _isLoading = false;
   String? _error;
 
   // Add a default empty list for pendingRequests
-  List<ConsultationRequestEntity> get pendingRequests => 
+  List<ConsultationRequestModel> get pendingRequests => 
     _consultationRequests.where((req) => req.status == 'pending').toList();
 
   ConsultationProvider(this._consultationRepository);
 
-  List<ConsultationRequestEntity> get consultationRequests => _consultationRequests;
+  List<ConsultationRequestModel> get consultationRequests => _consultationRequests;
   bool get isLoading => _isLoading;
   String? get error => _error;
+
+  ApiStatus _sessionUpdateStatus = ApiStatus.initial;
+  ApiStatus get sessionUpdateStatus => _sessionUpdateStatus; 
 
   Future<void> fetchConsultationRequests() async {
     _isLoading = true;
@@ -28,7 +33,7 @@ class ConsultationProvider extends ChangeNotifier {
       final result = await _consultationRepository.fetchConsultationRequests();
       
       if (result is ActionResultSuccess) {
-        _consultationRequests = result.data as List<ConsultationRequestEntity>;
+        _consultationRequests = result.data as List<ConsultationRequestModel>;
       } else if (result is ActionResultFailure) {
         _error = result.errorMessage;
         debugPrint(_error);
@@ -76,9 +81,33 @@ class ConsultationProvider extends ChangeNotifier {
   }
 
   // Filter methods for UI convenience
-  List<ConsultationRequestEntity> get acceptedRequests => 
+  List<ConsultationRequestModel> get acceptedRequests => 
       _consultationRequests.where((req) => req.status == 'accepted').toList();
       
-  List<ConsultationRequestEntity> get declinedRequests => 
+  List<ConsultationRequestModel> get declinedRequests => 
       _consultationRequests.where((req) => req.status == 'declined').toList();
+
+  void updateConsultationRequest(String sessionId, String status, String? reason) async {
+    _sessionUpdateStatus = ApiStatus.loading;
+    notifyListeners();
+
+    final result = await _consultationRepository.updateRequestStatus(
+      requestId: sessionId,
+      status: status,
+      reason: reason
+    );
+
+    if (result is ActionResultSuccess) {
+      _sessionUpdateStatus = ApiStatus.success;
+      notifyListeners();
+    } else if (result is ActionResultFailure) {
+      _sessionUpdateStatus = ApiStatus.failure;
+      notifyListeners();
+    }
+  }
+
+  void resetSessionUpdateStatus() {
+    _sessionUpdateStatus = ApiStatus.initial;
+    notifyListeners();
+  }
 }

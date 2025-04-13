@@ -54,7 +54,8 @@ CREATE TABLE session (
     mode INT2,
     duration INT4,
     name TEXT,
-    status TEXT NOT NULL CHECK (status IN ('accepted', 'declined', 'pending')) DEFAULT 'pending'
+    status TEXT NOT NULL CHECK (status IN ('accepted', 'declined', 'pending')) DEFAULT 'pending',
+    declined_reason TEXT,
 );
 
 -- Create the therapy_goal table

@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:intl/intl.dart';
-import 'package:therapist/core/entities/consultation/consultation_request_entity.dart';
-import 'package:therapist/presentation/consultation/consultation_request_detail_screen.dart';
+import 'package:therapist/core/utils/api_status_enum.dart';
+import 'package:therapist/model/consultation/consultation_request_model.dart';
+import 'package:therapist/presentation/widgets/snackbar_service.dart';
 import 'package:therapist/provider/consultation_provider.dart';
 
 class ConsultationRequestsScreen extends StatefulWidget {
-  const ConsultationRequestsScreen({Key? key}) : super(key: key);
+  const ConsultationRequestsScreen({super.key});
 
   @override
   State<ConsultationRequestsScreen> createState() => _ConsultationRequestsScreenState();
@@ -27,6 +28,23 @@ class _ConsultationRequestsScreenState extends State<ConsultationRequestsScreen>
     });
   }
 
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      final provider = context.read<ConsultationProvider>();
+      if(provider.sessionUpdateStatus.isSuccess) {
+        SnackbarService.showSuccess('Consultation request updated successfully.');
+        provider.fetchConsultationRequests();
+        context.read<ConsultationProvider>().resetSessionUpdateStatus();
+      } else if(provider.sessionUpdateStatus.isFailure) {
+        SnackbarService.showError('Soemething went wrong. Please try again.');
+        context.read<ConsultationProvider>().resetSessionUpdateStatus();
+      }
+    });
+  }
+
   @override
   void dispose() {
     _tabController.dispose();
@@ -35,15 +53,21 @@ class _ConsultationRequestsScreenState extends State<ConsultationRequestsScreen>
 
   @override
   Widget build(BuildContext context) {
+    Provider.of<ConsultationProvider>(context, listen: true).sessionUpdateStatus;
     return Scaffold(
       backgroundColor: const Color(0xFFF3E5F5), // Light purple background
       appBar: AppBar(
-      leading: IconButton(
-        icon: Icon(
-        Icons.arrow_back_ios,
-        color: Colors.white.withOpacity(0.9),
+      leading: GestureDetector(
+        child: IconButton(
+          icon: Icon(
+          Icons.arrow_back_ios,
+          color: Colors.white.withOpacity(0.9),
+          ),
+          onPressed: () {
+            context.read<ConsultationProvider>().fetchConsultationRequests();
+            Navigator.pop(context);
+          }
         ),
-        onPressed: () => Navigator.of(context).pop(),
       ),
       centerTitle: true,
       title: Text(
@@ -161,7 +185,7 @@ class _ConsultationRequestsScreenState extends State<ConsultationRequestsScreen>
     );
   }
 
-  Widget _buildRequestsList(List<ConsultationRequestEntity> requests) {
+  Widget _buildRequestsList(List<ConsultationRequestModel> requests) {
     if (requests.isEmpty) {
       return Center(
         child: Column(
@@ -212,7 +236,7 @@ class _ConsultationRequestsScreenState extends State<ConsultationRequestsScreen>
     );
   }
 
-  Widget _buildRequestCard(ConsultationRequestEntity request) {
+  Widget _buildRequestCard(ConsultationRequestModel request) {
     Color statusColor;
     IconData statusIcon;
     String statusText;
@@ -239,172 +263,316 @@ class _ConsultationRequestsScreenState extends State<ConsultationRequestsScreen>
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
       elevation: 2,
       shadowColor: Colors.black.withOpacity(0.1),
-      child: InkWell(
-        onTap: () => _navigateToDetail(request),
-        borderRadius: BorderRadius.circular(16),
-        child: Padding(
-          padding: const EdgeInsets.all(16),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Row(
-                children: [
-                  CircleAvatar(
-                    radius: 25,
-                    backgroundColor: const Color(0xFF6A1B9A).withOpacity(0.15),
-                    child: Text(
-                      request.patientName[0].toUpperCase(),
-                      style: const TextStyle(
-                        color: Color(0xFF6A1B9A),
-                        fontWeight: FontWeight.bold,
-                        fontSize: 18,
-                      ),
+      child: Padding(
+        padding: const EdgeInsets.all(16),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              children: [
+                CircleAvatar(
+                  radius: 25,
+                  backgroundColor: const Color(0xFF6A1B9A).withOpacity(0.15),
+                  child: Text(
+                    request.patientName[0].toUpperCase(),
+                    style: const TextStyle(
+                      color: Color(0xFF6A1B9A),
+                      fontWeight: FontWeight.bold,
+                      fontSize: 18,
                     ),
                   ),
-                  const SizedBox(width: 14),
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          request.patientName,
-                          style: const TextStyle(
-                            fontWeight: FontWeight.bold,
-                            fontSize: 17,
-                            color: Colors.black87,
-                          ),
-                        ),
-                        const SizedBox(height: 4),
-                        Text(
-                          request.assessmentType,
-                          style: TextStyle(
-                            color: Colors.grey[700],
-                            fontSize: 14,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ],
-              ),
-              const SizedBox(height: 14),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Row(
+                ),
+                const SizedBox(width: 14),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      const Icon(
-                        Icons.calendar_month,
-                        size: 18,
-                        color: Colors.grey,
-                      ),
-                      const SizedBox(width: 8),
                       Text(
-                        'Requested: ${dateFormat.format(request.requestDate)}',
+                        request.patientName,
+                        style: const TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 17,
+                          color: Colors.black87,
+                        ),
+                      ),
+                      const SizedBox(height: 4),
+                      // Text(
+                      //   request.assessmentType,
+                      //   style: TextStyle(
+                      //     color: Colors.grey[700],
+                      //     fontSize: 14,
+                      //   ),
+                      // ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(height: 14),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Row(
+                  children: [
+                    const Icon(
+                      Icons.calendar_month,
+                      size: 18,
+                      color: Colors.grey,
+                    ),
+                    const SizedBox(width: 8),
+                    Text(
+                      'Requested: ${dateFormat.format(DateTime.parse(request.timestamp!))}',
+                      style: TextStyle(
+                        fontSize: 13,
+                        color: Colors.grey[600],
+                      ),
+                    ),
+                  ],
+                ),
+                Container(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 12,
+                    vertical: 6,
+                  ),
+                  decoration: BoxDecoration(
+                    color: statusColor.withOpacity(0.15),
+                    borderRadius: BorderRadius.circular(20),
+                  ),
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Icon(
+                        statusIcon,
+                        size: 14,
+                        color: statusColor,
+                      ),
+                      const SizedBox(width: 6),
+                      Text(
+                        statusText,
                         style: TextStyle(
+                          color: statusColor,
+                          fontWeight: FontWeight.bold,
                           fontSize: 13,
-                          color: Colors.grey[600],
                         ),
                       ),
                     ],
                   ),
-                  Container(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 12,
-                      vertical: 6,
-                    ),
-                    decoration: BoxDecoration(
-                      color: statusColor.withOpacity(0.15),
-                      borderRadius: BorderRadius.circular(20),
-                    ),
-                    child: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Icon(
-                          statusIcon,
-                          size: 14,
-                          color: statusColor,
-                        ),
-                        const SizedBox(width: 6),
-                        Text(
-                          statusText,
-                          style: TextStyle(
-                            color: statusColor,
-                            fontWeight: FontWeight.bold,
-                            fontSize: 13,
-                          ),
-                        ),
-                      ],
+                ),
+              ],
+            ),
+            if (request.timestamp != null) ...[
+              const SizedBox(height: 12),
+              const Divider(height: 1),
+              const SizedBox(height: 12),
+              Row(
+                children: [
+                  Icon(
+                    Icons.event_available,
+                    size: 18,
+                    color: Colors.green[700],
+                  ),
+                  const SizedBox(width: 8),
+                  Text(
+                    'Scheduled: ${DateFormat('EEEE, MMM d • h:mm a').format(DateTime.parse(request.timestamp!))}',
+                    style: TextStyle(
+                      color: Colors.green[700],
+                      fontWeight: FontWeight.w500,
                     ),
                   ),
                 ],
               ),
-              if (request.scheduledTime != null) ...[
-                const SizedBox(height: 12),
-                const Divider(height: 1),
-                const SizedBox(height: 12),
-                Row(
-                  children: [
-                    Icon(
-                      Icons.event_available,
-                      size: 18,
-                      color: Colors.green[700],
-                    ),
-                    const SizedBox(width: 8),
-                    Text(
-                      'Scheduled: ${DateFormat('EEEE, MMM d • h:mm a').format(request.scheduledTime!)}',
-                      style: TextStyle(
-                        color: Colors.green[700],
-                        fontWeight: FontWeight.w500,
-                      ),
-                    ),
-                  ],
-                ),
-              ],
-              if (request.notes != null && request.status == 'declined') ...[
-                const SizedBox(height: 12),
-                const Divider(height: 1),
-                const SizedBox(height: 12),
-                Row(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Icon(
-                      Icons.note,
-                      size: 18,
-                      color: Colors.grey[600],
-                    ),
-                    const SizedBox(width: 8),
-                    Expanded(
-                      child: Text(
-                        'Note: ${request.notes}',
-                        style: TextStyle(
-                          color: Colors.grey[700],
-                          fontStyle: FontStyle.italic,
-                        ),
-                        maxLines: 2,
-                        overflow: TextOverflow.ellipsis,
-                      ),
-                    ),
-                  ],
-                ),
-              ],
             ],
-          ),
+            if (request.status == 'pending') ...[
+              const SizedBox(
+                height: 15,
+              ),
+              Row(
+                children: [
+                  Expanded(
+                    child: OutlinedButton(
+                      onPressed: () => _showDeclineDialog(request.id),
+                      style: OutlinedButton.styleFrom(
+                        foregroundColor: Colors.red[700],
+                        side: BorderSide(
+                            color: Colors.red[700]!.withOpacity(0.7)),
+                        padding: const EdgeInsets.symmetric(vertical: 12),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                      ),
+                      child: const Text(
+                        'Decline',
+                        style: TextStyle(fontSize: 16),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(width: 16),
+                  Expanded(
+                    child: ElevatedButton(
+                      onPressed: () => _showAcceptDialog(request.id,request.timestamp),
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: const Color(0xFF6A1B9A),
+                        padding: const EdgeInsets.symmetric(vertical: 12),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                      ),
+                      child: const Text(
+                        'Accept',
+                        style: TextStyle(fontSize: 16, color: Colors.white),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ]
+          ],
         ),
       ),
     );
   }
 
-  void _navigateToDetail(ConsultationRequestEntity request) {
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) => ConsultationRequestDetailScreen(request: request),
+   void _showAcceptDialog(String sessionId, String? timestamp) {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text(
+          'Confirm Consultation',
+          style: TextStyle(color: const Color(0xFF6A1B9A).withOpacity(0.9)),
+        ),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const Text(
+              'You are about to accept this consultation request for:',
+              style: TextStyle(color: Colors.grey),
+            ),
+            const SizedBox(height: 16),
+            Container(
+              padding: const EdgeInsets.all(16),
+              decoration: BoxDecoration(
+                color: const Color(0xFF6A1B9A).withOpacity(0.05),
+                borderRadius: BorderRadius.circular(10),
+                border: Border.all(
+                  color: const Color(0xFF6A1B9A).withOpacity(0.2),
+                ),
+              ),
+              child: Row(
+                children: [
+                  Icon(
+                    Icons.calendar_month,
+                    color: const Color(0xFF6A1B9A).withOpacity(0.8),
+                  ),
+                  const SizedBox(width: 12),
+                  Expanded(
+                    child: Text(
+                      dateFormat.format(DateTime.parse(timestamp!)),
+                      style: const TextStyle(fontWeight: FontWeight.bold),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(16),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: const Text(
+              'Cancel',
+              style: TextStyle(color: Colors.grey),
+            ),
+          ),
+          ElevatedButton(
+            onPressed: () {
+              context.read<ConsultationProvider>().updateConsultationRequest(sessionId, 'accepted', null);
+              Navigator.pop(context);
+            },
+            style: ElevatedButton.styleFrom(
+              backgroundColor: const Color(0xFF6A1B9A),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(8),
+              ),
+            ),
+            child: const Text('Confirm', style: TextStyle(color: Colors.white),),
+          ),
+        ],
       ),
-    ).then((_) {
-      // Refresh the list when returning from details screen
-      Provider.of<ConsultationProvider>(context, listen: false)
-          .fetchConsultationRequests();
-    });
+    );
+  }
+
+  void _showDeclineDialog(String sessionId) {
+    final TextEditingController declineReasonController = TextEditingController();
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text(
+          'Decline Consultation',
+          style: TextStyle(color: Colors.red[400]),
+        ),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            const Text('Please provide a reason for declining:'),
+            const SizedBox(height: 16),
+            TextField(
+              controller: declineReasonController,
+              decoration: InputDecoration(
+                hintText: 'Reason for declining',
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(10),
+                  borderSide: BorderSide(color: Colors.grey.withOpacity(0.3)),
+                ),
+                focusedBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(10),
+                  borderSide: BorderSide(color: Colors.red[400]!),
+                ),
+              ),
+              maxLines: 3,
+            ),
+          ],
+        ),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(16),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: const Text(
+              'Cancel',
+              style: TextStyle(color: Colors.grey),
+            ),
+          ),
+          ElevatedButton(
+            onPressed: () {
+              if (declineReasonController.text.trim().isEmpty) {
+                SnackbarService.showInfo(
+                  'Please provide a reason for declining the request.',
+                );
+                return;
+              }
+
+              context.read<ConsultationProvider>().updateConsultationRequest(
+                sessionId,
+                'declined',
+                declineReasonController.text.trim(),
+              );
+              Navigator.pop(context);
+            },
+            style: ElevatedButton.styleFrom(
+              backgroundColor: Colors.red[400],
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(8),
+              ),
+            ),
+            child: const Text('Decline', style: TextStyle(color: Colors.white),),
+          ),
+        ],
+      ),
+    );
   }
 }

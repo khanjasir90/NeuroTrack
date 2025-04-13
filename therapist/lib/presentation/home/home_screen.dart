@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:therapist/presentation/consultation/consultation_request_detail_screen.dart';
 import 'package:therapist/presentation/consultation/consultation_requests_screen.dart';
+import 'package:therapist/presentation/home/widgets/pending_request_view.dart';
 import 'package:therapist/provider/consultation_provider.dart';
 import 'widgets/stats_card.dart';
 import 'widgets/patient_card.dart';
@@ -300,97 +300,9 @@ class HomeContent extends StatelessWidget {
               ],
             ),
             const SizedBox(height: 12),
-            Container(
-              height: 135,
-              child: ListView.builder(
-                scrollDirection: Axis.horizontal,
-                itemCount: provider.pendingRequests.take(3).length, // Show only first 3
-                itemBuilder: (context, index) {
-                  final request = provider.pendingRequests[index];
-                  return Container(
-                    width: 280,
-                    margin: const EdgeInsets.only(right: 16),
-                    padding: const EdgeInsets.all(16),
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(12),
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.black.withOpacity(0.05),
-                          blurRadius: 8,
-                          offset: const Offset(0, 2),
-                        ),
-                      ],
-                    ),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Row(
-                          children: [
-                            CircleAvatar(
-                              backgroundColor: Colors.purple.withOpacity(0.2),
-                              child: Text(
-                                request.patientName[0].toUpperCase(),
-                                style: const TextStyle(
-                                  color: Colors.purple,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
-                            ),
-                            const SizedBox(width: 12),
-                            Expanded(
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(
-                                    request.patientName,
-                                    style: const TextStyle(
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                                    overflow: TextOverflow.ellipsis,
-                                  ),
-                                  Text(
-                                    request.assessmentType,
-                                    style: const TextStyle(
-                                      fontSize: 12,
-                                      color: Colors.grey,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ],
-                        ),
-                        const Spacer(),
-                        ElevatedButton(
-                          onPressed: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                            builder: (_) => ConsultationRequestDetailScreen(
-                              request: request,
-                            ),
-                            ),
-                          );
-                          },
-                          style: ElevatedButton.styleFrom(
-                          backgroundColor: Colors.white,
-                          minimumSize: const Size(double.infinity, 36),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(8),
-                            side: const BorderSide(color: Colors.purple),
-                          ),
-                          ),
-                          child: const Text(
-                          'Review Request',
-                          style: TextStyle(color: Colors.purple),
-                          ),
-                        ),
-                      ],
-                    ),
-                  );
-                },
-              ),
+            SizedBox(
+              height: 140,
+              child: PendingRequestView(pendingRequest: provider.pendingRequests)
             ),
           ],
         );
