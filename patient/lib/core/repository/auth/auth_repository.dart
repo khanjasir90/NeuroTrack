@@ -100,4 +100,8 @@ abstract interface class AuthRepository {
   Future<ActionResult> bookConsultation(ConsultationRequestEntity consultationRequestEntity);
 
 
+  Future<ActionResult> checkIfPatientAssessmentExists();
+
+  Future<ActionResult> checkIfPatientConsultationExists();
+
 }

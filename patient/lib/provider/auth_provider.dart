@@ -18,12 +18,16 @@ enum AuthNavigationStatus {
   unknown,
   home,
   personalDetails,
+  assessment,
+  initialConsultation,
   error,
 }
 extension AuthNavigationStatusX on AuthNavigationStatus {
   bool get isUnknown => this == AuthNavigationStatus.unknown;
   bool get isHome => this == AuthNavigationStatus.home;
   bool get isPersonalDetails => this == AuthNavigationStatus.personalDetails;
+  bool get isAssessment => this == AuthNavigationStatus.assessment;
+  bool get isInitialConsultation => this == AuthNavigationStatus.initialConsultation;
   bool get isError => this == AuthNavigationStatus.error;
 }
 
@@ -122,21 +126,52 @@ class AuthProvider extends ChangeNotifier {
   }
 
   Future<void> checkIfPatientExists() async {
-    final ActionResult result = await _authRepository.checkIfPatientExists();
     _authNavigationStatus = AuthNavigationStatus.unknown;
     notifyListeners();
-    if(result is ActionResultSuccess) {
-      final bool patientExists = result.data as bool;
-      if(patientExists) {
-        _authNavigationStatus = AuthNavigationStatus.home;
-      } else {
-        _authNavigationStatus = AuthNavigationStatus.personalDetails;
-      }
-    } else {
-      _authNavigationStatus = AuthNavigationStatus.error;
+
+    final result = await _authRepository.checkIfPatientExists();
+    if (result is! ActionResultSuccess) {
+      _setStatus(AuthNavigationStatus.error);
+      return;
     }
+
+    final bool patientExists = result.data as bool;
+    if (!patientExists) {
+      _setStatus(AuthNavigationStatus.personalDetails);
+      return;
+    }
+
+    final assessmentResult =
+        await _authRepository.checkIfPatientAssessmentExists();
+    if (assessmentResult is! ActionResultSuccess) {
+      _setStatus(AuthNavigationStatus.error);
+      return;
+    }
+
+    final bool assessmentExists = assessmentResult.data as bool;
+    if (!assessmentExists) {
+      _setStatus(AuthNavigationStatus.assessment);
+      return;
+    }
+
+    final consultationResult =
+        await _authRepository.checkIfPatientConsultationExists();
+    if (consultationResult is! ActionResultSuccess) {
+      _setStatus(AuthNavigationStatus.error);
+      return;
+    }
+
+    final bool consultationExists = consultationResult.data as bool;
+    _setStatus(consultationExists
+        ? AuthNavigationStatus.home
+        : AuthNavigationStatus.initialConsultation);
+  }
+
+  void _setStatus(AuthNavigationStatus status) {
+    _authNavigationStatus = status;
     notifyListeners();
   }
+
 
   void storePatientPersonalInfo(PersonalInfoModel personalInfoModel) async {
     _apiStatus = ApiStatus.initial;

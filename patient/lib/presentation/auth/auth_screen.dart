@@ -2,6 +2,8 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:patient/gen/assets.gen.dart';
+import 'package:patient/presentation/assessments/assessments_list_screen.dart';
+import 'package:patient/presentation/auth/consultation_request_screen.dart';
 import 'package:patient/presentation/auth/personal_details_screen.dart';
 import 'package:patient/presentation/home/home_screen.dart';
 import 'package:patient/presentation/widgets/google_signin_button.dart';
@@ -107,6 +109,10 @@ class _AuthScreenState extends State<AuthScreen> {
         nextScreen = HomeScreen(userName: userName ?? 'User');
       } else if (authProvider.authNavigationStatus.isPersonalDetails) {
         nextScreen = const PersonalDetailsScreen();
+      } else if(authProvider.authNavigationStatus.isAssessment) {
+        nextScreen = const AssessmentsListScreen();
+      } else if(authProvider.authNavigationStatus.isInitialConsultation) {
+        nextScreen = const ConsultationRequestScreen();
       } else if (authProvider.authNavigationStatus.isError) {
         SnackbarService.showError('An error occurred. Please try again.');
         return;

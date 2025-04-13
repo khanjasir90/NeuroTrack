@@ -175,5 +175,44 @@ class SupabaseAuthRepository implements AuthRepository {
     final period = time.hour < 12 ? 'AM' : 'PM';
     return '$hour:$minute $period';
   }
+  
+  @override
+  Future<ActionResult> checkIfPatientAssessmentExists() async {
+    try {
+      final response = await _supabaseClient.from('assessment_results')
+          .select('*')
+          .eq('patient_id', _supabaseClient.auth.currentUser!.id);
+
+      if(response.isEmpty) {
+        return ActionResultSuccess(data: false, statusCode: 200);
+      } else {
+        return ActionResultSuccess(data: true, statusCode: 200);
+      }
+    } catch(e) {
+      return ActionResultFailure(
+        errorMessage: e.toString(),
+        statusCode: 400,
+      );
+    }
+  }
+  
+  @override
+  Future<ActionResult> checkIfPatientConsultationExists() async {
+    try {
+      final response = await _supabaseClient.from('session')
+          .select('*')
+          .eq('patient_id', _supabaseClient.auth.currentUser!.id);
+      if(response.isEmpty) {
+        return ActionResultSuccess(data: false, statusCode: 200);
+      } else {
+        return ActionResultSuccess(data: true, statusCode: 200);
+      }
+    } catch(e) {
+      return ActionResultFailure(
+        errorMessage: e.toString(),
+        statusCode: 400,
+      );
+    }
+  }
 
 }
