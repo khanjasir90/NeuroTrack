@@ -1,3 +1,5 @@
+import 'package:flutter/material.dart';
+import 'package:patient/core/core.dart';
 import 'package:patient/core/entities/auth_entities/personal_info_entity.dart';
 import 'package:patient/core/result/result.dart';
 
@@ -43,5 +45,63 @@ abstract interface class AuthRepository {
   /// - If an error occurs while checking if the patient exists, it is caught and returned as a failure.
 
   Future<ActionResult> checkIfPatientExists();
+
+  /// Fetches all available therapists from the `therapist` table.
+  ///   
+  /// This method retrieves all available therapists from the `therapist` table
+  /// 
+  /// - **Returns:**
+  /// - A [Future] of [ActionResult], which can either be:
+  /// - [ActionResultSuccess] with a success message and status code `200` if the therapists
+  /// are successfully fetched.
+  /// - [ActionResultFailure] with an error message and status code `400` if an exception occurs.
+  Future<ActionResult> getAllAvailableTherapist(); 
+
+  /// Fetches all available booking slots for a specific therapist on a given date.
+  ///  
+  /// This method retrieves all available booking slots for a specific therapist
+  /// on a given date.
+  /// 
+  /// - **Parameters:**
+  /// - `therapistId` : The ID of the therapist for whom the booking slots are to be fetched.
+  /// - `date` : The date for which the booking slots are to be fetched.
+  /// 
+  /// - **Returns:**
+  /// - A [Future] of [ActionResult], which can either be:
+  /// - [ActionResultSuccess] with a success message and status code `200` if the booking slots
+  /// are successfully fetched.
+  /// - [ActionResultFailure] with an error message and status code `400` if an exception occurs.
+  ///   
+  Future<ActionResult> getAvailableBookingSlotsForTherapist(
+    String therapistId,
+    DateTime date,
+    String startTimeOfTherapist,
+    String endTimeOfTherapist,
+  );
+
+  /// Books a consultation for the patient with the therapist.
+  /// 
+  /// This method books a consultation for the patient with the therapist
+  /// using the provided [ConsultationRequestEntity].
+  /// 
+  /// - **Parameters:**
+  /// - `consultationRequestEntity` : An instance of [ConsultationRequestEntity] containing
+  /// 
+  /// the details of the consultation request.
+  /// 
+  /// - **Returns:**
+  /// - A [Future] of [ActionResult], which can either be:
+  /// - [ActionResultSuccess] with a success message and status code `200` if the consultation
+  /// is successfully booked.
+  /// 
+  /// - [ActionResultFailure] with an error message and status code `400` if an exception occurs.
+  /// 
+
+  Future<ActionResult> bookConsultation(ConsultationRequestEntity consultationRequestEntity);
+
+
+  Future<ActionResult> checkIfPatientAssessmentExists();
+
+  Future<ActionResult> checkIfPatientConsultationExists();
 
 }

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:patient/core/core.dart';
 import 'package:patient/core/theme/theme.dart';
 import 'package:patient/model/assessment_models/assessment_models.dart';
+import 'package:patient/presentation/auth/consultation_request_screen.dart';
 import 'package:patient/presentation/widgets/snackbar_service.dart';
 import 'package:patient/provider/assessment_provider.dart';
 import 'package:provider/provider.dart';
@@ -34,6 +35,11 @@ class AssessmentScreenState extends State<AssessmentScreen> {
       if (assessmentProvider.submitAssessmentStatus.isSuccess) {
         SnackbarService.showSuccess(
             '${assessmentProvider.assessmentResultModel?.message}');
+        Navigator.of(context).pushReplacement(
+          MaterialPageRoute(
+            builder: (context) => const ConsultationRequestScreen(),
+          ),
+        );
       } else if (assessmentProvider.submitAssessmentStatus.isFailure) {
         SnackbarService.showError(
             'Something went wrong. Please try again later.');
@@ -197,6 +203,8 @@ class QuestionCard extends StatelessWidget {
                     width: 1.5,
 
                   ),
+
+                ),
                   Expanded(
                     child: Text(
                       optionText,
@@ -211,7 +219,6 @@ class QuestionCard extends StatelessWidget {
             );
           }),
         ],
-      ),
-    );
+      );
   }
 }

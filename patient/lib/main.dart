@@ -15,11 +15,6 @@ import 'package:provider/provider.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 
-
-import 'core/theme/theme.dart';
-import 'presentation/splash_screen.dart';
-import 'provider/assessment_provider.dart';
-
 import 'provider/task_provider.dart';
 
 

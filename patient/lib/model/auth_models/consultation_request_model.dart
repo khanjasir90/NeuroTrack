@@ -1,19 +1,13 @@
 import 'package:dart_mappable/dart_mappable.dart';
-import 'package:therapist/model/consultation/consultation_request_model.dart';
+import 'package:patient/core/core.dart';
 
-part 'consultation_request_entity.mapper.dart';
+part 'consultation_request_model.mapper.dart';
 
 @MappableClass()
-class ConsultationRequestEntity with ConsultationRequestEntityMappable {
-
-  @MappableField(key: 'id')
-  final String id;
-
-  @MappableField(key: 'patient_name')
-  final String patientName;
+class ConsultationRequestModel with ConsultationRequestModelMappable {
 
   @MappableField(key: 'timestamp')
-  final String? timestamp;
+  final DateTime? timestamp;
 
   @MappableField(key: 'therapist_id')
   final String? therapistId;
@@ -36,12 +30,8 @@ class ConsultationRequestEntity with ConsultationRequestEntityMappable {
   @MappableField(key: 'status')
   final String? status;
 
-  @MappableField(key: 'declined_reason')
-  final String? declinedReason;
 
-  ConsultationRequestEntity({ 
-    required this.id,
-    required this.patientName,
+  ConsultationRequestModel({
     this.timestamp,
     this.therapistId,
     this.patientId,
@@ -50,14 +40,11 @@ class ConsultationRequestEntity with ConsultationRequestEntityMappable {
     this.duration,
     this.name,
     this.status,
-    this.declinedReason,
   });
 
-  ConsultationRequestModel toModel() {
-    return ConsultationRequestModel(
-      id: id,
-      patientName: patientName,
-      timestamp: timestamp,
+  ConsultationRequestEntity toEntity() {
+    return ConsultationRequestEntity(
+      timestamp: timestamp!.toIso8601String(),
       therapistId: therapistId,
       patientId: patientId,
       isConsultation: isConsultation,
@@ -65,7 +52,6 @@ class ConsultationRequestEntity with ConsultationRequestEntityMappable {
       duration: duration,
       name: name,
       status: status,
-      declinedReason: declinedReason,
     );
   }
 
