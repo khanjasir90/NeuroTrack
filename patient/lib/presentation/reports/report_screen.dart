@@ -67,8 +67,7 @@ class ReportsScreen extends StatelessWidget {
                       children: [
                         // Left column - Completed card
                         CompletedMilestoneCard(
-                          iconPath: reportsProvider.milestoneCards[0]
-                              ['iconPath'],
+                          cardType: MilestoneCardType.completed,
                           iconColor: reportsProvider.milestoneCards[0]
                               ['iconColor'],
                           backgroundColor: reportsProvider.milestoneCards[0]
@@ -80,8 +79,7 @@ class ReportsScreen extends StatelessWidget {
                         Column(
                           children: [
                             HorizontalMilestoneCard(
-                              iconPath: reportsProvider.milestoneCards[1]
-                                  ['iconPath'],
+                              type: reportsProvider.milestoneCards[1]['type'],
                               iconColor: reportsProvider.milestoneCards[1]
                                   ['iconColor'],
                               backgroundColor: reportsProvider.milestoneCards[1]
@@ -91,8 +89,7 @@ class ReportsScreen extends StatelessWidget {
                             ),
                             const SizedBox(height: 12),
                             HorizontalMilestoneCard(
-                              iconPath: reportsProvider.milestoneCards[2]
-                                  ['iconPath'],
+                              type: reportsProvider.milestoneCards[2]['type'],
                               iconColor: reportsProvider.milestoneCards[2]
                                   ['iconColor'],
                               backgroundColor: reportsProvider.milestoneCards[2]

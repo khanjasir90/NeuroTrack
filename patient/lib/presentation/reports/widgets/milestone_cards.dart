@@ -1,21 +1,47 @@
 import 'package:flutter/material.dart';
+import 'package:patient/gen/assets.gen.dart';
+import 'package:patient/provider/reports_provider.dart';
 
 // Vertical layout card (for Completed)
 class CompletedMilestoneCard extends StatelessWidget {
-  final String iconPath;
+  final MilestoneCardType cardType;
   final Color iconColor;
   final Color backgroundColor;
   final String value;
   final String label;
 
   const CompletedMilestoneCard({
-    required this.iconPath,
+    required this.cardType,
     required this.iconColor,
     required this.backgroundColor,
     required this.value,
     required this.label,
     super.key,
   });
+
+
+  Widget get _getIcon {
+    switch (cardType) {
+      case MilestoneCardType.completed:
+        return Assets.icons.icCompleted.svg(
+          colorFilter: ColorFilter.mode(iconColor, BlendMode.srcIn),
+          height: 40,
+          width: 40,
+        );
+      case MilestoneCardType.missed:
+        return Assets.icons.icMissed.svg(
+          colorFilter: ColorFilter.mode(iconColor, BlendMode.srcIn),
+          height: 40,
+          width: 40,
+        );
+      case MilestoneCardType.regressed:
+        return Assets.icons.icRegressed.svg(
+          colorFilter: ColorFilter.mode(iconColor, BlendMode.srcIn),
+          height: 40,
+          width: 40,
+        );
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -36,13 +62,7 @@ class CompletedMilestoneCard extends StatelessWidget {
               shape: BoxShape.circle,
               color: iconColor.withOpacity(0.1),
             ),
-            child: ImageIcon(
-              AssetImage(
-                iconPath,
-              ),
-              size: 20,
-              color: iconColor,
-            ),
+            child: _getIcon
           ),
           const SizedBox(height: 12),
           Text(
@@ -63,20 +83,44 @@ class CompletedMilestoneCard extends StatelessWidget {
 
 // Horizontal layout card (for Missed and Regressed)
 class HorizontalMilestoneCard extends StatelessWidget {
-  final String iconPath;
+  final MilestoneCardType type;
   final Color iconColor;
   final Color backgroundColor;
   final String value;
   final String label;
 
   const HorizontalMilestoneCard({
-    required this.iconPath,
+    required this.type,
     required this.iconColor,
     required this.backgroundColor,
     required this.value,
     required this.label,
     super.key,
   });
+
+  Widget get _getIcon {
+    switch (type) {
+      case MilestoneCardType.completed:
+        return Assets.icons.icCompleted.svg(
+          colorFilter: ColorFilter.mode(iconColor, BlendMode.srcIn),
+          height: 40,
+          width: 40,
+        );
+      case MilestoneCardType.missed:
+        return Assets.icons.icMissed.svg(
+          colorFilter: ColorFilter.mode(iconColor, BlendMode.srcIn),
+          height: 40,
+          width: 40,
+        );
+      case MilestoneCardType.regressed:
+        return Assets.icons.icRegressed.svg(
+          colorFilter: ColorFilter.mode(iconColor, BlendMode.srcIn),
+          height: 40,
+          width: 40,
+        );
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -98,13 +142,7 @@ class HorizontalMilestoneCard extends StatelessWidget {
               shape: BoxShape.circle,
               color: iconColor.withOpacity(0.1),
             ),
-            child: ImageIcon(
-              AssetImage(
-                iconPath,
-              ),
-              size: 20,
-              color: iconColor,
-            ),
+            child: _getIcon,
           ),
           const SizedBox(width: 16),
           Column(
