@@ -30,7 +30,7 @@ Deno.serve( async (req) => {
 
   try {
 
-    const { assessment_id, questions } = await req.json();
+    const { patient_id, assessment_id, questions } = await req.json();
 
     const { data, error } = await supabase
       .from("assessments")
@@ -103,7 +103,7 @@ Deno.serve( async (req) => {
             .insert({
               'assessment_id': assessment_id,
               'submission': answered_questions,
-              'patient_id': (await supabase.auth.getSession()).data.session?.user.id,
+              'patient_id': patient_id,
               'result': responseData,
             });
 

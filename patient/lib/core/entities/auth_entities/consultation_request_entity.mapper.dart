@@ -22,12 +22,6 @@ class ConsultationRequestEntityMapper
   @override
   final String id = 'ConsultationRequestEntity';
 
-  static String _$id(ConsultationRequestEntity v) => v.id;
-  static const Field<ConsultationRequestEntity, String> _f$id =
-      Field('id', _$id);
-  static String _$patientName(ConsultationRequestEntity v) => v.patientName;
-  static const Field<ConsultationRequestEntity, String> _f$patientName =
-      Field('patientName', _$patientName, key: r'patient_name');
   static String? _$timestamp(ConsultationRequestEntity v) => v.timestamp;
   static const Field<ConsultationRequestEntity, String> _f$timestamp =
       Field('timestamp', _$timestamp, opt: true);
@@ -54,16 +48,9 @@ class ConsultationRequestEntityMapper
   static String? _$status(ConsultationRequestEntity v) => v.status;
   static const Field<ConsultationRequestEntity, String> _f$status =
       Field('status', _$status, opt: true);
-  static String? _$declinedReason(ConsultationRequestEntity v) =>
-      v.declinedReason;
-  static const Field<ConsultationRequestEntity, String> _f$declinedReason =
-      Field('declinedReason', _$declinedReason,
-          key: r'declined_reason', opt: true);
 
   @override
   final MappableFields<ConsultationRequestEntity> fields = const {
-    #id: _f$id,
-    #patientName: _f$patientName,
     #timestamp: _f$timestamp,
     #therapistId: _f$therapistId,
     #patientId: _f$patientId,
@@ -72,13 +59,10 @@ class ConsultationRequestEntityMapper
     #duration: _f$duration,
     #name: _f$name,
     #status: _f$status,
-    #declinedReason: _f$declinedReason,
   };
 
   static ConsultationRequestEntity _instantiate(DecodingData data) {
     return ConsultationRequestEntity(
-        id: data.dec(_f$id),
-        patientName: data.dec(_f$patientName),
         timestamp: data.dec(_f$timestamp),
         therapistId: data.dec(_f$therapistId),
         patientId: data.dec(_f$patientId),
@@ -86,8 +70,7 @@ class ConsultationRequestEntityMapper
         mode: data.dec(_f$mode),
         duration: data.dec(_f$duration),
         name: data.dec(_f$name),
-        status: data.dec(_f$status),
-        declinedReason: data.dec(_f$declinedReason));
+        status: data.dec(_f$status));
   }
 
   @override
@@ -151,17 +134,14 @@ abstract class ConsultationRequestEntityCopyWith<
     $In extends ConsultationRequestEntity,
     $Out> implements ClassCopyWith<$R, $In, $Out> {
   $R call(
-      {String? id,
-      String? patientName,
-      String? timestamp,
+      {String? timestamp,
       String? therapistId,
       String? patientId,
       bool? isConsultation,
       int? mode,
       int? duration,
       String? name,
-      String? status,
-      String? declinedReason});
+      String? status});
   ConsultationRequestEntityCopyWith<$R2, $In, $Out2> $chain<$R2, $Out2>(
       Then<$Out2, $R2> t);
 }
@@ -177,20 +157,15 @@ class _ConsultationRequestEntityCopyWithImpl<$R, $Out>
       ConsultationRequestEntityMapper.ensureInitialized();
   @override
   $R call(
-          {String? id,
-          String? patientName,
-          Object? timestamp = $none,
+          {Object? timestamp = $none,
           Object? therapistId = $none,
           Object? patientId = $none,
           Object? isConsultation = $none,
           Object? mode = $none,
           Object? duration = $none,
           Object? name = $none,
-          Object? status = $none,
-          Object? declinedReason = $none}) =>
+          Object? status = $none}) =>
       $apply(FieldCopyWithData({
-        if (id != null) #id: id,
-        if (patientName != null) #patientName: patientName,
         if (timestamp != $none) #timestamp: timestamp,
         if (therapistId != $none) #therapistId: therapistId,
         if (patientId != $none) #patientId: patientId,
@@ -198,14 +173,11 @@ class _ConsultationRequestEntityCopyWithImpl<$R, $Out>
         if (mode != $none) #mode: mode,
         if (duration != $none) #duration: duration,
         if (name != $none) #name: name,
-        if (status != $none) #status: status,
-        if (declinedReason != $none) #declinedReason: declinedReason
+        if (status != $none) #status: status
       }));
   @override
   ConsultationRequestEntity $make(CopyWithData data) =>
       ConsultationRequestEntity(
-          id: data.get(#id, or: $value.id),
-          patientName: data.get(#patientName, or: $value.patientName),
           timestamp: data.get(#timestamp, or: $value.timestamp),
           therapistId: data.get(#therapistId, or: $value.therapistId),
           patientId: data.get(#patientId, or: $value.patientId),
@@ -213,8 +185,7 @@ class _ConsultationRequestEntityCopyWithImpl<$R, $Out>
           mode: data.get(#mode, or: $value.mode),
           duration: data.get(#duration, or: $value.duration),
           name: data.get(#name, or: $value.name),
-          status: data.get(#status, or: $value.status),
-          declinedReason: data.get(#declinedReason, or: $value.declinedReason));
+          status: data.get(#status, or: $value.status));
 
   @override
   ConsultationRequestEntityCopyWith<$R2, ConsultationRequestEntity, $Out2>

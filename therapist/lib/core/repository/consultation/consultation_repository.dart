@@ -47,6 +47,7 @@ abstract interface class ConsultationRepository {
   Future<ActionResult> updateRequestStatus({
     required String requestId,
     required String status,
+    String? reason,
     DateTime? scheduledTime,
     String? notes,
   });

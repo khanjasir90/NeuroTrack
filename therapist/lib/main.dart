@@ -6,6 +6,7 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 
 import 'package:therapist/core/repository/auth/auth_repository.dart';
 import 'package:therapist/core/repository/therapist/therapist_repository.dart';
+import 'package:therapist/presentation/widgets/snackbar_service.dart';
 import 'package:therapist/provider/consultation_provider.dart';
 import 'package:therapist/provider/session_provider.dart'; // Add this import
 import 'package:therapist/repository/supabase_auth_repository.dart';
@@ -70,14 +71,6 @@ Future<void> main() async {
           ),
         ),
         ChangeNotifierProvider(create: (context) => HomeProvider()),
-        ChangeNotifierProvider(
-          create: (context) => ConsultationProvider(
-            SupabaseConsultationRepository(
-              supabaseClient: context.read<SupabaseClient>(),
-            ),
-          ),
-        ),
-        // Add SessionProvider
 
         ChangeNotifierProvider(create: (context) => TherapistDataProvider(therapistRepository: context.read<TherapistRepository>())),
         ChangeNotifierProvider(create: (context) => ConsultationProvider(SupabaseConsultationRepository())),
@@ -97,6 +90,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
+       scaffoldMessengerKey: SnackbarService.scaffoldMessengerKey,
       title: 'Therapist App',
       theme: ThemeData.light(),
       home: const SplashScreen(),

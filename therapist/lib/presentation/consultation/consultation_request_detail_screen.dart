@@ -2,10 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:intl/intl.dart';
 import 'package:therapist/core/entities/consultation/consultation_request_entity.dart';
+import 'package:therapist/model/consultation/consultation_request_model.dart';
 import 'package:therapist/provider/consultation_provider.dart';
 
 class ConsultationRequestDetailScreen extends StatefulWidget {
-  final ConsultationRequestEntity request;
+  final ConsultationRequestModel request;
 
   const ConsultationRequestDetailScreen({
     Key? key,
@@ -69,8 +70,8 @@ class _ConsultationRequestDetailScreenState
                     _buildCollapsibleAssessmentResponses(),
                     const SizedBox(height: 16),
                     _buildSelectedTimeSection(),
-                    if (widget.request.notes != null && widget.request.notes!.isNotEmpty)
-                      _buildNotesSection(),
+                    // if (widget.request.notes != null && widget.request.notes!.isNotEmpty)
+                    //   _buildNotesSection(),
                     const SizedBox(height: 80), // Space for bottom buttons
                   ],
                 ),
@@ -117,7 +118,7 @@ class _ConsultationRequestDetailScreenState
                 ),
                 const SizedBox(height: 4),
                 Text(
-                  'Request date: ${DateFormat('MMM d, yyyy').format(widget.request.requestDate)}',
+                  'Request date: ${DateFormat('MMM d, yyyy').format(DateTime.parse(widget.request.timestamp!))}',
                   style: TextStyle(
                     fontSize: 14,
                     color: Colors.grey[600],
@@ -149,17 +150,17 @@ class _ConsultationRequestDetailScreenState
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                _buildDetailRow(
-                  'Type',
-                  widget.request.assessmentType,
-                  Icons.assessment,
-                ),
-                const Divider(height: 20),
-                _buildDetailRow(
-                  'Summary',
-                  widget.request.assessmentSummary,
-                  Icons.summarize,
-                ),
+                // _buildDetailRow(
+                //   'Type',
+                //   widget.request.assessmentType,
+                //   Icons.assessment,
+                // ),
+                // const Divider(height: 20),
+                // _buildDetailRow(
+                //   'Summary',
+                //   widget.request.assessmentSummary,
+                //   Icons.summarize,
+                // ),
               ],
             ),
           ),
@@ -352,14 +353,14 @@ class _ConsultationRequestDetailScreenState
                         ),
                       ),
                       const SizedBox(height: 4),
-                      Text(
-                        dateFormat.format(widget.request.proposedTimes[0]),
-                        style: const TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.bold,
-                          color: Color(0xFF6A1B9A),
-                        ),
-                      ),
+                      // Text(
+                      //   dateFormat.format(widget.request.proposedTimes[0]),
+                      //   style: const TextStyle(
+                      //     fontSize: 16,
+                      //     fontWeight: FontWeight.bold,
+                      //     color: Color(0xFF6A1B9A),
+                      //   ),
+                      // ),
                     ],
                   ),
                 ),
@@ -396,16 +397,16 @@ class _ConsultationRequestDetailScreenState
                   size: 24,
                 ),
                 const SizedBox(width: 12),
-                Expanded(
-                  child: Text(
-                    widget.request.notes!,
-                    style: const TextStyle(
-                      fontSize: 15,
-                      height: 1.5,
-                      fontStyle: FontStyle.italic,
-                    ),
-                  ),
-                ),
+                // Expanded(
+                //   child: Text(
+                //     widget.request.notes!,
+                //     style: const TextStyle(
+                //       fontSize: 15,
+                //       height: 1.5,
+                //       fontStyle: FontStyle.italic,
+                //     ),
+                //   ),
+                // ),
               ],
             ),
           ),
@@ -548,12 +549,12 @@ class _ConsultationRequestDetailScreenState
                     color: const Color(0xFF6A1B9A).withOpacity(0.8),
                   ),
                   const SizedBox(width: 12),
-                  Expanded(
-                    child: Text(
-                      dateFormat.format(widget.request.proposedTimes[0]),
-                      style: const TextStyle(fontWeight: FontWeight.bold),
-                    ),
-                  ),
+                  // Expanded(
+                  //   child: Text(
+                  //     dateFormat.format(widget.request.proposedTimes[0]),
+                  //     style: const TextStyle(fontWeight: FontWeight.bold),
+                  //   ),
+                  // ),
                 ],
               ),
             ),
@@ -572,11 +573,11 @@ class _ConsultationRequestDetailScreenState
           ),
           ElevatedButton(
             onPressed: () {
-              Provider.of<ConsultationProvider>(context, listen: false)
-                  .updateRequestStatus(
-                      widget.request.id, 'accepted', widget.request.proposedTimes[0]);
-              Navigator.pop(context); // Close dialog
-              Navigator.pop(context); // Go back to list
+              // Provider.of<ConsultationProvider>(context, listen: false)
+              //     .updateRequestStatus(
+              //         widget.request.id, 'accepted', widget.request.proposedTimes[0]);
+              // Navigator.pop(context); // Close dialog
+              // Navigator.pop(context); // Go back to list
             },
             style: ElevatedButton.styleFrom(
               backgroundColor: const Color(0xFF6A1B9A),
@@ -643,12 +644,12 @@ class _ConsultationRequestDetailScreenState
                 return;
               }
               
-              Provider.of<ConsultationProvider>(context, listen: false)
-                  .updateRequestStatus(
-                      widget.request.id, 'declined', null, 
-                      notes: _declineReasonController.text);
-              Navigator.pop(context); // Close dialog
-              Navigator.pop(context); // Go back to list
+              // Provider.of<ConsultationProvider>(context, listen: false)
+              //     .updateRequestStatus(
+              //         widget.request.id, 'declined', null, 
+              //         notes: _declineReasonController.text);
+              // Navigator.pop(context); // Close dialog
+              // Navigator.pop(context); // Go back to list
             },
             style: ElevatedButton.styleFrom(
               backgroundColor: Colors.red[400],

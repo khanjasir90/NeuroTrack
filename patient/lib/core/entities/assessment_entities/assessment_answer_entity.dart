@@ -7,6 +7,9 @@ part 'assessment_answer_entity.mapper.dart';
 @MappableClass()
 class AssessmentAnswerEntity with AssessmentAnswerEntityMappable {
 
+  @MappableField(key: 'patient_id')
+  final String? patientId;
+
   @MappableField(key: 'assessment_id')
   final String assessmentId;
 
@@ -14,6 +17,7 @@ class AssessmentAnswerEntity with AssessmentAnswerEntityMappable {
   final List<AssessmentQuestionAnswerEntity> questions;
 
   AssessmentAnswerEntity({
+    this.patientId,
     required this.assessmentId,
     required this.questions,
   });

@@ -46,7 +46,9 @@ print('Response: $response');
           'Content-Type': 'application/json',
           'Authorization': 'Bearer $jwtToken',
         },
-        body: answers.toMap(),
+        body: answers.copyWith(
+          patientId: _supabase.auth.currentSession?.user.id,
+        ).toMap(),
       );
       if (resposne.data != null) {
         final data = AssessmentResultEntityMapper.fromMap(resposne.data);
