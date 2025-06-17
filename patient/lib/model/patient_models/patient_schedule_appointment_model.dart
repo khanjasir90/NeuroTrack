@@ -1,5 +1,7 @@
 import 'package:dart_mappable/dart_mappable.dart';
 
+import '../../core/core.dart';
+
 part 'patient_schedule_appointment_model.mapper.dart';
 
 // Model class to store patient's scheduled appointment information which will be used on UI
@@ -23,4 +25,16 @@ class PatientScheduleAppointmentModel
     required this.slot,
     required this.appointmentName,
   });
+
+  PatientScheduleAppointmentEntity toEntity() {
+    return PatientScheduleAppointmentEntity(
+      patientId: patientId,
+      therapistId: therapistId,
+      serviceType: serviceType,
+      timestamp: DateTime.parse(date),
+      mode: 1,
+      duration: 30,
+      appointmentName: appointmentName,
+    );
+  }
 }

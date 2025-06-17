@@ -49,6 +49,12 @@ class TherapistScheduleEntityMapper
   static String? _$therapyName(TherapistScheduleEntity v) => v.therapyName;
   static const Field<TherapistScheduleEntity, String> _f$therapyName =
       Field('therapyName', _$therapyName, key: r'name', opt: true);
+  static String? _$patientName(TherapistScheduleEntity v) => v.patientName;
+  static const Field<TherapistScheduleEntity, String> _f$patientName =
+      Field('patientName', _$patientName, key: r'patient_name', opt: true);
+  static String? _$phoneNumber(TherapistScheduleEntity v) => v.phoneNumber;
+  static const Field<TherapistScheduleEntity, String> _f$phoneNumber =
+      Field('phoneNumber', _$phoneNumber, key: r'phone', opt: true);
 
   @override
   final MappableFields<TherapistScheduleEntity> fields = const {
@@ -61,6 +67,8 @@ class TherapistScheduleEntityMapper
     #mode: _f$mode,
     #duration: _f$duration,
     #therapyName: _f$therapyName,
+    #patientName: _f$patientName,
+    #phoneNumber: _f$phoneNumber,
   };
 
   static TherapistScheduleEntity _instantiate(DecodingData data) {
@@ -73,7 +81,9 @@ class TherapistScheduleEntityMapper
         status: data.dec(_f$status),
         mode: data.dec(_f$mode),
         duration: data.dec(_f$duration),
-        therapyName: data.dec(_f$therapyName));
+        therapyName: data.dec(_f$therapyName),
+        patientName: data.dec(_f$patientName),
+        phoneNumber: data.dec(_f$phoneNumber));
   }
 
   @override
@@ -101,7 +111,8 @@ mixin TherapistScheduleEntityMappable {
 
   TherapistScheduleEntityCopyWith<TherapistScheduleEntity,
           TherapistScheduleEntity, TherapistScheduleEntity>
-      get copyWith => _TherapistScheduleEntityCopyWithImpl(
+      get copyWith => _TherapistScheduleEntityCopyWithImpl<
+              TherapistScheduleEntity, TherapistScheduleEntity>(
           this as TherapistScheduleEntity, $identity, $identity);
   @override
   String toString() {
@@ -125,8 +136,8 @@ mixin TherapistScheduleEntityMappable {
 extension TherapistScheduleEntityValueCopy<$R, $Out>
     on ObjectCopyWith<$R, TherapistScheduleEntity, $Out> {
   TherapistScheduleEntityCopyWith<$R, TherapistScheduleEntity, $Out>
-      get $asTherapistScheduleEntity => $base
-          .as((v, t, t2) => _TherapistScheduleEntityCopyWithImpl(v, t, t2));
+      get $asTherapistScheduleEntity => $base.as((v, t, t2) =>
+          _TherapistScheduleEntityCopyWithImpl<$R, $Out>(v, t, t2));
 }
 
 abstract class TherapistScheduleEntityCopyWith<
@@ -142,7 +153,9 @@ abstract class TherapistScheduleEntityCopyWith<
       String? status,
       int? mode,
       int? duration,
-      String? therapyName});
+      String? therapyName,
+      String? patientName,
+      String? phoneNumber});
   TherapistScheduleEntityCopyWith<$R2, $In, $Out2> $chain<$R2, $Out2>(
       Then<$Out2, $R2> t);
 }
@@ -166,7 +179,9 @@ class _TherapistScheduleEntityCopyWithImpl<$R, $Out>
           String? status,
           Object? mode = $none,
           Object? duration = $none,
-          Object? therapyName = $none}) =>
+          Object? therapyName = $none,
+          Object? patientName = $none,
+          Object? phoneNumber = $none}) =>
       $apply(FieldCopyWithData({
         if (sessionId != null) #sessionId: sessionId,
         if (createdAt != null) #createdAt: createdAt,
@@ -176,7 +191,9 @@ class _TherapistScheduleEntityCopyWithImpl<$R, $Out>
         if (status != null) #status: status,
         if (mode != $none) #mode: mode,
         if (duration != $none) #duration: duration,
-        if (therapyName != $none) #therapyName: therapyName
+        if (therapyName != $none) #therapyName: therapyName,
+        if (patientName != $none) #patientName: patientName,
+        if (phoneNumber != $none) #phoneNumber: phoneNumber
       }));
   @override
   TherapistScheduleEntity $make(CopyWithData data) => TherapistScheduleEntity(
@@ -188,10 +205,12 @@ class _TherapistScheduleEntityCopyWithImpl<$R, $Out>
       status: data.get(#status, or: $value.status),
       mode: data.get(#mode, or: $value.mode),
       duration: data.get(#duration, or: $value.duration),
-      therapyName: data.get(#therapyName, or: $value.therapyName));
+      therapyName: data.get(#therapyName, or: $value.therapyName),
+      patientName: data.get(#patientName, or: $value.patientName),
+      phoneNumber: data.get(#phoneNumber, or: $value.phoneNumber));
 
   @override
   TherapistScheduleEntityCopyWith<$R2, TherapistScheduleEntity, $Out2>
       $chain<$R2, $Out2>(Then<$Out2, $R2> t) =>
-          _TherapistScheduleEntityCopyWithImpl($value, $cast, t);
+          _TherapistScheduleEntityCopyWithImpl<$R2, $Out2>($value, $cast, t);
 }

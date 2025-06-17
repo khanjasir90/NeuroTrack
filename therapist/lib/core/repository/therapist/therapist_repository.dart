@@ -71,6 +71,22 @@ abstract interface class TherapistRepository {
 
   Future<ActionResult> changeAppointmentStatus(String appointmentId, String status);
 
+  /// Retrieves the sessions of the therapist from the `session` table.
+  /// 
+  /// This method fetches the sessions of the therapist from the
+  /// `session` table using Supabase.
+  /// 
+  /// - **Returns:**
+  /// - A [Future] of [ActionResult], which can either be:
+  /// - [ActionResultSuccess] with a list of [TherapistSessionEntity] and status code `200` if the
+  /// sessions are successfully fetched.
+  /// - [ActionResultFailure] with an error message and status code `400` if an exception occurs.
+  /// 
+  /// - **Exceptions:**
+  /// - If an error occurs while fetching the records, it is caught and returned as a failure.
+
+  Future<ActionResult> getTherapistSessions();
+
 
   // TODO: Add the following methods
   // HOW do we differentiate between therapy and session?
@@ -87,7 +103,13 @@ abstract interface class TherapistRepository {
 
   // New methods for fetching profession data
   Future<ActionResult> fetchProfessions();
+
+  // Get the regulatory bodies for a profession
   Future<ActionResult> fetchRegulatoryBodies(int professionId);
+
+  // Get the specializations for a profession
   Future<ActionResult> fetchSpecializations(int professionId);
+
+  // Get the therapies for a profession
   Future<ActionResult> fetchTherapies(int professionId);
 }

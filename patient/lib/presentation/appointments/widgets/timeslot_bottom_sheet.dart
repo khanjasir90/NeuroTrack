@@ -19,8 +19,16 @@ class TimeSlotBottomSheet extends StatelessWidget {
     return Consumer<AppointmentsProvider>(
       builder: (context, appointmentsProvider, child) {
         // Ensure available slots are loaded
-        if (appointmentsProvider.timeSlots.isEmpty) {
-          appointmentsProvider.fetchAvailableSlots(context);
+        if (appointmentsProvider.availableTimeSlots.isEmpty) {
+          return Center(
+              child: Text(
+            'No Slots Available',
+            style: theme.textTheme.titleLarge?.copyWith(
+              fontSize: 18,
+              fontWeight: FontWeight.w600,
+              color: AppTheme.textColor,
+            ),
+          ));
         }
 
         return Container(
@@ -92,21 +100,17 @@ class TimeSlotBottomSheet extends StatelessWidget {
                     crossAxisSpacing: 10,
                     mainAxisSpacing: 10,
                   ),
-                  itemCount: appointmentsProvider.timeSlots.length,
+                  itemCount: appointmentsProvider.availableTimeSlots.length,
                   itemBuilder: (context, index) {
-                    final slot = appointmentsProvider.timeSlots[index];
-                    final timeSlot = slot['time'];
-                    final isAvailable = slot['available'];
+                    final timeSlot = appointmentsProvider.availableTimeSlots[index];
                     final isSelected =
                         appointmentsProvider.selectedTimeSlot == timeSlot;
 
                     return GestureDetector(
-                      onTap: isAvailable
-                          ? () {
+                      onTap:() {
                               appointmentsProvider
                                   .setSelectedTimeSlot(timeSlot);
-                            }
-                          : null,
+                            },
                       child: Container(
                         decoration: BoxDecoration(
                           color: isSelected
@@ -116,9 +120,7 @@ class TimeSlotBottomSheet extends StatelessWidget {
                           border: Border.all(
                             color: isSelected
                                 ? AppTheme.secondaryColor
-                                : isAvailable
-                                    ? Colors.grey.shade200
-                                    : Colors.grey.shade300,
+                                :Colors.grey.shade200,        
                             width: 1,
                           ),
                         ),
@@ -130,9 +132,8 @@ class TimeSlotBottomSheet extends StatelessWidget {
                               fontWeight: FontWeight.w500,
                               color: isSelected
                                   ? AppTheme.secondaryColor
-                                  : isAvailable
-                                      ? Colors.black87
-                                      : Colors.grey,
+                                  : Colors.black87,
+                                      
                             ),
                           ),
                         ),

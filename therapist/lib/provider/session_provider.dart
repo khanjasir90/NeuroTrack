@@ -1,50 +1,65 @@
 import 'package:flutter/material.dart';
+import 'package:therapist/model/therapist_models/therapist_schedule_model.dart';
+
+import '../core/repository/therapist/therapist_repository.dart';
+import '../core/result/action_result_success.dart';
 
 class SessionProvider extends ChangeNotifier {
   String _selectedFilter = 'All';
   String get selectedFilter => _selectedFilter;
 
-  // Mock data for sessions - replace with actual data fetching logic
-  List<Map<String, dynamic>> _sessions = [
-    {
-      'patientName': 'John Doe',
-      'patientId': 'P001',
-      'phone': '+1 234 567 8900',
-      'therapyName': 'Cognitive Behavioral Therapy',
-      'therapyMode': 'In-person',
-      'time': '10:00 AM',
-      'duration': '60 min',
-      'status': 'Pending',
-    },
-    {
-      'patientName': 'Jane Smith',
-      'patientId': 'P002',
-      'phone': '+1 234 567 8901',
-      'therapyName': 'Occupational Therapy',
-      'therapyMode': 'Virtual',
-      'time': '2:00 PM',
-      'duration': '45 min',
-      'status': 'Completed',
-    },
-    {
-      'patientName': 'Alice Johnson',
-      'patientId': 'P003',
-      'phone': '+1 234 567 8902',
-      'therapyName': 'Physical Therapy',
-      'therapyMode': 'In-person',
-      'time': '4:30 PM',
-      'duration': '60 min',
-      'status': 'Cancelled',
-    },
-  ];
+  SessionProvider({
+    required TherapistRepository therapistRepository,
+  }) : _therapistRepository = therapistRepository;
 
-  List<Map<String, dynamic>> get sessions => _sessions;
+  final TherapistRepository _therapistRepository;
 
-  List<Map<String, dynamic>> get filteredSessions {
+  bool _isLoading = false;
+  bool get isLoading => _isLoading;
+
+
+  List<TherapistScheduleModel> _sessions = [];
+  List<TherapistScheduleModel> get sessions => _sessions;
+
+  int _totalSessions = 0;
+  int get totalSessions => _totalSessions;
+  int _totalPendingSessions = 0;
+  int get totalPendingSessions => _totalPendingSessions;
+  int _totalCompletedSessions = 0;
+  int get totalCompletedSessions => _totalCompletedSessions;
+  int _totalCancelledSessions = 0;
+  int get totalCancelledSessions => _totalCancelledSessions;
+
+  Future<void> fetchTherapistSessions() async {
+    try {
+      _isLoading = true;
+      notifyListeners();
+      final result = await _therapistRepository.getTherapistSessions();
+      if(result is ActionResultSuccess) {
+        _sessions = result.data as List<TherapistScheduleModel>;
+      }
+    } catch(e) {  
+      _sessions = [];
+      print(e);
+    } finally {
+      _isLoading = false;
+      _calculateSessionCounts();
+      notifyListeners();
+    }
+  }
+
+  void _calculateSessionCounts() {
+    _totalSessions = _sessions.length;
+    _totalPendingSessions = _sessions.where((session) => (session.status ?? '').toLowerCase() == 'pending').length;
+    _totalCompletedSessions = _sessions.where((session) => (session.status ?? '').toLowerCase() == 'completed').length;
+    _totalCancelledSessions = _sessions.where((session) => (session.status ?? '').toLowerCase() == 'cancelled').length;
+  }
+
+  List<TherapistScheduleModel> get filteredSessions {
     if (_selectedFilter == 'All') {
       return _sessions;
     } else {
-      return _sessions.where((session) => session['status'] == _selectedFilter).toList();
+      return _sessions.where((session) => (session.status ?? '').toLowerCase() == _selectedFilter.toLowerCase()).toList();
     }
   }
 
@@ -54,12 +69,12 @@ class SessionProvider extends ChangeNotifier {
   }
 
   // Methods to add, update, or delete sessions
-  void addSession(Map<String, dynamic> session) {
+  void addSession(TherapistScheduleModel session) {
     _sessions.add(session);
     notifyListeners();
   }
 
-  void updateSession(int index, Map<String, dynamic> updatedSession) {
+  void updateSession(int index, TherapistScheduleModel updatedSession) {
     if (index >= 0 && index < _sessions.length) {
       _sessions[index] = updatedSession;
       notifyListeners();

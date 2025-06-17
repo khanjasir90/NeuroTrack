@@ -7,6 +7,8 @@ import 'package:patient/provider/appointments_provider.dart';
 import 'package:provider/provider.dart';
 import 'package:intl/intl.dart';
 
+import '../widgets/snackbar_service.dart';
+
 class CreateAppointmentScreen extends StatefulWidget {
   const CreateAppointmentScreen({super.key});
 
@@ -97,14 +99,9 @@ class _CreateAppointmentScreenState extends State<CreateAppointmentScreen> {
                                     .createAppointment();
                                 if (success && context.mounted) {
                                   Navigator.pop(context);
-                                  ScaffoldMessenger.of(context).showSnackBar(
-                                    const SnackBar(
-                                      duration: Duration(seconds: 2),
-                                      content: Text(
-                                          'Appointment scheduled successfully!'),
-                                      backgroundColor: AppTheme.secondaryColor,
-                                    ),
-                                  );
+                                  SnackbarService.showSuccess('Appointment scheduled successfully');
+                                } else {
+                                  SnackbarService.showError('Failed to schedule appointment');
                                 }
                               }
                             : null,
@@ -169,9 +166,6 @@ class _CreateAppointmentScreenState extends State<CreateAppointmentScreen> {
   Future<void> selectTimeSlot(BuildContext context) async {
     final appointmentProvider =
         Provider.of<AppointmentsProvider>(context, listen: false);
-
-    // Fetch available slots with context
-    appointmentProvider.fetchAvailableSlots(context);
 
     // Show modal bottom sheet with slots
     await showModalBottomSheet(

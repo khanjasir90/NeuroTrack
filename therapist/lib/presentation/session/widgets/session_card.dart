@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 
 class SessionCard extends StatelessWidget {
   final String patientName;
@@ -23,6 +24,17 @@ class SessionCard extends StatelessWidget {
     required this.status,
     this.cancelMessage,
   });
+
+  String _formatTime(String timestamp) {
+    try {
+      final dateTime = DateTime.parse(timestamp);
+      final istDateTime = dateTime.toLocal(); // Convert to local time (IST)
+      final dateFormat = DateFormat('dd-MM-yy - hh:mm a');
+      return dateFormat.format(istDateTime);
+    } catch (e) {
+      return time; // Return original time if parsing fails
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -145,7 +157,7 @@ class SessionCard extends StatelessWidget {
                           ),
                           const SizedBox(height: 4),
                           Text(
-                            time,
+                            _formatTime(time),
                             style: const TextStyle(
                               fontWeight: FontWeight.w500,
                               color: Colors.black87,

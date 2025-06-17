@@ -16,6 +16,41 @@ class SupabaseTherapistRepository implements TherapistRepository {
   final SupabaseClient _supabaseClient;
 
   @override
+  Future<ActionResult> getTherapistSessions() async {
+    try {
+      // Get today's date at midnight in UTC
+      final now = DateTime.now().toUtc();
+      final todayStart = DateTime(now.year, now.month, now.day).toIso8601String();
+      final todayEnd = DateTime(now.year, now.month, now.day, 23, 59, 59).toIso8601String();
+
+      final response = await _supabaseClient.from('session')
+      .select('*, patient(patient_name, phone)')
+      .eq('therapist_id', _supabaseClient.auth.currentUser!.id)
+      .eq('is_consultation', false)
+      .gte('timestamp', todayStart)
+      .lte('timestamp', todayEnd);
+
+      if(response.isEmpty) {
+        return ActionResultFailure(errorMessage: 'No sessions found', statusCode: 404);
+      } else {
+        final data = response.map((sessionData) {
+          final patientData = sessionData['patient'] as Map<String, dynamic>?;
+          final flattenedData = {
+            ...sessionData,
+            'patient_name': patientData?['patient_name'],
+            'phone': patientData?['phone'],
+          };
+          return TherapistScheduleEntityMapper.fromMap(flattenedData).toModel();
+        }).toList();
+
+        return ActionResultSuccess(data: data, statusCode: 200); 
+      } 
+    } catch(e) {
+      return ActionResultFailure(errorMessage: e.toString(), statusCode: 400);
+    }
+  }
+
+  @override
   Future<ActionResult> changeAppointmentStatus(String appointmentId, String status) async {
     try {
       await _supabaseClient.from('session')
@@ -74,6 +109,24 @@ class SupabaseTherapistRepository implements TherapistRepository {
     }
   }
   
+  @override
+  Future<ActionResult> getAllSessionsWithPatientDetails() async {
+    try {
+      final response = await _supabaseClient.from('session')
+        .select('*, patient(patient_name, phone)')
+        .eq('therapist_id', _supabaseClient.auth.currentUser!.id);
+
+      if(response.isEmpty) {
+        return ActionResultFailure(errorMessage: 'No sessions found', statusCode: 404);
+      } else {
+        final data = response.map((data) => TherapistScheduleEntityMapper.fromMap(data).toModel()).toList();
+        return ActionResultSuccess(data: data, statusCode: 200);
+      }
+    } catch(e) {
+      return ActionResultFailure(errorMessage: e.toString(), statusCode: 400);
+    }
+  }
+
   @override
   Future<ActionResult> getTotalPatients() {
     // TODO: implement getTotalPatients

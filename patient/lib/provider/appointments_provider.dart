@@ -1,7 +1,20 @@
 import 'package:flutter/material.dart';
+import 'package:patient/core/core.dart';
+import 'package:patient/core/repository/auth/auth.dart';
+import 'package:patient/model/patient_models/patient_models.dart';
 import 'package:patient/presentation/appointments/models/appointment_model.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 
 class AppointmentsProvider extends ChangeNotifier {
+
+  AppointmentsProvider({
+    required AuthRepository authRepository,
+    required PatientRepository patientRepository,
+  }) : _authRepository = authRepository, _patientRepository = patientRepository;
+
+  final AuthRepository _authRepository;
+  final PatientRepository _patientRepository;
+
   static const List<String> _serviceTypes = [
     'Consultation',
     'Therapy Session',
@@ -9,7 +22,7 @@ class AppointmentsProvider extends ChangeNotifier {
   ];
 
   final List<AppointmentModel> _appointments = [];
-  final List<Map<String, dynamic>> _timeSlots = [];
+  List<String> _availableTimeSlots = [];
 
   String _selectedService = 'Consultation';
   DateTime? _selectedDate;
@@ -22,9 +35,16 @@ class AppointmentsProvider extends ChangeNotifier {
   DateTime? get selectedDate => _selectedDate;
   String get selectedTimeSlot => _selectedTimeSlot;
   bool get hasAppointments => _appointments.isNotEmpty;
-  List<Map<String, dynamic>> get timeSlots => List.unmodifiable(_timeSlots);
+  List<String> get availableTimeSlots => _availableTimeSlots;
+ // List<Map<String, dynamic>> get timeSlots => List.unmodifiable(_timeSlots);
+
 
   // Setters
+
+  set availableTimeSlots(List<String> timeSlots) {
+    _availableTimeSlots = timeSlots;
+  }
+
   void setSelectedService(String service) {
     if (_selectedService != service) {
       _selectedService = service;
@@ -37,6 +57,7 @@ class AppointmentsProvider extends ChangeNotifier {
       _selectedDate = date;
       notifyListeners();
     }
+    _availableBookingSlots(date);
   }
 
   void setSelectedTimeSlot(String timeSlot) {
@@ -46,38 +67,21 @@ class AppointmentsProvider extends ChangeNotifier {
     }
   }
 
-  /// Generates available time slots between 9:00 AM - 5:00 PM with 30-minute intervals.
-  void generateTimeSlots(List<String> availableSlots, BuildContext context) {
-    _timeSlots.clear();
-    const startTime = TimeOfDay(hour: 9, minute: 0);
-    const endTime = TimeOfDay(hour: 17, minute: 0);
-
-    for (int hour = startTime.hour; hour <= endTime.hour; hour++) {
-      for (int minute = 0; minute < 60; minute += 30) {
-        if (hour == endTime.hour && minute > 0) continue;
-
-        final time = TimeOfDay(hour: hour, minute: minute);
-        final formattedTime = _formatTimeOfDay(time, context);
-
-        _timeSlots.add({
-          'time': formattedTime,
-          'available': availableSlots.contains(formattedTime),
-        });
+  void _availableBookingSlots(DateTime date) async {
+    try {
+      final result = await _authRepository.getAvailableBookingSlotsForTherapist(
+        '5929f9bb-e294-4812-ae08-4a1c10ca7123', date, '9:30', '18:00');
+      if(result is ActionResultSuccess) {
+        availableTimeSlots = result.data as List<String>;
+      } else {
+        availableTimeSlots = [];
       }
+    } catch(e) {
+      print(e);
+      availableTimeSlots = [];
+    } finally {
+      notifyListeners();
     }
-    notifyListeners();
-  }
-
-  /// Simulates fetching available slots from the backend (Replace with Supabase in the future).
-  void fetchAvailableSlots(BuildContext context) {
-    final availableSlots = [
-      '9:00 AM',
-      '10:30 AM',
-      '1:00 PM',
-      '3:30 PM'
-    ]; // Example slots
-
-    generateTimeSlots(availableSlots, context);
   }
 
   /// Helper method to format `TimeOfDay` into readable string.
@@ -85,31 +89,66 @@ class AppointmentsProvider extends ChangeNotifier {
     return MaterialLocalizations.of(context).formatTimeOfDay(time);
   }
 
+  // Fetch all appointments from the patient repository
+  Future<void> fetchAllAppointments() async {
+    try {
+      final result = await _patientRepository.fetchAllAppointments();
+      if(result is ActionResultSuccess) {
+        _appointments.clear();
+        _appointments.addAll(result.data as List<AppointmentModel>);
+      }
+    } catch(e) {
+      print(e);
+    } finally {
+      notifyListeners();
+    }
+  }
+
   /// Creates a new appointment and resets selection. Future: Save to Supabase.
   Future<bool> createAppointment() async {
-    if (_selectedService.isEmpty ||
-        _selectedDate == null ||
-        _selectedTimeSlot.isEmpty) {
+    try {
+      final appointmentModel = PatientScheduleAppointmentModel(
+        patientId: Supabase.instance.client.auth.currentUser!.id,
+        therapistId: '', 
+        serviceType: _selectedService, 
+        date: _selectedDate!.toIso8601String(),
+        slot: _selectedTimeSlot, 
+        appointmentName: 'Appointment with the Therapist'
+      );
+
+      final result = await _authRepository.bookConsultation(appointmentModel.toEntity().toConsultationRequestEntity());
+
+
+      if(result is ActionResultSuccess) {
+        return true;
+      } else {
+        return false;
+      }
+    } catch(e) {
+      print(e);
       return false;
+    } finally {
+      fetchAllAppointments();
+      notifyListeners();
     }
-
-    final newAppointment = AppointmentModel(
-      id: DateTime.now().millisecondsSinceEpoch.toString(),
-      serviceType: _selectedService,
-      appointmentDate: _selectedDate!,
-      timeSlot: _selectedTimeSlot,
-    );
-
-    _appointments.add(newAppointment);
-    clearSelections();
-    notifyListeners();
-    return true;
   }
 
   /// Deletes an appointment by ID.
-  void deleteAppointment(String id) {
-    _appointments.removeWhere((appointment) => appointment.id == id);
-    notifyListeners();
+  Future<bool> deleteAppointment(String id) async {
+    try {
+      final result = await _patientRepository.deleteAppointment(id);
+      if(result is ActionResultSuccess) {
+        return true;
+      } else {
+        return false;
+      }
+    } catch(e) {
+      print(e);
+      return false;
+    } finally {
+      fetchAllAppointments();
+      notifyListeners();
+    }
   }
 
   /// Clears selected service, date, and time slot.
