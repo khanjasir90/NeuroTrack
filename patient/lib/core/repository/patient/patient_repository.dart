@@ -22,5 +22,9 @@ abstract interface class PatientRepository {
   ///   - If an error occurs while inserting the record, it is caught and returned as a failure.
   
   Future<ActionResult> scheduleAppointment(PatientScheduleAppointmentEntity appointmentEntity);
+
+  Future<ActionResult> getTherapyGoals({
+    required DateTime date,
+  });
  
 }

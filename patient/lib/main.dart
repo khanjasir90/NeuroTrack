@@ -10,12 +10,14 @@ import 'package:patient/provider/auth_provider.dart';
 import 'package:patient/repository/supabase_auth_repository.dart';
 
 import 'package:patient/provider/reports_provider.dart';
+import 'package:patient/repository/supabase_patient_repository.dart';
 
 import 'package:provider/provider.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 
 import 'provider/task_provider.dart';
+import 'provider/therapy_goals_provider.dart';
 
 
 Future<void> main() async {
@@ -48,7 +50,10 @@ Future<void> main() async {
         ),
         ChangeNotifierProvider(create: (_) => ReportsProvider()),
         ChangeNotifierProvider(create: (_) => TaskProvider()),
-        ChangeNotifierProvider(create: (_) => AppointmentsProvider())
+        ChangeNotifierProvider(create: (_) => AppointmentsProvider()),
+        ChangeNotifierProvider(create: (_) => TherapyGoalsProvider(
+          patientRepository: SupabasePatientRepository(supabaseClient: Supabase.instance.client),
+        ))
       ],
       child: const MyApp(),
     ),

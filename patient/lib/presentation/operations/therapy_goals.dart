@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:easy_date_timeline/easy_date_timeline.dart';
+import 'package:patient/provider/therapy_goals_provider.dart';
+import 'package:provider/provider.dart';
+import '../../core/core.dart';
 import '../../gen/assets.gen.dart';
+import '../../model/therapy_models/therapy_models.dart';
 
 class TherapyGoalsScreen extends StatefulWidget {
   const TherapyGoalsScreen({super.key});
@@ -17,11 +21,9 @@ class TherapyGoalsScreenState extends State<TherapyGoalsScreen> {
   @override
   void initState() {
     super.initState();
-    // Refactor this code to use existing provider `allAssessment` instead of fetching data again
-    // Future.microtask(() {
-    //   Provider.of<AssessmentProvider>(context, listen: false)
-    //       .fetchAssessmentBySelectedId();
-    // });
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      context.read<TherapyGoalsProvider>().fetchTherapyGoals(selectedDate);
+    });
   }
 
   @override
@@ -42,8 +44,8 @@ class TherapyGoalsScreenState extends State<TherapyGoalsScreen> {
           children: [
             // Date Picker Bar
             EasyDateTimeLinePicker.itemBuilder(
-              firstDate: DateTime(2025, 3, 1),
-              lastDate: DateTime(2025, 4, 1),
+              firstDate: DateTime(2024, 1, 1),
+              lastDate: DateTime(2025, 12, 31),
               focusedDate: selectedDate,
               itemExtent: screenWidth * 0.2,
               itemBuilder:
@@ -79,6 +81,7 @@ class TherapyGoalsScreenState extends State<TherapyGoalsScreen> {
                 setState(() {
                   selectedDate = date;
                 });
+                context.read<TherapyGoalsProvider>().fetchTherapyGoals(selectedDate);
               },
             ),
 
@@ -158,8 +161,8 @@ class TherapyGoalsScreenState extends State<TherapyGoalsScreen> {
                 mainAxisAlignment: MainAxisAlignment.spaceAround,
                 children: [
                   _buildTabButton("Goals", 0),
-                  _buildTabButton("Achievements", 1),
-                  _buildTabButton("Observations", 2),
+                  _buildTabButton("Observations", 1),
+                  _buildTabButton("Regression", 2),
                 ],
               ),
             ),
@@ -227,44 +230,51 @@ class TherapyGoalsScreenState extends State<TherapyGoalsScreen> {
   }
 
   Widget _buildContent(int index) {
-    // final assessmentProvider = Provider.of<AssessmentProvider>(context);
-    const assessment = null; //assessmentProvider.assessment;
+    final therapyGoal = context.watch<TherapyGoalsProvider>().therapyGoal;
 
-    if (assessment == null || !assessment.containsKey('questions')) {
-      return Center(
-        child: Text(
-          "No Data Available",
-          style: TextStyle(fontSize: 16, color: Colors.grey.shade600),
-        ),
-      );
-    }
+    return Consumer<TherapyGoalsProvider>(builder: (context, provider, child) {
+      if(provider.apiStatus == ApiStatus.initial) {
+        return const SizedBox.shrink();
+      }
 
-    List<String> goals = assessment['questions']
-        .map<String>((q) => q['question'] as String)
-        .toList();
+      if (provider.apiStatus == ApiStatus.loading) {
+        return const Center(child: CircularProgressIndicator());
+      }
 
-    List<String> achievements = assessment['questions']
-        .map<String>((q) => "Achieved: ${q['question']}")
-        .toList();
-
-    List<String> observations = assessment['questions']
-        .map<String>((q) => "Observed: ${q['question']}")
-        .toList();
-
-    List<String> data =
-        index == 0 ? goals : (index == 1 ? achievements : observations);
-
-    return ListView.builder(
-      itemCount: data.length,
-      itemBuilder: (context, i) {
-        return Padding(
-          padding: const EdgeInsets.symmetric(vertical: 8.0),
-          child: Text(
-            "${i + 1}. ${data[i]}",
-            style: TextStyle(fontSize: 14, color: Colors.grey.shade800),
-          ),
+      if (provider.apiStatus == ApiStatus.failure) {
+        return const Center(
+          child: Text('No data available'),
         );
-      },
-    );
+      }
+
+      List<TherapyModel> therapyGoalModel;
+
+      if(index == 0) {
+        therapyGoalModel = provider.therapyGoal!.goals;
+      } else if (index == 1) {
+        therapyGoalModel = provider.therapyGoal!.observations;
+      } else {
+        therapyGoalModel = provider.therapyGoal!.regressions;
+      }
+
+      if(therapyGoal == null || therapyGoalModel.isEmpty) {
+        return const Center(
+          child: Text('No data available'),
+        );
+      }
+
+      return ListView.builder(
+        itemCount: therapyGoalModel.length,
+        itemBuilder: (context, i) {
+          return Padding(
+            padding: const EdgeInsets.symmetric(vertical: 8.0),
+            child: Text(
+              "${i + 1}. ${therapyGoalModel[i].name}",
+              style: TextStyle(fontSize: 14, color: Colors.grey.shade800),
+            ),
+          );
+        },
+      );
+    });
   }
 }
