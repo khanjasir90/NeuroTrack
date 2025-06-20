@@ -3,8 +3,22 @@ import 'package:provider/provider.dart';
 import '../../provider/session_provider.dart';
 import 'widgets/session_card.dart';
 
-class SessionScreen extends StatelessWidget {
+class SessionScreen extends StatefulWidget {
   const SessionScreen({super.key});
+
+  @override
+  State<SessionScreen> createState() => _SessionScreenState();
+}
+
+class _SessionScreenState extends State<SessionScreen> {
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      Provider.of<SessionProvider>(context, listen: false).fetchTherapistSessions();
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -85,28 +99,28 @@ class SessionScreen extends StatelessWidget {
                       _buildFilterTab(
                           context,
                           'All',
-                          '12',
+                          sessionProvider.totalSessions.toString(),
                           sessionProvider.selectedFilter == 'All',
                           () => sessionProvider.setSelectedFilter('All')),
                       const SizedBox(width: 8),
                       _buildFilterTab(
                           context,
                           'Pending',
-                          '2',
+                          sessionProvider.totalPendingSessions.toString(),
                           sessionProvider.selectedFilter == 'Pending',
                           () => sessionProvider.setSelectedFilter('Pending')),
                       const SizedBox(width: 8),
                       _buildFilterTab(
                           context,
                           'Cancelled',
-                          '1',
+                          sessionProvider.totalCancelledSessions.toString(),
                           sessionProvider.selectedFilter == 'Cancelled',
                           () => sessionProvider.setSelectedFilter('Cancelled')),
                       const SizedBox(width: 8),
                       _buildFilterTab(
                           context,
                           'Completed',
-                          '1',
+                          sessionProvider.totalCompletedSessions.toString(),
                           sessionProvider.selectedFilter == 'Completed',
                           () => sessionProvider.setSelectedFilter('Completed')),
                     ],
@@ -114,7 +128,14 @@ class SessionScreen extends StatelessWidget {
                 ),
                 const SizedBox(height: 30),
 
-                // Session cards
+                if(sessionProvider.isLoading) ...[
+                  const Center(child: CircularProgressIndicator()),
+                ] else ...[
+                  if(sessionProvider.filteredSessions.isEmpty) ...[
+                    const Center(
+                      child: Text('No sessions found', style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500),),
+                    ),
+                  ] else ...[
                 Expanded(
                   child: ListView.builder(
                     itemCount: sessionProvider.filteredSessions.length,
@@ -123,9 +144,9 @@ class SessionScreen extends StatelessWidget {
 
                       // Assign card color based on session status
                       Color cardColor;
-                      if (session['status'] == 'Completed') {
+                      if ((session.status ?? '').toLowerCase() == 'completed') {
                         cardColor = Colors.lightGreen.shade400;
-                      } else if (session['status'] == 'Cancelled') {
+                      } else if ((session.status ?? '').toLowerCase() == 'cancelled') {
                         cardColor = Colors.red.shade400;
                       } else {
                         cardColor = Colors.white; // Default color
@@ -140,23 +161,23 @@ class SessionScreen extends StatelessWidget {
                             border: Border.all(color: Colors.grey.shade300),
                           ),
                           child: SessionCard(
-                            patientName: session['patientName'],
-                            patientId: session['patientId'],
-                            phone: session['phone'],
-                            therapyName: session['therapyName'],
-                            therapyMode: session['therapyMode'],
-                            time: session['time'],
-                            duration: session['duration'],
-                            status: session['status'],
-                            cancelMessage: session.containsKey('cancelMessage')
-                                ? session['cancelMessage']
-                                : null,
+                            patientName: session.patientName,
+                            patientId: '${session.patientId.substring(0,5)}...',
+                            phone: session.phoneNo,
+                            therapyName: session.therapyName,
+                            therapyMode: session.mode.toString(),
+                            time: session.timestamp.toString(),
+                            duration: '30',
+                            status: session.status ?? '',
+                            cancelMessage: '',
                           ),
                         ),
                       );
-                    },
+                      },
+                    ),
                   ),
-                ),
+                ]
+                ]
               ],
             ),
           ),

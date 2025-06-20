@@ -16,6 +16,7 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 
 
 import 'provider/task_provider.dart';
+import 'repository/supabase_patient_repository.dart';
 
 
 Future<void> main() async {
@@ -48,7 +49,10 @@ Future<void> main() async {
         ),
         ChangeNotifierProvider(create: (_) => ReportsProvider()),
         ChangeNotifierProvider(create: (_) => TaskProvider()),
-        ChangeNotifierProvider(create: (_) => AppointmentsProvider())
+        ChangeNotifierProvider(create: (_) => AppointmentsProvider(
+          authRepository: SupabaseAuthRepository(supabaseClient: Supabase.instance.client),
+          patientRepository: SupabasePatientRepository(supabaseClient: Supabase.instance.client)
+        ))
       ],
       child: const MyApp(),
     ),
