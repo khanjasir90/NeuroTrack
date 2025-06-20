@@ -88,64 +88,82 @@ class TherapyGoalsScreenState extends State<TherapyGoalsScreen> {
             const SizedBox(height: 20),
 
             // Therapy Card
-            Container(
-              padding: const EdgeInsets.all(16),
-              width: double.infinity,
-              decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.circular(12),
-                border:
-                    Border.all(color: const Color.fromARGB(82, 158, 158, 158)),
-              ),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Row(
-                    children: [
-                      CircleAvatar(
-                        radius: 24,
-                        backgroundImage:
-                            Assets.placeholders.therapistImg.provider(),
-                      ),
-                      const SizedBox(width: 12),
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          const Text(
-                            "Therapist Name",
-                            style: TextStyle(
-                                fontWeight: FontWeight.bold,
-                                fontSize: 16,
-                                color: Colors.black),
-                          ),
-                          Text(
-                            "Neurologist",
-                            style: TextStyle(
-                                color: Colors.grey.shade600, fontSize: 14),
-                          ),
-                        ],
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 16),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      _buildInfoColumn("Therapy", "Therapy Name"),
-                      _buildInfoColumn("Done at", "05:30 PM"),
-                    ],
-                  ),
-                  const SizedBox(height: 12),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      _buildInfoColumn("Therapy Mode", "Offline"),
-                      _buildInfoColumn("Duration", "1 hour 20 mins"),
-                    ],
-                  ),
-                ],
-              ),
-            ),
+            
+            Consumer<TherapyGoalsProvider>(
+              builder: (context, provider, child) {
+                if(provider.apiStatus == ApiStatus.initial) {
+                  return const SizedBox.shrink();
+                }
+
+                if(provider.apiStatus == ApiStatus.loading) {
+                  return const Center(child: CircularProgressIndicator());
+                }
+
+                if(provider.apiStatus == ApiStatus.failure) {
+                  return const Center(
+                    child: Text('No data available'),
+                  );
+                }
+
+              return Container(
+                padding: const EdgeInsets.all(16),
+                width: double.infinity,
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(12),
+                  border: Border.all(
+                      color: const Color.fromARGB(82, 158, 158, 158)),
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                      children: [
+                        CircleAvatar(
+                          radius: 24,
+                          backgroundImage:
+                              Assets.placeholders.therapistImg.provider(),
+                        ),
+                        const SizedBox(width: 12),
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              provider.therapyGoal!.therapistName ?? "Therapist Name",
+                              style: const TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 16,
+                                  color: Colors.black),
+                            ),
+                            Text(
+                              provider.therapyGoal!.specialization ?? "",
+                              style: TextStyle(
+                                  color: Colors.grey.shade600, fontSize: 14),
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 16),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        _buildInfoColumn("Therapy", provider.therapyGoal!.therapyType ?? "Therapy Type"),
+                        _buildInfoColumn("Done at", provider.therapyGoal!.performedOn.toString().split(" ")[0]),
+                      ],
+                    ),
+                    const SizedBox(height: 12),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        _buildInfoColumn("Therapy Mode", provider.therapyGoal?.therapyMode == 1 ? "Online" : "Offline"),
+                        _buildInfoColumn("Duration", "${provider.therapyGoal!.duration} mins"),
+                      ],
+                    ),
+                  ],
+                ),
+              );
+            }),
 
             const SizedBox(height: 25),
 

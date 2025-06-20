@@ -59,7 +59,25 @@ class SupabasePatientRepository implements PatientRepository {
         );
       }
 
-      return ActionResultSuccess(data: TherapyGoalModelMapper.fromMap(filteredResponse.first), statusCode: 200);
+      final therapist = await _supabaseClient.from('therapist')
+      .select('*')
+      .eq('id', filteredResponse.first['therapist_id']).maybeSingle();
+
+      final therapyType = await _supabaseClient.from('therapy_type')
+      .select('*')
+      .eq('id', filteredResponse.first['therapy_type_id']).maybeSingle();
+
+      final therapyGoal = TherapyGoalModelMapper.fromMap(filteredResponse.first);
+
+      return ActionResultSuccess(data: therapyGoal.copyWith(
+        therapistName: therapist?['name'],
+        therapistPhone: therapist?['phone'],
+        therapistEmail: therapist?['email'],
+        therapyType: therapyType?['name'],
+        therapyMode: filteredResponse.first['therapy_mode'],
+        specialization: therapist?['specialisation']
+      ), statusCode: 200);
+      
     } catch(e) {
       return ActionResultFailure(
         errorMessage: e.toString(),

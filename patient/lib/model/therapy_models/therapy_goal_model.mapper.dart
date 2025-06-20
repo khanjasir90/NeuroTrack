@@ -43,6 +43,27 @@ class TherapyGoalModelMapper extends ClassMapperBase<TherapyGoalModel> {
   static List<TherapyModel> _$activities(TherapyGoalModel v) => v.activities;
   static const Field<TherapyGoalModel, List<TherapyModel>> _f$activities =
       Field('activities', _$activities);
+  static int? _$duration(TherapyGoalModel v) => v.duration;
+  static const Field<TherapyGoalModel, int> _f$duration =
+      Field('duration', _$duration, opt: true);
+  static String? _$therapistName(TherapyGoalModel v) => v.therapistName;
+  static const Field<TherapyGoalModel, String> _f$therapistName =
+      Field('therapistName', _$therapistName, key: r'name', opt: true);
+  static String? _$therapistPhone(TherapyGoalModel v) => v.therapistPhone;
+  static const Field<TherapyGoalModel, String> _f$therapistPhone =
+      Field('therapistPhone', _$therapistPhone, key: r'phone', opt: true);
+  static String? _$therapistEmail(TherapyGoalModel v) => v.therapistEmail;
+  static const Field<TherapyGoalModel, String> _f$therapistEmail =
+      Field('therapistEmail', _$therapistEmail, key: r'email', opt: true);
+  static String? _$therapyType(TherapyGoalModel v) => v.therapyType;
+  static const Field<TherapyGoalModel, String> _f$therapyType =
+      Field('therapyType', _$therapyType, key: r'therapy_type', opt: true);
+  static int? _$therapyMode(TherapyGoalModel v) => v.therapyMode;
+  static const Field<TherapyGoalModel, int> _f$therapyMode =
+      Field('therapyMode', _$therapyMode, key: r'therapy_mode', opt: true);
+  static String? _$specialization(TherapyGoalModel v) => v.specialization;
+  static const Field<TherapyGoalModel, String> _f$specialization =
+      Field('specialization', _$specialization, opt: true);
 
   @override
   final MappableFields<TherapyGoalModel> fields = const {
@@ -53,6 +74,13 @@ class TherapyGoalModelMapper extends ClassMapperBase<TherapyGoalModel> {
     #observations: _f$observations,
     #regressions: _f$regressions,
     #activities: _f$activities,
+    #duration: _f$duration,
+    #therapistName: _f$therapistName,
+    #therapistPhone: _f$therapistPhone,
+    #therapistEmail: _f$therapistEmail,
+    #therapyType: _f$therapyType,
+    #therapyMode: _f$therapyMode,
+    #specialization: _f$specialization,
   };
 
   static TherapyGoalModel _instantiate(DecodingData data) {
@@ -63,7 +91,14 @@ class TherapyGoalModelMapper extends ClassMapperBase<TherapyGoalModel> {
         goals: data.dec(_f$goals),
         observations: data.dec(_f$observations),
         regressions: data.dec(_f$regressions),
-        activities: data.dec(_f$activities));
+        activities: data.dec(_f$activities),
+        duration: data.dec(_f$duration),
+        therapistName: data.dec(_f$therapistName),
+        therapistPhone: data.dec(_f$therapistPhone),
+        therapistEmail: data.dec(_f$therapistEmail),
+        therapyType: data.dec(_f$therapyType),
+        therapyMode: data.dec(_f$therapyMode),
+        specialization: data.dec(_f$specialization));
   }
 
   @override
@@ -136,7 +171,14 @@ abstract class TherapyGoalModelCopyWith<$R, $In extends TherapyGoalModel, $Out>
       List<TherapyModel>? goals,
       List<TherapyModel>? observations,
       List<TherapyModel>? regressions,
-      List<TherapyModel>? activities});
+      List<TherapyModel>? activities,
+      int? duration,
+      String? therapistName,
+      String? therapistPhone,
+      String? therapistEmail,
+      String? therapyType,
+      int? therapyMode,
+      String? specialization});
   TherapyGoalModelCopyWith<$R2, $In, $Out2> $chain<$R2, $Out2>(
       Then<$Out2, $R2> t);
 }
@@ -177,7 +219,14 @@ class _TherapyGoalModelCopyWithImpl<$R, $Out>
           List<TherapyModel>? goals,
           List<TherapyModel>? observations,
           List<TherapyModel>? regressions,
-          List<TherapyModel>? activities}) =>
+          List<TherapyModel>? activities,
+          Object? duration = $none,
+          Object? therapistName = $none,
+          Object? therapistPhone = $none,
+          Object? therapistEmail = $none,
+          Object? therapyType = $none,
+          Object? therapyMode = $none,
+          Object? specialization = $none}) =>
       $apply(FieldCopyWithData({
         if (performedOn != null) #performedOn: performedOn,
         if (therapistId != $none) #therapistId: therapistId,
@@ -185,7 +234,14 @@ class _TherapyGoalModelCopyWithImpl<$R, $Out>
         if (goals != null) #goals: goals,
         if (observations != null) #observations: observations,
         if (regressions != null) #regressions: regressions,
-        if (activities != null) #activities: activities
+        if (activities != null) #activities: activities,
+        if (duration != $none) #duration: duration,
+        if (therapistName != $none) #therapistName: therapistName,
+        if (therapistPhone != $none) #therapistPhone: therapistPhone,
+        if (therapistEmail != $none) #therapistEmail: therapistEmail,
+        if (therapyType != $none) #therapyType: therapyType,
+        if (therapyMode != $none) #therapyMode: therapyMode,
+        if (specialization != $none) #specialization: specialization
       }));
   @override
   TherapyGoalModel $make(CopyWithData data) => TherapyGoalModel(
@@ -195,7 +251,14 @@ class _TherapyGoalModelCopyWithImpl<$R, $Out>
       goals: data.get(#goals, or: $value.goals),
       observations: data.get(#observations, or: $value.observations),
       regressions: data.get(#regressions, or: $value.regressions),
-      activities: data.get(#activities, or: $value.activities));
+      activities: data.get(#activities, or: $value.activities),
+      duration: data.get(#duration, or: $value.duration),
+      therapistName: data.get(#therapistName, or: $value.therapistName),
+      therapistPhone: data.get(#therapistPhone, or: $value.therapistPhone),
+      therapistEmail: data.get(#therapistEmail, or: $value.therapistEmail),
+      therapyType: data.get(#therapyType, or: $value.therapyType),
+      therapyMode: data.get(#therapyMode, or: $value.therapyMode),
+      specialization: data.get(#specialization, or: $value.specialization));
 
   @override
   TherapyGoalModelCopyWith<$R2, TherapyGoalModel, $Out2> $chain<$R2, $Out2>(

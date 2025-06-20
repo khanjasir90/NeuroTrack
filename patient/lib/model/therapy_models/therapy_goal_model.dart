@@ -29,6 +29,26 @@ class TherapyGoalModel with TherapyGoalModelMappable {
   @MappableField(key: 'activities')
   final List<TherapyModel> activities;
 
+  @MappableField(key: 'duration')
+  final int? duration;
+
+  @MappableField(key: 'name')
+  final String? therapistName;
+
+  @MappableField(key: 'phone')
+  final String? therapistPhone;
+
+  @MappableField(key: 'email')
+  final String? therapistEmail;
+
+  @MappableField(key: 'therapy_type')
+  final String? therapyType;
+
+  @MappableField(key: 'therapy_mode')
+  final int? therapyMode;
+
+  @MappableField(key: 'specialization')
+  final String? specialization;
 
   TherapyGoalModel({
     required this.performedOn,
@@ -38,6 +58,13 @@ class TherapyGoalModel with TherapyGoalModelMappable {
     required this.observations,
     required this.regressions,
     required this.activities,
+    this.duration,
+    this.therapistName,
+    this.therapistPhone,
+    this.therapistEmail,
+    this.therapyType,
+    this.therapyMode,
+    this.specialization,
   });
 
 }
