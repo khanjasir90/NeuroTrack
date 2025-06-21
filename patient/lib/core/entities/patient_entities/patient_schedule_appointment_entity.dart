@@ -1,4 +1,5 @@
 import 'package:dart_mappable/dart_mappable.dart';
+import 'package:patient/core/core.dart';
 
 part 'patient_schedule_appointment_entity.mapper.dart';
 
@@ -40,5 +41,17 @@ class PatientScheduleAppointmentEntity with PatientScheduleAppointmentEntityMapp
     required this.serviceType,
   });
 
+  ConsultationRequestEntity toConsultationRequestEntity() {
+    return ConsultationRequestEntity(
+      timestamp: timestamp.toIso8601String(),
+      patientId: patientId,
+      therapistId: therapistId,
+      mode: mode,
+      duration: duration,
+      isConsultation: false,
+      status: 'pending',
+      name: serviceType,
+    );
+  }
 
 }

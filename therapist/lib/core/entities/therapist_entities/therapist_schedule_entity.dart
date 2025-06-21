@@ -1,5 +1,7 @@
 import 'package:dart_mappable/dart_mappable.dart';
 
+import '../../../model/therapist_models/therapist_schedule_model.dart';
+
 part 'therapist_schedule_entity.mapper.dart';
 
 // Entity class resembling therapist's scheduled appointment information with Supabase [SESSION] table
@@ -35,6 +37,12 @@ class TherapistScheduleEntity with TherapistScheduleEntityMappable {
   @MappableField(key: 'name')
   final String? therapyName;
 
+  @MappableField(key: 'patient_name')
+  final String? patientName;
+
+  @MappableField(key: 'phone')
+  final String? phoneNumber;
+
 
   TherapistScheduleEntity({
     required this.sessionId,
@@ -46,5 +54,21 @@ class TherapistScheduleEntity with TherapistScheduleEntityMappable {
     this.mode,
     this.duration,
     this.therapyName,
+    this.patientName,
+    this.phoneNumber,
   });
+
+  TherapistScheduleModel toModel() {
+    return TherapistScheduleModel(
+      sessionId: sessionId,
+      patientId: patientId,
+      patientName: patientName ?? '',
+      phoneNo: phoneNumber ?? '',
+      therapyName: therapyName ?? '',
+      timestamp: timestamp,
+      mode: mode == 1 ? 'In-person' : 'Virtual',
+      duration: duration,
+      status: status,
+    );
+  }
 }

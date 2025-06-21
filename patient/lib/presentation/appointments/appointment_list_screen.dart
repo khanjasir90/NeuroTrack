@@ -4,6 +4,7 @@ import 'package:patient/provider/appointments_provider.dart';
 import 'package:provider/provider.dart';
 import 'package:intl/intl.dart'; // For date formatting
 
+import '../widgets/snackbar_service.dart';
 import 'create_appointment_screen.dart';
 
 class AppointmentListScreen extends StatefulWidget {
@@ -14,6 +15,12 @@ class AppointmentListScreen extends StatefulWidget {
 }
 
 class _AppointmentListScreenState extends State<AppointmentListScreen> {
+  @override
+  void initState() {
+    super.initState();
+    Provider.of<AppointmentsProvider>(context, listen: false).fetchAllAppointments();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -152,8 +159,13 @@ class _AppointmentListScreenState extends State<AppointmentListScreen> {
                                     color: Colors.redAccent,
                                     size: 24,
                                   ),
-                                  onPressed: () {
-                                    provider.deleteAppointment(appointment.id);
+                                  onPressed: () async {
+                                    final result = await provider.deleteAppointment(appointment.id);
+                                    if(result) {
+                                      SnackbarService.showSuccess('Appointment deleted successfully');
+                                    } else {
+                                      SnackbarService.showError('Failed to delete appointment');
+                                    }
                                   },
                                 ),
                               ],

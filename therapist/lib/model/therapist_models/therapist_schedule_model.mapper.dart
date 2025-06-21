@@ -100,7 +100,8 @@ mixin TherapistScheduleModelMappable {
 
   TherapistScheduleModelCopyWith<TherapistScheduleModel, TherapistScheduleModel,
           TherapistScheduleModel>
-      get copyWith => _TherapistScheduleModelCopyWithImpl(
+      get copyWith => _TherapistScheduleModelCopyWithImpl<
+              TherapistScheduleModel, TherapistScheduleModel>(
           this as TherapistScheduleModel, $identity, $identity);
   @override
   String toString() {
@@ -124,8 +125,8 @@ mixin TherapistScheduleModelMappable {
 extension TherapistScheduleModelValueCopy<$R, $Out>
     on ObjectCopyWith<$R, TherapistScheduleModel, $Out> {
   TherapistScheduleModelCopyWith<$R, TherapistScheduleModel, $Out>
-      get $asTherapistScheduleModel =>
-          $base.as((v, t, t2) => _TherapistScheduleModelCopyWithImpl(v, t, t2));
+      get $asTherapistScheduleModel => $base.as((v, t, t2) =>
+          _TherapistScheduleModelCopyWithImpl<$R, $Out>(v, t, t2));
 }
 
 abstract class TherapistScheduleModelCopyWith<
@@ -192,5 +193,5 @@ class _TherapistScheduleModelCopyWithImpl<$R, $Out>
   @override
   TherapistScheduleModelCopyWith<$R2, TherapistScheduleModel, $Out2>
       $chain<$R2, $Out2>(Then<$Out2, $R2> t) =>
-          _TherapistScheduleModelCopyWithImpl($value, $cast, t);
+          _TherapistScheduleModelCopyWithImpl<$R2, $Out2>($value, $cast, t);
 }
