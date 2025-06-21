@@ -23,6 +23,9 @@ abstract interface class PatientRepository {
   
   Future<ActionResult> scheduleAppointment(PatientScheduleAppointmentEntity appointmentEntity);
 
+  Future<ActionResult> getTherapyGoals({
+    required DateTime date,
+  });
   /// Fetches all appointments from the `session` table.
   ///
   /// This method fetches all appointments from the `session` table using Supabase.
