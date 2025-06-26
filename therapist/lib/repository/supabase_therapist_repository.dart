@@ -3,6 +3,7 @@ import 'package:therapist/core/entities/therapist_entities/therapist_patient_det
 import 'package:therapist/core/entities/therapist_entities/therapist_schedule_entity.dart';
 import 'package:therapist/core/entities/therapist_entities/therapist_upcoming_appointment_entity.dart';
 import 'package:therapist/core/models/profession_model.dart';
+import 'package:therapist/model/therapist_models/therapist_patient_details_model.dart';
 
 import '../core/repository/repository.dart';
 import '../core/result/result.dart';
@@ -247,6 +248,32 @@ Future<ActionResult> fetchTherapies(int professionId) async {
   } catch (e) {
     print('Error fetching therapies: $e');
     return ActionResultFailure(errorMessage: e.toString(), statusCode: 400);
+  }
+}
+
+@override
+Future<ActionResult> fetchPatientsMappedToTherapist() async {
+  try {
+    final response = await _supabaseClient.from('patient')
+    .select('id,patient_name, phone, email')
+    .eq('therapist_id', _supabaseClient.auth.currentUser!.id);
+
+    if(response.isEmpty) {
+      return ActionResultFailure(errorMessage: 'No patients found', statusCode: 404);
+    } else {
+      final data = response.map((items) {
+        return TherapistPatientDetailsModel(
+          patientId: items['id'] ?? '',
+          patientName: items['patient_name'] ?? '',
+          phoneNo: items['phone'] ?? '',
+          email: items['email'] ?? '',
+        );
+      }).toList();
+
+      return ActionResultSuccess(data: data, statusCode: 200);
+    }
+  } catch (e) {
+    return ActionResultFailure(errorMessage: e.toString(), statusCode: 500);
   }
 }
 }

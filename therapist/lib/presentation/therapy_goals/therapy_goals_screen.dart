@@ -10,7 +10,9 @@ import 'package:therapist/presentation/widgets/snackbar_service.dart';
 import 'package:therapist/provider/therapy_provider.dart';
 
 class TherapyGoalsScreen extends StatefulWidget {
-  const TherapyGoalsScreen({super.key});
+  const TherapyGoalsScreen({super.key, required this.patientId});
+
+  final String patientId;
 
   @override
   State<TherapyGoalsScreen> createState() => _TherapyGoalsScreenState();
@@ -21,6 +23,7 @@ class _TherapyGoalsScreenState extends State<TherapyGoalsScreen> {
   void initState() {
     super.initState();
     context.read<TherapyProvider>().getThearpyType();
+    context.read<TherapyProvider>().setPatientId = widget.patientId;
   }
 
   @override

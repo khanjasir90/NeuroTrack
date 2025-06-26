@@ -228,6 +228,7 @@ class TherapyProvider extends ChangeNotifier {
       observations: _selectedTherapyObservations,
       regressions: _selectedTherapyRegressions,
       activities: _selectedTherapyActivities,
+      patientId: _patientId,
     );
 
     final ActionResult result = await _therapyRepository.saveTherapyGoals(therapyGoalModel.toEntity());

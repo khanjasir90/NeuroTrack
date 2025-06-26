@@ -108,7 +108,9 @@ mixin TherapistUpcomingAppointmentModelMappable {
 
   TherapistUpcomingAppointmentModelCopyWith<TherapistUpcomingAppointmentModel,
           TherapistUpcomingAppointmentModel, TherapistUpcomingAppointmentModel>
-      get copyWith => _TherapistUpcomingAppointmentModelCopyWithImpl(
+      get copyWith => _TherapistUpcomingAppointmentModelCopyWithImpl<
+              TherapistUpcomingAppointmentModel,
+              TherapistUpcomingAppointmentModel>(
           this as TherapistUpcomingAppointmentModel, $identity, $identity);
   @override
   String toString() {
@@ -134,7 +136,7 @@ extension TherapistUpcomingAppointmentModelValueCopy<$R, $Out>
   TherapistUpcomingAppointmentModelCopyWith<$R,
           TherapistUpcomingAppointmentModel, $Out>
       get $asTherapistUpcomingAppointmentModel => $base.as((v, t, t2) =>
-          _TherapistUpcomingAppointmentModelCopyWithImpl(v, t, t2));
+          _TherapistUpcomingAppointmentModelCopyWithImpl<$R, $Out>(v, t, t2));
 }
 
 abstract class TherapistUpcomingAppointmentModelCopyWith<
@@ -205,5 +207,6 @@ class _TherapistUpcomingAppointmentModelCopyWithImpl<$R, $Out>
   TherapistUpcomingAppointmentModelCopyWith<$R2,
       TherapistUpcomingAppointmentModel, $Out2> $chain<$R2, $Out2>(
           Then<$Out2, $R2> t) =>
-      _TherapistUpcomingAppointmentModelCopyWithImpl($value, $cast, t);
+      _TherapistUpcomingAppointmentModelCopyWithImpl<$R2, $Out2>(
+          $value, $cast, t);
 }

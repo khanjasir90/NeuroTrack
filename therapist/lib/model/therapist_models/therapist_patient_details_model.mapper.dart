@@ -24,13 +24,13 @@ class TherapistPatientDetailsModelMapper
 
   static String _$patientId(TherapistPatientDetailsModel v) => v.patientId;
   static const Field<TherapistPatientDetailsModel, String> _f$patientId =
-      Field('patientId', _$patientId);
+      Field('patientId', _$patientId, key: r'id');
   static String _$patientName(TherapistPatientDetailsModel v) => v.patientName;
   static const Field<TherapistPatientDetailsModel, String> _f$patientName =
-      Field('patientName', _$patientName);
+      Field('patientName', _$patientName, key: r'patient_name');
   static String _$phoneNo(TherapistPatientDetailsModel v) => v.phoneNo;
   static const Field<TherapistPatientDetailsModel, String> _f$phoneNo =
-      Field('phoneNo', _$phoneNo);
+      Field('phoneNo', _$phoneNo, key: r'phone');
   static String _$email(TherapistPatientDetailsModel v) => v.email;
   static const Field<TherapistPatientDetailsModel, String> _f$email =
       Field('email', _$email);
@@ -78,7 +78,8 @@ mixin TherapistPatientDetailsModelMappable {
 
   TherapistPatientDetailsModelCopyWith<TherapistPatientDetailsModel,
           TherapistPatientDetailsModel, TherapistPatientDetailsModel>
-      get copyWith => _TherapistPatientDetailsModelCopyWithImpl(
+      get copyWith => _TherapistPatientDetailsModelCopyWithImpl<
+              TherapistPatientDetailsModel, TherapistPatientDetailsModel>(
           this as TherapistPatientDetailsModel, $identity, $identity);
   @override
   String toString() {
@@ -102,8 +103,8 @@ mixin TherapistPatientDetailsModelMappable {
 extension TherapistPatientDetailsModelValueCopy<$R, $Out>
     on ObjectCopyWith<$R, TherapistPatientDetailsModel, $Out> {
   TherapistPatientDetailsModelCopyWith<$R, TherapistPatientDetailsModel, $Out>
-      get $asTherapistPatientDetailsModel => $base.as(
-          (v, t, t2) => _TherapistPatientDetailsModelCopyWithImpl(v, t, t2));
+      get $asTherapistPatientDetailsModel => $base.as((v, t, t2) =>
+          _TherapistPatientDetailsModelCopyWithImpl<$R, $Out>(v, t, t2));
 }
 
 abstract class TherapistPatientDetailsModelCopyWith<
@@ -150,5 +151,6 @@ class _TherapistPatientDetailsModelCopyWithImpl<$R, $Out>
   @override
   TherapistPatientDetailsModelCopyWith<$R2, TherapistPatientDetailsModel, $Out2>
       $chain<$R2, $Out2>(Then<$Out2, $R2> t) =>
-          _TherapistPatientDetailsModelCopyWithImpl($value, $cast, t);
+          _TherapistPatientDetailsModelCopyWithImpl<$R2, $Out2>(
+              $value, $cast, t);
 }
