@@ -22,8 +22,10 @@ class _TherapyGoalsScreenState extends State<TherapyGoalsScreen> {
   @override
   void initState() {
     super.initState();
-    context.read<TherapyProvider>().getThearpyType();
-    context.read<TherapyProvider>().setPatientId = widget.patientId;
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      context.read<TherapyProvider>().getThearpyType();
+      context.read<TherapyProvider>().setPatientId = widget.patientId;
+    });
   }
 
   @override
