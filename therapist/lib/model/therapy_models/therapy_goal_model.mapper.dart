@@ -43,6 +43,9 @@ class TherapyGoalModelMapper extends ClassMapperBase<TherapyGoalModel> {
   static List<TherapyModel> _$activities(TherapyGoalModel v) => v.activities;
   static const Field<TherapyGoalModel, List<TherapyModel>> _f$activities =
       Field('activities', _$activities);
+  static String? _$patientId(TherapyGoalModel v) => v.patientId;
+  static const Field<TherapyGoalModel, String> _f$patientId =
+      Field('patientId', _$patientId, key: r'patient_id', opt: true);
 
   @override
   final MappableFields<TherapyGoalModel> fields = const {
@@ -53,6 +56,7 @@ class TherapyGoalModelMapper extends ClassMapperBase<TherapyGoalModel> {
     #observations: _f$observations,
     #regressions: _f$regressions,
     #activities: _f$activities,
+    #patientId: _f$patientId,
   };
 
   static TherapyGoalModel _instantiate(DecodingData data) {
@@ -63,7 +67,8 @@ class TherapyGoalModelMapper extends ClassMapperBase<TherapyGoalModel> {
         goals: data.dec(_f$goals),
         observations: data.dec(_f$observations),
         regressions: data.dec(_f$regressions),
-        activities: data.dec(_f$activities));
+        activities: data.dec(_f$activities),
+        patientId: data.dec(_f$patientId));
   }
 
   @override
@@ -90,8 +95,9 @@ mixin TherapyGoalModelMappable {
   }
 
   TherapyGoalModelCopyWith<TherapyGoalModel, TherapyGoalModel, TherapyGoalModel>
-      get copyWith => _TherapyGoalModelCopyWithImpl(
-          this as TherapyGoalModel, $identity, $identity);
+      get copyWith =>
+          _TherapyGoalModelCopyWithImpl<TherapyGoalModel, TherapyGoalModel>(
+              this as TherapyGoalModel, $identity, $identity);
   @override
   String toString() {
     return TherapyGoalModelMapper.ensureInitialized()
@@ -114,8 +120,8 @@ mixin TherapyGoalModelMappable {
 extension TherapyGoalModelValueCopy<$R, $Out>
     on ObjectCopyWith<$R, TherapyGoalModel, $Out> {
   TherapyGoalModelCopyWith<$R, TherapyGoalModel, $Out>
-      get $asTherapyGoalModel =>
-          $base.as((v, t, t2) => _TherapyGoalModelCopyWithImpl(v, t, t2));
+      get $asTherapyGoalModel => $base
+          .as((v, t, t2) => _TherapyGoalModelCopyWithImpl<$R, $Out>(v, t, t2));
 }
 
 abstract class TherapyGoalModelCopyWith<$R, $In extends TherapyGoalModel, $Out>
@@ -135,7 +141,8 @@ abstract class TherapyGoalModelCopyWith<$R, $In extends TherapyGoalModel, $Out>
       List<TherapyModel>? goals,
       List<TherapyModel>? observations,
       List<TherapyModel>? regressions,
-      List<TherapyModel>? activities});
+      List<TherapyModel>? activities,
+      String? patientId});
   TherapyGoalModelCopyWith<$R2, $In, $Out2> $chain<$R2, $Out2>(
       Then<$Out2, $R2> t);
 }
@@ -176,7 +183,8 @@ class _TherapyGoalModelCopyWithImpl<$R, $Out>
           List<TherapyModel>? goals,
           List<TherapyModel>? observations,
           List<TherapyModel>? regressions,
-          List<TherapyModel>? activities}) =>
+          List<TherapyModel>? activities,
+          Object? patientId = $none}) =>
       $apply(FieldCopyWithData({
         if (performedOn != null) #performedOn: performedOn,
         if (therapistId != $none) #therapistId: therapistId,
@@ -184,7 +192,8 @@ class _TherapyGoalModelCopyWithImpl<$R, $Out>
         if (goals != null) #goals: goals,
         if (observations != null) #observations: observations,
         if (regressions != null) #regressions: regressions,
-        if (activities != null) #activities: activities
+        if (activities != null) #activities: activities,
+        if (patientId != $none) #patientId: patientId
       }));
   @override
   TherapyGoalModel $make(CopyWithData data) => TherapyGoalModel(
@@ -194,10 +203,11 @@ class _TherapyGoalModelCopyWithImpl<$R, $Out>
       goals: data.get(#goals, or: $value.goals),
       observations: data.get(#observations, or: $value.observations),
       regressions: data.get(#regressions, or: $value.regressions),
-      activities: data.get(#activities, or: $value.activities));
+      activities: data.get(#activities, or: $value.activities),
+      patientId: data.get(#patientId, or: $value.patientId));
 
   @override
   TherapyGoalModelCopyWith<$R2, TherapyGoalModel, $Out2> $chain<$R2, $Out2>(
           Then<$Out2, $R2> t) =>
-      _TherapyGoalModelCopyWithImpl($value, $cast, t);
+      _TherapyGoalModelCopyWithImpl<$R2, $Out2>($value, $cast, t);
 }

@@ -3,6 +3,8 @@ import 'package:therapist/core/entities/auth_entities/therapist_personal_info_en
 import 'package:therapist/core/models/profession_model.dart';
 import 'package:therapist/core/repository/therapist/therapist_repository.dart';
 import 'package:therapist/core/result/result.dart';
+import 'package:therapist/core/utils/api_status_enum.dart';
+import 'package:therapist/model/therapist_models/therapist_patient_details_model.dart';
 
 class TherapistDataProvider extends ChangeNotifier {
   final TherapistRepository _therapistRepository;
@@ -72,6 +74,11 @@ class TherapistDataProvider extends ChangeNotifier {
 
   String? _selectedSpecialization;
   String? get selectedSpecialization => _selectedSpecialization;
+
+  List<TherapistPatientDetailsModel> _patients = [];
+  List<TherapistPatientDetailsModel> get patients => _patients;
+  ApiStatus _patientsStatus = ApiStatus.initial;
+  ApiStatus get patientsStatus => _patientsStatus;
 
   // Fetch professions
   Future<void> fetchProfessions() async {
@@ -180,6 +187,22 @@ class TherapistDataProvider extends ChangeNotifier {
     _selectedProfessionName = null;
     _selectedRegulatoryBody = null;
     _selectedSpecialization = null;
+    notifyListeners();
+  }
+
+  Future<void> fetchPatientsMappedToTherapist() async {
+    _patientsStatus = ApiStatus.loading;
+    notifyListeners();
+
+    final result = await _therapistRepository.fetchPatientsMappedToTherapist();
+
+    if(result is ActionResultSuccess) {
+      _patients = result.data;
+      _patientsStatus = ApiStatus.success;
+    } else if(result is ActionResultFailure) {
+      _patientsStatus = ApiStatus.failure;
+      _errorMessage = result.errorMessage!;
+    }
     notifyListeners();
   }
 }

@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:therapist/core/utils/api_status_enum.dart';
 import 'package:therapist/presentation/consultation/consultation_requests_screen.dart';
 import 'package:therapist/presentation/home/widgets/pending_request_view.dart';
 import 'package:therapist/provider/consultation_provider.dart';
+import 'package:therapist/provider/therapist_provider.dart';
 import 'widgets/stats_card.dart';
 import 'widgets/patient_card.dart';
 import '../session/session_screen.dart';
@@ -33,6 +35,8 @@ class _HomeScreenState extends State<HomeScreen> {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       Provider.of<ConsultationProvider>(context, listen: false)
           .fetchConsultationRequests();
+      Provider.of<TherapistDataProvider>(context, listen: false)
+          .fetchPatientsMappedToTherapist();
     });
 
     _refreshTimer = Timer.periodic(const Duration(minutes: 3), (_) {
@@ -231,26 +235,32 @@ class HomeContent extends StatelessWidget {
             const SizedBox(height: 24),
             _buildConsultationRequestSection(context),
           //  _buildConsultationRequestSection(context),
-            const SizedBox(height: 24),
-            const PatientCard(
-              name: 'Abdul Aziz',
-              id: '#234312',
-              phone: '+91 9845567890',
-              email: 'abdul@mail.com',
-              package: 'Basic',
-              duration: '60 Days',
-              imagePath: 'assets/abdul.png',
-            ),
-            const SizedBox(height: 16),
-            const PatientCard(
-              name: 'Rohit Kumar',
-              id: '#87213',
-              phone: '+91 9834564392',
-              email: 'rohit@mail.com',
-              package: 'Basic',
-              duration: '30 Days',
-              imagePath: 'assets/rohit.png',
-            ),
+           Consumer<TherapistDataProvider>(
+            builder: (context, provider, _) {
+              if(provider.patientsStatus == ApiStatus.loading) {
+                return const Center(child: CircularProgressIndicator());
+              } else if(provider.patientsStatus == ApiStatus.failure) {
+                return const Center(child: Text('Failed to fetch patients'));
+              } else if(provider.patientsStatus == ApiStatus.success) {
+                if(provider.patients.isEmpty) { 
+                  return const Center(child: Text('No patients found'));
+                } else {
+                  return Column(
+                    children: provider.patients.map((patient) => PatientCard(
+                    name: patient.patientName,
+                    id: patient.patientId,
+                    phone: patient.phoneNo,
+                    email: patient.email,
+                    package: '-',
+                    duration: '-',
+                    imagePath: 'assets/abdul.png',
+                  )).toList(),
+                  );
+                }
+              }
+              return const SizedBox.shrink();
+            },
+           ),
           ],
         ),
       ),

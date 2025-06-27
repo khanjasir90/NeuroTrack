@@ -57,7 +57,7 @@ class PatientCard extends StatelessWidget {
                     ),
                   ),
                   Text(
-                    id,
+                    id.substring(0, 6),
                     style: TextStyle(
                       fontSize: 14,
                       color: Colors.grey[600],
@@ -168,7 +168,15 @@ class PatientCard extends StatelessWidget {
           const SizedBox(height: 16),
           TextButton(
             onPressed: () {
-              Navigator.push(context, MaterialPageRoute(builder: (context) => const TherapyHomeScreen()));
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => TherapyHomeScreen(
+                    patientId: id,
+                    name: name,
+                  ),
+                ),
+              );
             },
             child: const Text(
               'View or Manage Patient',

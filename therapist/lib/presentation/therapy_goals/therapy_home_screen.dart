@@ -3,7 +3,10 @@ import 'package:therapist/presentation/therapy_goals/therapy_goals_screen.dart';
 import 'package:therapist/presentation/therapy_goals/widgets/therapy_goal_home_screen_option_tile.dart';
 
 class TherapyHomeScreen extends StatelessWidget {
-  const TherapyHomeScreen({super.key});
+  const TherapyHomeScreen({super.key, required this.patientId, required this.name});
+
+  final String patientId;
+  final String name;
 
   AppBar _buildHeader(BuildContext context) {
     return AppBar(
@@ -23,21 +26,21 @@ class TherapyHomeScreen extends StatelessWidget {
             ),
           ),
           const SizedBox(width: 15),
-          const Column(
+           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Text(
-                'Patient Name',
-                style: TextStyle(
+                name,
+                style: const TextStyle(
                   color:Color(0xff111847),
                   fontSize: 18,
                   fontWeight: FontWeight.w600,
                 ),
               ),
               Text(
-                'Patient ID: 123456',
-                style: TextStyle(
+                'Patient ID: ${patientId.substring(0, 6)}',
+                style: const TextStyle(
                   color: Color(0xff6D6D6D),
                   fontSize: 12,
                   fontWeight: FontWeight.w600,
@@ -50,10 +53,12 @@ class TherapyHomeScreen extends StatelessWidget {
     );
   }
 
-  void _navigateToTailoredGoals (BuildContext context) {
+  void _navigateToTailoredGoals (BuildContext context, String patientId) {
     Navigator.of(context).push(
       MaterialPageRoute(
-        builder: (context) => const TherapyGoalsScreen(),
+        builder: (context) => TherapyGoalsScreen(
+          patientId: patientId,
+        ),
       ),
     );
   }
@@ -81,7 +86,7 @@ class TherapyHomeScreen extends StatelessWidget {
               color: const Color(0xffF9F3E3),
               imagePath: 'assets/health_tracking.png',
               isLeading: false,
-              onTap: () => _navigateToTailoredGoals(context),
+              onTap: () => _navigateToTailoredGoals(context, patientId),
             ),
             TherapyGoalHomeScreenOptionTile(
               title: 'Daily\nActivities',

@@ -9,9 +9,16 @@ part 'therapist_patient_details_model.mapper.dart';
 @MappableClass()
 class TherapistPatientDetailsModel with TherapistPatientDetailsModelMappable {
   
+  @MappableField(key: 'id')
   final String patientId;
+
+  @MappableField(key: 'patient_name')
   final String patientName;
+
+  @MappableField(key: 'phone')
   final String phoneNo;
+
+  @MappableField(key: 'email')
   final String email;
 
 

@@ -28,6 +28,9 @@ class TherapyGoalModel with TherapyGoalModelMappable {
   @MappableField(key: 'activities')
   final List<TherapyModel> activities;
 
+  @MappableField(key: 'patient_id')
+  final String? patientId;
+
 
   TherapyGoalModel({
     required this.performedOn,
@@ -37,6 +40,7 @@ class TherapyGoalModel with TherapyGoalModelMappable {
     required this.observations,
     required this.regressions,
     required this.activities,
+    this.patientId,
   });
 
   TherapyGoalEntity toEntity() {
@@ -47,6 +51,7 @@ class TherapyGoalModel with TherapyGoalModelMappable {
       observations: observations,
       regressions: regressions,
       activities: activities,
+      patientId: patientId,
     );
   }
 }

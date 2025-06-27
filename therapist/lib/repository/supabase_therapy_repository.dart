@@ -245,7 +245,9 @@ class SupabaseTherapyRepository implements TherapyRepository {
   Future<ActionResult> saveTherapyGoals(TherapyGoalEntity therapyGoalEntity) async {
     try {
       await _supabaseClient.from('therapy_goal')
-        .insert(therapyGoalEntity.copyWith(therapistId: _supabaseClient.auth.currentUser!.id).toMap());
+        .insert(therapyGoalEntity.copyWith(
+          therapistId: _supabaseClient.auth.currentUser!.id,
+        ).toMap());
       return ActionResultSuccess(data: 'Therapy Goal Saved Successfully', statusCode: 200);
     } catch (e) {
       return ActionResultFailure(errorMessage: e.toString(), statusCode: 500);

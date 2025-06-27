@@ -112,4 +112,6 @@ abstract interface class TherapistRepository {
 
   // Get the therapies for a profession
   Future<ActionResult> fetchTherapies(int professionId);
+
+  Future<ActionResult> fetchPatientsMappedToTherapist();
 }

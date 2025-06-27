@@ -21,6 +21,9 @@ class TherapyGoalEntityMapper extends ClassMapperBase<TherapyGoalEntity> {
   @override
   final String id = 'TherapyGoalEntity';
 
+  static String? _$patientId(TherapyGoalEntity v) => v.patientId;
+  static const Field<TherapyGoalEntity, String> _f$patientId =
+      Field('patientId', _$patientId, key: r'patient_id', opt: true);
   static DateTime _$performedOn(TherapyGoalEntity v) => v.performedOn;
   static const Field<TherapyGoalEntity, DateTime> _f$performedOn =
       Field('performedOn', _$performedOn, key: r'performed_on');
@@ -46,6 +49,7 @@ class TherapyGoalEntityMapper extends ClassMapperBase<TherapyGoalEntity> {
 
   @override
   final MappableFields<TherapyGoalEntity> fields = const {
+    #patientId: _f$patientId,
     #performedOn: _f$performedOn,
     #therapistId: _f$therapistId,
     #therapyTypeId: _f$therapyTypeId,
@@ -57,6 +61,7 @@ class TherapyGoalEntityMapper extends ClassMapperBase<TherapyGoalEntity> {
 
   static TherapyGoalEntity _instantiate(DecodingData data) {
     return TherapyGoalEntity(
+        patientId: data.dec(_f$patientId),
         performedOn: data.dec(_f$performedOn),
         therapistId: data.dec(_f$therapistId),
         therapyTypeId: data.dec(_f$therapyTypeId),
@@ -91,8 +96,9 @@ mixin TherapyGoalEntityMappable {
 
   TherapyGoalEntityCopyWith<TherapyGoalEntity, TherapyGoalEntity,
           TherapyGoalEntity>
-      get copyWith => _TherapyGoalEntityCopyWithImpl(
-          this as TherapyGoalEntity, $identity, $identity);
+      get copyWith =>
+          _TherapyGoalEntityCopyWithImpl<TherapyGoalEntity, TherapyGoalEntity>(
+              this as TherapyGoalEntity, $identity, $identity);
   @override
   String toString() {
     return TherapyGoalEntityMapper.ensureInitialized()
@@ -115,8 +121,8 @@ mixin TherapyGoalEntityMappable {
 extension TherapyGoalEntityValueCopy<$R, $Out>
     on ObjectCopyWith<$R, TherapyGoalEntity, $Out> {
   TherapyGoalEntityCopyWith<$R, TherapyGoalEntity, $Out>
-      get $asTherapyGoalEntity =>
-          $base.as((v, t, t2) => _TherapyGoalEntityCopyWithImpl(v, t, t2));
+      get $asTherapyGoalEntity => $base
+          .as((v, t, t2) => _TherapyGoalEntityCopyWithImpl<$R, $Out>(v, t, t2));
 }
 
 abstract class TherapyGoalEntityCopyWith<$R, $In extends TherapyGoalEntity,
@@ -130,7 +136,8 @@ abstract class TherapyGoalEntityCopyWith<$R, $In extends TherapyGoalEntity,
   ListCopyWith<$R, TherapyModel,
       TherapyModelCopyWith<$R, TherapyModel, TherapyModel>> get activities;
   $R call(
-      {DateTime? performedOn,
+      {String? patientId,
+      DateTime? performedOn,
       String? therapistId,
       String? therapyTypeId,
       List<TherapyModel>? goals,
@@ -171,7 +178,8 @@ class _TherapyGoalEntityCopyWithImpl<$R, $Out>
           (v, t) => v.copyWith.$chain(t), (v) => call(activities: v));
   @override
   $R call(
-          {DateTime? performedOn,
+          {Object? patientId = $none,
+          DateTime? performedOn,
           Object? therapistId = $none,
           String? therapyTypeId,
           List<TherapyModel>? goals,
@@ -179,6 +187,7 @@ class _TherapyGoalEntityCopyWithImpl<$R, $Out>
           List<TherapyModel>? regressions,
           List<TherapyModel>? activities}) =>
       $apply(FieldCopyWithData({
+        if (patientId != $none) #patientId: patientId,
         if (performedOn != null) #performedOn: performedOn,
         if (therapistId != $none) #therapistId: therapistId,
         if (therapyTypeId != null) #therapyTypeId: therapyTypeId,
@@ -189,6 +198,7 @@ class _TherapyGoalEntityCopyWithImpl<$R, $Out>
       }));
   @override
   TherapyGoalEntity $make(CopyWithData data) => TherapyGoalEntity(
+      patientId: data.get(#patientId, or: $value.patientId),
       performedOn: data.get(#performedOn, or: $value.performedOn),
       therapistId: data.get(#therapistId, or: $value.therapistId),
       therapyTypeId: data.get(#therapyTypeId, or: $value.therapyTypeId),
@@ -200,5 +210,5 @@ class _TherapyGoalEntityCopyWithImpl<$R, $Out>
   @override
   TherapyGoalEntityCopyWith<$R2, TherapyGoalEntity, $Out2> $chain<$R2, $Out2>(
           Then<$Out2, $R2> t) =>
-      _TherapyGoalEntityCopyWithImpl($value, $cast, t);
+      _TherapyGoalEntityCopyWithImpl<$R2, $Out2>($value, $cast, t);
 }

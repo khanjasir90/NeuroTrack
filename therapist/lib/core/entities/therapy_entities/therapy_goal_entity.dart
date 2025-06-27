@@ -27,9 +27,13 @@ class TherapyGoalEntity with TherapyGoalEntityMappable {
   @MappableField(key: 'activities')
   final List<TherapyModel> activities;
 
+  @MappableField(key: 'patient_id')
+  final String? patientId;
+
 
 
   TherapyGoalEntity({
+    this.patientId,
     required this.performedOn,
     this.therapistId,
     required this.therapyTypeId,
