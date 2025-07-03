@@ -1,13 +1,22 @@
 import 'package:flutter/foundation.dart';
+import 'package:patient/core/core.dart';
 import 'package:patient/model/task_model.dart';
 
 class TaskProvider extends ChangeNotifier {
-  final List<PatientTaskModel> _allTasks = [];
+  List<PatientTaskModel> _allTasks = [];
   DateTime _selectedDate = DateTime.now();
+  final PatientRepository _patientRepository;
+  ApiStatus _apiStatus = ApiStatus.initial;
 
-  TaskProvider() {
+  TaskProvider({
+    required PatientRepository patientRepository,
+  }): _patientRepository = patientRepository {
+    //getTodayActivities(); // TODO: Uncomment this when the backend is ready
     _initializeTasks();
   }
+
+  // TODO: Remove this method when the backend is ready
+  // Dummy data for demo purposes
 
   void _initializeTasks() {
     // Created tasks for demo purposes
@@ -15,62 +24,69 @@ class TaskProvider extends ChangeNotifier {
     final today = DateTime.now();
 
     _allTasks.addAll([
-      PatientTaskModel(title: 'Brush Teeth', isCompleted: false, date: today),
-      PatientTaskModel(title: 'Have Breakfast', isCompleted: false, date: today),
-      PatientTaskModel(title: 'Take Medications', isCompleted: false, date: today),
-      PatientTaskModel(title: 'Morning Walk', isCompleted: false, date: today),
-      PatientTaskModel(title: 'Read a Book', isCompleted: false, date: today),
+      PatientTaskModel(activityId: '1', activityName: 'Brush Teeth', isCompleted: false),
+      PatientTaskModel(activityId: '2', activityName: 'Have Breakfast', isCompleted: false),
+      PatientTaskModel(activityId: '3', activityName: 'Take Medications', isCompleted: false),
+      PatientTaskModel(activityId: '4', activityName: 'Morning Walk', isCompleted: false),
+      PatientTaskModel(activityId: '5', activityName: 'Read a Book', isCompleted: false),
     ]);
+    notifyListeners();
+  }
 
-    final yesterday = today.subtract(const Duration(days: 1));
-    _allTasks.addAll([
-      PatientTaskModel(title: 'Morning Stretching', isCompleted: true, date: yesterday),
-      PatientTaskModel(title: 'Language Exercise', isCompleted: true, date: yesterday),
-      PatientTaskModel(title: 'Memory Game', isCompleted: false, date: yesterday),
-    ]);
 
-    final tomorrow = today.add(const Duration(days: 1));
-    _allTasks.addAll([
-      PatientTaskModel(
-          title: 'Speech Therapy Exercise', isCompleted: false, date: tomorrow),
-      PatientTaskModel(title: 'Cognitive PatientTaskModel', isCompleted: false, date: tomorrow),
-      PatientTaskModel(title: 'Balance Training', isCompleted: false, date: tomorrow),
-    ]);
+  Future<void> getTodayActivities({
+    DateTime? date,
+  }) async {
+    try {
+      _apiStatus = ApiStatus.loading;
+      notifyListeners();
+      final result = await _patientRepository.getTodayActivities(date: date);
+      if(result is ActionResultSuccess) {
+        _allTasks = result.data as List<PatientTaskModel>;
+        _apiStatus = ApiStatus.success;
+      } else {
+        _apiStatus = ApiStatus.failure;
+      }
+      notifyListeners();
+    } catch(e) {
+      _apiStatus = ApiStatus.failure;
+    } finally {
+      notifyListeners();
+    }
   }
 
   DateTime get selectedDate => _selectedDate;
 
   void setSelectedDate(DateTime date) {
     _selectedDate = date;
+    //updateActivityInBackground(); // TODO: Uncomment this when the backend is ready
+    //getTodayActivities(date: date); // TODO: Uncomment this when the backend is ready
     notifyListeners();
   }
 
   List<PatientTaskModel> get tasks {
-    return _allTasks
-        .where((task) =>
-            task.date.year == _selectedDate.year &&
-            task.date.month == _selectedDate.month &&
-            task.date.day == _selectedDate.day)
-        .toList();
+    return _allTasks;
   }
 
-  void toggleTaskCompletion(int index, bool isCompleted) {
-    final tasksForDay = tasks;
-    if (index >= 0 && index < tasksForDay.length) {
-      final taskIndex = _allTasks.indexOf(tasksForDay[index]);
-      if (taskIndex != -1) {
-        // Create a new PatientTaskModel with updated completion status
-        final oldTask = _allTasks[taskIndex];
-        _allTasks[taskIndex] = PatientTaskModel(
-          title: oldTask.title,
-          isCompleted: isCompleted,
-          date: oldTask.date,
-        );
-        notifyListeners();
-      }
+  void toggleTaskCompletion(String activityId, bool isCompleted) async {
+    _allTasks = _allTasks.map(
+      (task) => task.activityId == activityId ? task.copyWith(isCompleted: isCompleted) : task)
+      .toList();
+    notifyListeners();
+  }
+
+  void updateActivityInBackground() {
+    compute(_updateActivityCompletion, _allTasks);
+  }
+
+  Future<void> _updateActivityCompletion(List<PatientTaskModel> tasks) async {
+    try {
+      await _patientRepository.updateActivityCompletion(tasks);
+    } catch(e) {
+      print(e);
     }
   }
 
-  int get completedTasksCount => tasks.where((task) => task.isCompleted).length;
+  int get completedTasksCount => tasks.where((task) => task.isCompleted ?? false).length;
   int get totalTasksCount => tasks.length;
 }
