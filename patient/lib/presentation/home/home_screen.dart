@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:patient/core/theme/theme.dart';
+import 'package:patient/presentation/activities/daily_activities_screen.dart';
 import 'package:patient/presentation/appointments/appointment_list_screen.dart';
 import 'package:patient/presentation/home/widgets/home_screen_slider.dart';
 import 'package:patient/presentation/home/widgets/therapy_goal_card.dart';
@@ -141,12 +142,21 @@ class _HomeScreenState extends State<HomeScreen> {
                 const SizedBox(height: 15),
                 // Daily Activities Card
 
-                TherapyGoalCard(
-                  title: 'Daily',
-                  subtitle: 'Activities',
-                  illustration: Assets.illustrations.i9nActivities,
-                  backgroundColor: Color(0xFFFEF4F0),
-                  imageOnLeft: true,
+                GestureDetector(
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => const DailyActivitiesScreen()),
+                    );
+                  },
+                  child: TherapyGoalCard(
+                    title: 'Daily',
+                    subtitle: 'Activities',
+                    illustration: Assets.illustrations.i9nActivities,
+                    backgroundColor: Color(0xFFFEF4F0),
+                    imageOnLeft: true,
+                  ),
                 ),
 
                 const SizedBox(height: 15),

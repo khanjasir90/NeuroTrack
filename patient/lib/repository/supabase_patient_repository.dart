@@ -4,6 +4,7 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 
 import '../core/entities/entities.dart';
 import '../core/repository/repository.dart';
+import '../model/task_model.dart';
 import '../model/therapy_models/therapy_models.dart';
 
 class SupabasePatientRepository implements PatientRepository {
@@ -130,6 +131,41 @@ class SupabasePatientRepository implements PatientRepository {
         errorMessage: e.toString(),
         statusCode: 500
       );
+    }
+  }
+
+  @override
+  Future<ActionResult> getTodayActivities({DateTime? date}) async {
+    try {
+      // TODO: Refactor this part when developing the therapist part of the same feature.
+      final dateTime = date ?? DateTime.now();
+      final response = await _supabaseClient.from('daily_activity')
+      .select('*')
+      .eq('patient_id', _supabaseClient.auth.currentUser!.id)
+      .eq('date', dateTime.toIso8601String());
+      
+      if (response.isEmpty) {
+        return ActionResultFailure(errorMessage: 'No activities found', statusCode: 404);
+      }
+      return ActionResultSuccess(data: response, statusCode: 200);
+    } catch(e) {
+      return ActionResultFailure(errorMessage: e.toString(), statusCode: 500);
+    }
+  }
+
+  @override
+  Future<ActionResult> updateActivityCompletion(List<PatientTaskModel> tasks) async {
+    try {
+      // Refactor this part when developing the therapist part of the same feature.
+      for(int i=0;i<tasks.length;i++) {
+        await _supabaseClient.from('daily_activity')
+        .update({'is_completed': tasks[i].isCompleted}).eq('id', tasks[i].activityId ?? '')
+        .eq('patient_id', _supabaseClient.auth.currentUser!.id);
+      }
+
+      return ActionResultSuccess(data: 'Activity updated successfully', statusCode: 200);
+    } catch(e) {
+      return ActionResultFailure(errorMessage: e.toString(), statusCode: 500);
     }
   }
 }

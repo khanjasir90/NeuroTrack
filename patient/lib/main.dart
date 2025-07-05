@@ -50,7 +50,9 @@ Future<void> main() async {
           ),
         ),
         ChangeNotifierProvider(create: (_) => ReportsProvider()),
-        ChangeNotifierProvider(create: (_) => TaskProvider()),
+        ChangeNotifierProvider(create: (_) => TaskProvider(
+          patientRepository: SupabasePatientRepository(supabaseClient: Supabase.instance.client),
+        )),
         ChangeNotifierProvider(create: (_) => TherapyGoalsProvider(
           patientRepository: SupabasePatientRepository(supabaseClient: Supabase.instance.client),
         )),
