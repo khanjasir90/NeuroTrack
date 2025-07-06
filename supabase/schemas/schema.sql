@@ -138,6 +138,20 @@ CREATE TABLE activity_master (
     applicable_therapies UUID[] NOT NULL,
 );
 
+-- Daily Activities Table
+CREATE TABLE daily_activities (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    created_at TIMESTAMPTZ DEFAULT NOW(),
+    activity_name TEXT NOT NULL,
+    activity_list JSONB,
+    is_active BOOLEAN DEFAULT TRUE,
+    therapist_id UUID REFERENCES therapist(id),
+    patient_id UUID REFERENCES patient(id),
+    start_time TIMESTAMPTZ,
+    end_time TIMESTAMPTZ,
+    days_of_week INT2[],
+);
+
 -- Indexes on foreign keys for better performance
 CREATE INDEX idx_patient_therapist_id ON patient(therapist_id);
 CREATE INDEX idx_session_therapist_id ON session(therapist_id);
