@@ -101,4 +101,16 @@ abstract interface class TherapyRepository {
   /// Returns an [ActionResultSuccess] if the operation is successful
   
   Future<ActionResult> saveTherapyGoals(TherapyGoalEntity therapyGoalEntity);
+
+  /// Get all daily activities
+  /// 
+  /// Returns a list of daily activities
+  /// 
+  /// Throws an [ActionResultFailure] if an exception occurs
+  /// 
+  /// Returns an [ActionResultSuccess] if the operation is successful
+  /// 
+  /// [patientId] is the id of the patient
+  
+  Future<ActionResult> getAllDailyActivities(String patientId);
 }

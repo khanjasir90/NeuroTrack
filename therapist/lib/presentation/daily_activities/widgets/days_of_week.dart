@@ -4,9 +4,11 @@ class DaysOfWeek extends StatelessWidget {
   DaysOfWeek({
     super.key,
     required this.dayIndex,
+    required this.isSelected,
   });
 
   final int dayIndex;
+  final bool isSelected;
 
   
   final List<String> days = ['M', 'T', 'W', 'T', 'F', 'S', 'S'];
@@ -22,7 +24,7 @@ class DaysOfWeek extends StatelessWidget {
         height: 36,
         decoration: BoxDecoration(
           shape: BoxShape.circle,
-          color: Colors.white,
+          color: isSelected ? const Color(0xffCB6CE6) : Colors.white,
           border: Border.all(
             color:Colors.grey.shade300,
             width: 1,
@@ -31,8 +33,8 @@ class DaysOfWeek extends StatelessWidget {
         child: Center(
           child: Text(
             days[dayIndex],
-            style: const TextStyle(
-              color: Colors.black54,
+            style: TextStyle(
+              color: isSelected ? Colors.white : Colors.black54,
               fontWeight: FontWeight.w500,
             ),
           ),

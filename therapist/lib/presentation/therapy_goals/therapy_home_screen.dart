@@ -1,7 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:therapist/presentation/therapy_goals/therapy_goals_screen.dart';
 import 'package:therapist/presentation/therapy_goals/widgets/therapy_goal_home_screen_option_tile.dart';
+import 'package:therapist/repository/supabase_therapy_repository.dart';
 
+import '../../core/repository/therapy/therapy_repository.dart';
+import '../../provider/daily_activities_provider.dart';
 import '../daily_activities/daily_activities_screen.dart';
 
 class TherapyHomeScreen extends StatelessWidget {
@@ -64,8 +68,15 @@ class TherapyHomeScreen extends StatelessWidget {
       ),
     );
   }
-  void _navigateToDailyActivities (BuildContext context) {
-    Navigator.push(context, MaterialPageRoute(builder: (context) => const DailyActivitiesScreen()));
+  void _navigateToDailyActivities (BuildContext context, String patientId ) {
+    Navigator.push(context, MaterialPageRoute(
+      builder: (context)  {
+        return ChangeNotifierProvider(
+          create: (context) => DailyActivitiesProvider(therapyRepository: SupabaseTherapyRepository()),
+          child: DailyActivitiesScreen(patientId: patientId),
+        );
+      },
+    ));
   }
 
   void _navigateToDevelopmentMilestones (BuildContext context) {
@@ -95,7 +106,7 @@ class TherapyHomeScreen extends StatelessWidget {
               color: const Color(0xffFEF4F0),
               imagePath: 'assets/daily_activities.png',
               isLeading: true,
-              onTap: () => _navigateToDailyActivities(context),
+              onTap: () => _navigateToDailyActivities(context, patientId),
             ),
             TherapyGoalHomeScreenOptionTile(
               title: 'Development\nMilestones',

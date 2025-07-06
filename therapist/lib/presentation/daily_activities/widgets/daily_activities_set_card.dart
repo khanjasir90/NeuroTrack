@@ -218,7 +218,7 @@ class _ActivitySetCardState extends State<ActivitySetCard> {
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       children: List.generate(
-                          7, (index) => DaysOfWeek(dayIndex: index)),
+                          7, (index) => DaysOfWeek(dayIndex: index, isSelected: widget.selectedDays[index])),
                     ),
                   ),
 
@@ -228,11 +228,7 @@ class _ActivitySetCardState extends State<ActivitySetCard> {
                     child: Column(
                       children: [
                         DailyActivitesActionBtn(
-                            icon: Icons.calendar_today, label: 'Schedule'),
-                        SizedBox(height: 12),
-                        DailyActivitesActionBtn(
-                            icon: Icons.add_circle_outline,
-                            label: 'Add / Remove Activities'),
+                            icon: Icons.edit, label: 'Edit'),
                         SizedBox(height: 12),
                         DailyActivitesActionBtn(
                             icon: Icons.delete_outline, label: 'Delete'),

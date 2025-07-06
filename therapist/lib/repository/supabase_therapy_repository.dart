@@ -4,6 +4,7 @@ import 'package:therapist/core/entities/therapy_entities/therapy_type_entity.dar
 import 'package:therapist/core/result/result.dart';
 import 'package:therapist/model/therapy_models/therapy_models.dart';
 
+import '../core/entities/daily_activity_entities/daily_activity_response.dart' show DailyActivityResponse, DailyActivityResponseMapper;
 import '../core/repository/repository.dart';
 
 class SupabaseTherapyRepository implements TherapyRepository {
@@ -249,6 +250,25 @@ class SupabaseTherapyRepository implements TherapyRepository {
           therapistId: _supabaseClient.auth.currentUser!.id,
         ).toMap());
       return ActionResultSuccess(data: 'Therapy Goal Saved Successfully', statusCode: 200);
+    } catch (e) {
+      return ActionResultFailure(errorMessage: e.toString(), statusCode: 500);
+    }
+  }
+
+  @override
+  Future<ActionResult> getAllDailyActivities(String patientId) async {
+    try {
+      final response = await _supabaseClient.from('daily_activities')
+      .select('*')
+      .eq('patient_id', patientId)
+      .eq('therapist_id', _supabaseClient.auth.currentUser!.id);
+
+      if(response.isNotEmpty) {
+        final data = response.map((e) => DailyActivityResponseMapper.fromMap(e).toModel()).toList();
+        return ActionResultSuccess(data: data, statusCode: 200);
+      } else {
+        return ActionResultSuccess(data: <DailyActivityResponse>[], statusCode: 200);
+      }
     } catch (e) {
       return ActionResultFailure(errorMessage: e.toString(), statusCode: 500);
     }
