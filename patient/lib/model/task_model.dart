@@ -4,9 +4,9 @@ part 'task_model.mapper.dart';
 
 @MappableClass()
 class PatientTaskModel with PatientTaskModelMappable {
-  @MappableField(key: 'activity_id')
+  @MappableField(key: 'id')
   final String? activityId;
-  @MappableField(key: 'activity_name')
+  @MappableField(key: 'activity')
   final String? activityName;
   @MappableField(key: 'is_completed')
   final bool? isCompleted;

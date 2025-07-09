@@ -152,6 +152,13 @@ CREATE TABLE daily_activities (
     days_of_week INT2[],
 );
 
+CREATE TABLE daily_activity_logs (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    activity_id UUID REFERENCES daily_activities(id) ON DELETE CASCADE,
+    date TIMESTAMPTZ NOT NULL,
+    activity_items JSONB NOT NULL
+);
+
 -- Indexes on foreign keys for better performance
 CREATE INDEX idx_patient_therapist_id ON patient(therapist_id);
 CREATE INDEX idx_session_therapist_id ON session(therapist_id);

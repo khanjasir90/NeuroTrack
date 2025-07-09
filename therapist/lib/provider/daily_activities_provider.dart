@@ -25,6 +25,44 @@ class DailyActivitiesProvider extends ChangeNotifier {
   bool _isExpanded = true;
   bool get isExpanded => _isExpanded;
 
+  ApiStatus _addActivitySetStatus = ApiStatus.initial;
+  ApiStatus get addActivitySetStatus => _addActivitySetStatus;
+
+  ApiStatus _deleteActivitySetStatus = ApiStatus.initial;
+  ApiStatus get deleteActivitySetStatus => _deleteActivitySetStatus;
+
+  Future<void> deleteActivitySet(String activitySetId, String patientId) async {
+    try {
+      _deleteActivitySetStatus = ApiStatus.loading;
+      final result = await _therapyRepository.deleteDailyActivity(activitySetId);
+      if(result is ActionResultSuccess) {
+        _deleteActivitySetStatus = ApiStatus.success;
+        getDailyActivities(patientId);
+      } else {
+        _deleteActivitySetStatus = ApiStatus.failure;
+      }
+      notifyListeners();
+    } catch (e) {
+      _deleteActivitySetStatus = ApiStatus.failure;
+    }
+  }
+
+  Future<void> addOrUpdateActivitySet(DailyActivityResponseModel activitySet) async {
+    try {
+      _addActivitySetStatus = ApiStatus.loading;
+      notifyListeners();
+      final result = await _therapyRepository.addOrUpdateDailyActivity(activitySet.toEntity());
+      if(result is ActionResultSuccess) {
+        _addActivitySetStatus = ApiStatus.success;
+      } else {
+        _addActivitySetStatus = ApiStatus.failure;
+      }
+      notifyListeners();
+    } catch (e) {
+      _addActivitySetStatus = ApiStatus.failure;
+    }
+  }
+
   Future<void> getDailyActivities(String patientId) async {
     try {
       _dailyActivitiesStatus = ApiStatus.loading;
@@ -39,6 +77,8 @@ class DailyActivitiesProvider extends ChangeNotifier {
       notifyListeners();
     } catch (e) {
       _dailyActivitiesStatus = ApiStatus.failure;
+    } finally {
+      notifyListeners();
     }
   }
 

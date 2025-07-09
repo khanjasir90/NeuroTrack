@@ -20,6 +20,7 @@ import 'package:therapist/repository/supabase_therapy_repository.dart';
 
 import 'presentation/splash_screen.dart';
 import 'provider/auth_provider.dart';
+import 'provider/daily_activities_provider.dart';
 import 'provider/home_provider.dart';
 import 'provider/therapist_provider.dart';
 
@@ -76,7 +77,8 @@ Future<void> main() async {
         ChangeNotifierProvider(create: (context) => SessionProvider(
           therapistRepository: context.read<TherapistRepository>(),
         ),),
-        ChangeNotifierProvider(create: (context) => TherapyProvider(therapyRepository: SupabaseTherapyRepository()))
+        ChangeNotifierProvider(create: (context) => TherapyProvider(therapyRepository: SupabaseTherapyRepository())),
+        ChangeNotifierProvider(create: (context) => DailyActivitiesProvider(therapyRepository: SupabaseTherapyRepository())),
       ],
       child: const MyApp(),
     ),

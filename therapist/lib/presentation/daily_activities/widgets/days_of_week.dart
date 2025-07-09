@@ -11,7 +11,7 @@ class DaysOfWeek extends StatelessWidget {
   final bool isSelected;
 
   
-  final List<String> days = ['M', 'T', 'W', 'T', 'F', 'S', 'S'];
+  final List<String> days = ['S', 'M', 'T', 'W', 'T', 'F', 'S'];
 
   @override
   Widget build(BuildContext context) {

@@ -3,7 +3,9 @@ import 'package:provider/provider.dart';
 import 'package:therapist/core/utils/api_status_enum.dart';
 import 'package:therapist/presentation/daily_activities/widgets/daily_activities_set_card.dart';
 
+import '../../core/common/widgets/primary_button.dart';
 import '../../provider/daily_activities_provider.dart';
+import 'add_activty_set_screen.dart';
 
 class DailyActivitiesScreen extends StatefulWidget {
   const DailyActivitiesScreen({
@@ -28,6 +30,16 @@ class _DailyActivitiesScreenState extends State<DailyActivitiesScreen> {
     });
   }
 
+  final List<String> weekDays = [
+    'Sunday',
+    'Monday',
+    'Tuesday',
+    'Wednesday',
+    'Thursday',
+    'Friday',
+    'Saturday',
+  ];
+
   AppBar _getAppBar(BuildContext context) {
     return AppBar(
       backgroundColor: Colors.white,
@@ -51,6 +63,24 @@ class _DailyActivitiesScreenState extends State<DailyActivitiesScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      floatingActionButton: PrimaryButton(
+        text: 'Add Activity Set',
+        onPressed: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (context) => AddActivitySetScreen(
+                  patientId: widget.patientId,
+                  onSave: () {
+                    context
+                        .read<DailyActivitiesProvider>()
+                        .getDailyActivities(widget.patientId);
+                  },
+                ),
+              ),
+          );
+        },
+      ),
       backgroundColor: Colors.white,
       appBar: _getAppBar(context),
       body: Consumer<DailyActivitiesProvider>(
@@ -61,21 +91,65 @@ class _DailyActivitiesScreenState extends State<DailyActivitiesScreen> {
                 const SizedBox(
                   height: 40,
                 ),
-                if(provider.dailyActivitiesStatus == ApiStatus.loading) ...[
+                if (provider.dailyActivitiesStatus == ApiStatus.loading) ...[
                   const Center(
                     child: CircularProgressIndicator(),
                   ),
-                ] else if(provider.dailyActivitiesStatus == ApiStatus.success) ...[
+                ] else if (provider.dailyActivitiesStatus ==
+                    ApiStatus.success) ...[
                   ListView.builder(
+                    primary: false,
                     itemCount: provider.dailyActivities.length,
                     shrinkWrap: true,
                     itemBuilder: (context, index) {
                       final dailyActivity = provider.dailyActivities[index];
                       return ActivitySetCard(
+                        startDate: dailyActivity.startTime,
+                        endDate: dailyActivity.endTime,
+                        onDelete: () {
+                          context
+                              .read<DailyActivitiesProvider>()
+                              .deleteActivitySet(dailyActivity.id, widget.patientId);
+                        },
+                        onEdit: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => AddActivitySetScreen(
+                                onSave: () {
+                                  context
+                                      .read<DailyActivitiesProvider>()
+                                      .getDailyActivities(widget.patientId);
+                                },
+                                patientId: widget.patientId,
+                                activitySetId: dailyActivity.id,
+                                startDate:
+                                    DateTime.parse(dailyActivity.startTime),
+                                endDate: DateTime.parse(dailyActivity.endTime),
+                                activityName: dailyActivity.activityName,
+                                activities: dailyActivity.activityList
+                                    .map((e) => e.activity)
+                                    .toList(),
+                                selectedWeekdays: () {
+                                  final daysOfWeek = dailyActivity.daysOfWeek;
+                                  final List<String> selectedDays = [];
+                                  for (int i = 0; i < 7; i++) {
+                                    if (daysOfWeek.contains(i.toString())) {
+                                      selectedDays.add(weekDays[i]);
+                                    }
+                                  }
+                                  return selectedDays;
+                                }(),
+                              ),
+                            ),
+                          );
+                        },
                         title: dailyActivity.activityName,
                         isExpanded: provider.isExpanded,
                         isActive: dailyActivity.isActive,
-                        activities: dailyActivity.activityList.map((e) => e.activity).toList(),
+                        activities: dailyActivity.activityList
+                            .map((e) => e.activity)
+                            .toList(),
                         onExpandToggle: () {
                           provider.toggleExpanded();
                         },
@@ -83,7 +157,7 @@ class _DailyActivitiesScreenState extends State<DailyActivitiesScreen> {
                         selectedDays: () {
                           final daysOfWeek = dailyActivity.daysOfWeek;
                           final List<bool> selectedDays = [];
-                          for(int i = 1; i <= 7; i++) {
+                          for (int i = 0; i < 7; i++) {
                             selectedDays.add(daysOfWeek.contains(i.toString()));
                           }
                           return selectedDays;
@@ -92,7 +166,9 @@ class _DailyActivitiesScreenState extends State<DailyActivitiesScreen> {
                     },
                   )
                 ] else ...[
-                  const Center(child: Text('No daily activities found'),)
+                  const Center(
+                    child: Text('No daily activities found'),
+                  )
                 ]
               ],
             ),

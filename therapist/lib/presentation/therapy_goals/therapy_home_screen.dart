@@ -71,10 +71,7 @@ class TherapyHomeScreen extends StatelessWidget {
   void _navigateToDailyActivities (BuildContext context, String patientId ) {
     Navigator.push(context, MaterialPageRoute(
       builder: (context)  {
-        return ChangeNotifierProvider(
-          create: (context) => DailyActivitiesProvider(therapyRepository: SupabaseTherapyRepository()),
-          child: DailyActivitiesScreen(patientId: patientId),
-        );
+        return DailyActivitiesScreen(patientId: patientId);
       },
     ));
   }

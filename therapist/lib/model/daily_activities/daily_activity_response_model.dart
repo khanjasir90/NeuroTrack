@@ -1,6 +1,8 @@
 import 'package:dart_mappable/dart_mappable.dart';
 import 'package:therapist/core/entities/daily_activity_entities/daily_activity_model.dart';
 
+import '../../core/entities/daily_activity_entities/daily_activity_response.dart';
+
 part 'daily_activity_response_model.mapper.dart';
 
 @MappableClass()
@@ -39,4 +41,19 @@ class DailyActivityResponseModel with DailyActivityResponseModelMappable {
     required this.endTime,
     required this.daysOfWeek,
   });
+
+  DailyActivityResponse toEntity() {
+    return DailyActivityResponse(
+      id: id,
+      createdAt: createdAt,
+      activityName: activityName,
+      activityList: activityList,
+      isActive: isActive,
+      patientId: patientId,
+      therapistId: therapistId,
+      startTime: startTime,
+      endTime: endTime,
+      daysOfWeek: daysOfWeek,
+    );
+  }
 }

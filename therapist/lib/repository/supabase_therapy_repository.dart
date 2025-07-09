@@ -1,11 +1,17 @@
+import 'dart:convert';
+
+import 'package:flutter/foundation.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:therapist/core/entities/therapy_entities/therapy_entities.dart';
 import 'package:therapist/core/entities/therapy_entities/therapy_type_entity.dart';
 import 'package:therapist/core/result/result.dart';
 import 'package:therapist/model/therapy_models/therapy_models.dart';
+import 'package:uuid/uuid.dart';
 
+import '../core/entities/daily_activity_entities/daily_activity_model.dart' show DailyActivityModel;
 import '../core/entities/daily_activity_entities/daily_activity_response.dart' show DailyActivityResponse, DailyActivityResponseMapper;
 import '../core/repository/repository.dart';
+import '../model/daily_activities/daily_activity_response_model.dart';
 
 class SupabaseTherapyRepository implements TherapyRepository {
   final _supabaseClient = Supabase.instance.client;
@@ -273,4 +279,59 @@ class SupabaseTherapyRepository implements TherapyRepository {
       return ActionResultFailure(errorMessage: e.toString(), statusCode: 500);
     }
   }
+
+  @override
+  Future<ActionResult> addOrUpdateDailyActivity(DailyActivityResponse dailyActivity) async {
+    try {
+      final updatedDailyActivity = dailyActivity.copyWith(
+        therapistId: _supabaseClient.auth.currentUser!.id,
+        id: const Uuid().v4(),
+      );
+      if(dailyActivity.id.isNotEmpty) {
+        await _supabaseClient.from('daily_activities').update(
+          updatedDailyActivity.toMap()
+        ).eq('id', dailyActivity.id);
+      } else {
+        await _supabaseClient.from('daily_activities').insert(
+          updatedDailyActivity.toMap()
+        );
+      }
+      _addDailyActivityLog(updatedDailyActivity);
+      return ActionResultSuccess(data: 'Daily Activity Added Successfully', statusCode: 200);
+    } catch (e) {
+      return ActionResultFailure(errorMessage: e.toString(), statusCode: 500);
+    }
+  }
+
+  Future<void> _addDailyActivityLog(DailyActivityResponse dailyActivity) async {
+    DateTime startDate = DateTime.parse(dailyActivity.startTime);
+    DateTime endDate = DateTime.parse(dailyActivity.endTime);
+
+    for (DateTime date = startDate;
+       !date.isAfter(endDate);
+       date = date.add(const Duration(days: 1))) {
+    
+    final dayOfWeek = date.weekday % 7; 
+    if (!dailyActivity.daysOfWeek.contains(dayOfWeek.toString())) continue;
+    
+    await _supabaseClient.from('daily_activity_logs').insert({
+      'activity_id': dailyActivity.id,
+      'date': date.toString(),
+      'activity_items': dailyActivity.activityList,
+      'patient_id': dailyActivity.patientId,
+    });
+  }
+  }
+
+  @override
+  Future<ActionResult> deleteDailyActivity(String activitySetId) async {
+    try {
+      await _supabaseClient.from('daily_activities').delete().eq('id', activitySetId);
+      return ActionResultSuccess(data: 'Daily Activity Deleted Successfully', statusCode: 200);
+    } catch (e) {
+      return ActionResultFailure(errorMessage: e.toString(), statusCode: 500);
+    }
+  }
+
+
 }

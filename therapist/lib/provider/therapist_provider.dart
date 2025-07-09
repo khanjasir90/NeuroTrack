@@ -20,7 +20,13 @@ class TherapistDataProvider extends ChangeNotifier {
   String get errorMessage => _errorMessage;
 
   // Professions
-  List<ProfessionModel> _professions = [];
+  List<ProfessionModel> _professions = [
+    ProfessionModel(id: 1, name: 'Neuropsychologist'),
+    ProfessionModel(id: 2, name: 'Neurologist'),
+    ProfessionModel(id: 3, name: 'Neuropsychiatrist'),
+    ProfessionModel(id: 4, name: 'Child Specialist'),
+    ProfessionModel(id: 5, name: 'Pediatrician'),
+  ];
   List<ProfessionModel> get professions => _professions;
 
   List<DropdownMenuEntry<int>> get professionDropdownItems {
@@ -33,7 +39,11 @@ class TherapistDataProvider extends ChangeNotifier {
   }
 
   // Regulatory Bodies
-  List<RegulatoryBodyModel> _regulatoryBodies = [];
+  List<RegulatoryBodyModel> _regulatoryBodies = [
+    RegulatoryBodyModel(id: 1, name: 'CDSCO', professionId: 1),
+    RegulatoryBodyModel(id: 2, name: 'NMC', professionId: 2),
+    RegulatoryBodyModel(id: 3, name: 'TGA', professionId: 3),
+  ];
   List<RegulatoryBodyModel> get regulatoryBodies => _regulatoryBodies;
 
   List<DropdownMenuEntry<String>> get regulatoryBodyDropdownItems {
@@ -46,7 +56,15 @@ class TherapistDataProvider extends ChangeNotifier {
   }
 
   // Specializations
-  List<SpecializationModel> _specializations = [];
+  List<SpecializationModel> _specializations = [
+    SpecializationModel(id: 1, name: 'Child Specialist', professionId: 4),
+    SpecializationModel(id: 2, name: 'Pediatrician', professionId: 5),
+    SpecializationModel(id: 3, name: 'Neuropsychologist', professionId: 1),
+    SpecializationModel(id: 4, name: 'Neurologist', professionId: 2),
+    SpecializationModel(id: 5, name: 'Neuropsychiatrist', professionId: 3),
+    SpecializationModel(id: 6, name: 'Child Specialist', professionId: 4),
+    SpecializationModel(id: 7, name: 'Pediatrician', professionId: 5),
+  ];
   List<SpecializationModel> get specializations => _specializations;
 
   List<DropdownMenuEntry<String>> get specializationDropdownItems {
@@ -200,6 +218,7 @@ class TherapistDataProvider extends ChangeNotifier {
       _patients = result.data;
       _patientsStatus = ApiStatus.success;
     } else if(result is ActionResultFailure) {
+      _patients = <TherapistPatientDetailsModel>[];
       _patientsStatus = ApiStatus.failure;
       _errorMessage = result.errorMessage!;
     }

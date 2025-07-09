@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 
 import 'daily_activities_action_btn.dart';
 import 'days_of_week.dart';
@@ -14,6 +15,10 @@ class ActivitySetCard extends StatefulWidget {
   final Function(bool) onActiveToggle;
   final Function(int, bool)? onDaySelected;
   final List<bool> selectedDays;
+  final VoidCallback onEdit;
+  final VoidCallback onDelete;
+  final String startDate;
+  final String endDate;
 
   const ActivitySetCard({
     super.key,
@@ -27,6 +32,10 @@ class ActivitySetCard extends StatefulWidget {
     required this.onActiveToggle,
     this.onDaySelected,
     required this.selectedDays,
+    required this.onEdit,
+    required this.onDelete,
+    required this.startDate,
+    required this.endDate,
   });
 
   @override
@@ -37,7 +46,7 @@ class _ActivitySetCardState extends State<ActivitySetCard> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      margin: const EdgeInsets.symmetric(horizontal: 24),
+      margin: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(16),
@@ -47,7 +56,6 @@ class _ActivitySetCardState extends State<ActivitySetCard> {
         children: [
           // Header
           InkWell(
-            onTap: widget.onExpandToggle,
             child: Padding(
               padding: const EdgeInsets.all(16.0),
               child: Row(
@@ -165,17 +173,7 @@ class _ActivitySetCardState extends State<ActivitySetCard> {
                       ),
                     ),
                   ),
-
-                  if (widget.additionalInfo != null)
-                    Padding(
-                      padding: const EdgeInsets.only(top: 4.0),
-                      child: Text(
-                        widget.additionalInfo!,
-                        style: const TextStyle(
-                            fontSize: 14, color: Colors.black54),
-                      ),
-                    ),
-
+              
                   // Repeat info
                   if (widget.repeatInfo != null)
                     Padding(
@@ -222,16 +220,25 @@ class _ActivitySetCardState extends State<ActivitySetCard> {
                     ),
                   ),
 
+                  Padding(
+                    padding: const EdgeInsets.only(top: 4.0),
+                    child: Text(
+                      '${DateFormat('dd MMM yyyy').format(DateTime.parse(widget.startDate))} - ${DateFormat('dd MMM yyyy').format(DateTime.parse(widget.endDate))}',
+                      style:
+                          const TextStyle(fontSize: 14, color: Colors.black54),
+                    ),
+                  ),
+
                   // Action buttons
-                  const Padding(
-                    padding: EdgeInsets.only(top: 8.0),
+                   Padding(
+                    padding: const  EdgeInsets.only(top: 8.0),
                     child: Column(
                       children: [
                         DailyActivitesActionBtn(
-                            icon: Icons.edit, label: 'Edit'),
-                        SizedBox(height: 12),
+                            icon: Icons.edit, label: 'Edit', onTap: widget.onEdit),
+                        const SizedBox(height: 12),
                         DailyActivitesActionBtn(
-                            icon: Icons.delete_outline, label: 'Delete'),
+                                icon: Icons.delete_outline, label: 'Delete', onTap: widget.onDelete),
                       ],
                     ),
                   ),

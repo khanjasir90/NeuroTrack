@@ -22,10 +22,10 @@ class PatientTaskModelMapper extends ClassMapperBase<PatientTaskModel> {
 
   static String? _$activityId(PatientTaskModel v) => v.activityId;
   static const Field<PatientTaskModel, String> _f$activityId =
-      Field('activityId', _$activityId, key: r'activity_id', opt: true);
+      Field('activityId', _$activityId, key: r'id', opt: true);
   static String? _$activityName(PatientTaskModel v) => v.activityName;
   static const Field<PatientTaskModel, String> _f$activityName =
-      Field('activityName', _$activityName, key: r'activity_name', opt: true);
+      Field('activityName', _$activityName, key: r'activity', opt: true);
   static bool? _$isCompleted(PatientTaskModel v) => v.isCompleted;
   static const Field<PatientTaskModel, bool> _f$isCompleted = Field(
       'isCompleted', _$isCompleted,
