@@ -233,14 +233,14 @@ class HomeContent extends StatelessWidget {
               ),
             ),
             const SizedBox(height: 24),
-            _buildConsultationRequestSection(context),
+            //_buildConsultationRequestSection(context),
           //  _buildConsultationRequestSection(context),
            Consumer<TherapistDataProvider>(
             builder: (context, provider, _) {
               if(provider.patientsStatus == ApiStatus.loading) {
                 return const Center(child: CircularProgressIndicator());
               } else if(provider.patientsStatus == ApiStatus.failure) {
-                return const Center(child: Text('Failed to fetch patients'));
+                return const Center(child: Text('No patients found'));
               } else if(provider.patientsStatus == ApiStatus.success) {
                 if(provider.patients.isEmpty) { 
                   return const Center(child: Text('No patients found'));
@@ -276,7 +276,7 @@ class HomeContent extends StatelessWidget {
         }
         
         if (provider.error != null) {
-          return Text('Error: ${provider.error}');
+          return Center(child: Text('${provider.error}'));
         }
         
         if (provider.pendingRequests.isEmpty) {

@@ -298,6 +298,7 @@ class _PersonalDetailsScreenState extends State<PersonalDetailsScreen> {
                       });
                     },
                   ),
+                const SizedBox(height: 20),
                 TherapistTimePicker(
                   onTimeSelected: (start, end) {
                     setState(() {

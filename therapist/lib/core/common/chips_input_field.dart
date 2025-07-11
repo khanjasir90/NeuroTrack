@@ -66,9 +66,7 @@ class _OfferedTherapiesChoiceChipInputState
                   ),
                 ),
               )
-            : const SizedBox(
-                height: 300,
-              )
+            : const SizedBox.shrink()
       ],
     );
   }

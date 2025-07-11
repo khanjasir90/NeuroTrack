@@ -90,7 +90,11 @@ abstract interface class PatientRepository {
   ///
   /// - **Exceptions:**
   ///   - If an error occurs while updating the activities, it is caught and returned as a failure.
-  Future<ActionResult> updateActivityCompletion(List<PatientTaskModel> tasks);
+  Future<ActionResult> updateActivityCompletion({
+    required List<PatientTaskModel> tasks,
+    String? activityId,
+    String? activitySetId,
+  });
 
 
  

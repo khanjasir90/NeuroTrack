@@ -22,6 +22,9 @@ class _DailyActivitiesScreenState extends State<DailyActivitiesScreen>
   @override
   void initState() {
     super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+      context.read<TaskProvider>().getTodayActivities();
+    });
     today = DateTime.now();
     _progressController = AnimationController(
       vsync: this,

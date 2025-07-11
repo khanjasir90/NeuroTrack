@@ -7,33 +7,14 @@ class TaskProvider extends ChangeNotifier {
   DateTime _selectedDate = DateTime.now();
   final PatientRepository _patientRepository;
   ApiStatus _apiStatus = ApiStatus.initial;
+  String? _activityId;
+  String? _activitySetId;
 
   TaskProvider({
     required PatientRepository patientRepository,
-  }): _patientRepository = patientRepository {
-    //getTodayActivities(); // TODO: Uncomment this when the backend is ready
-    _initializeTasks();
-  }
+  }): _patientRepository = patientRepository;
 
-  // TODO: Remove this method when the backend is ready
-  // Dummy data for demo purposes
-
-  void _initializeTasks() {
-    // Created tasks for demo purposes
-    // TODO: Replace demo tasks with backend data from supabase
-    final today = DateTime.now();
-
-    _allTasks.addAll([
-      PatientTaskModel(activityId: '1', activityName: 'Brush Teeth', isCompleted: false),
-      PatientTaskModel(activityId: '2', activityName: 'Have Breakfast', isCompleted: false),
-      PatientTaskModel(activityId: '3', activityName: 'Take Medications', isCompleted: false),
-      PatientTaskModel(activityId: '4', activityName: 'Morning Walk', isCompleted: false),
-      PatientTaskModel(activityId: '5', activityName: 'Read a Book', isCompleted: false),
-    ]);
-    notifyListeners();
-  }
-
-
+ 
   Future<void> getTodayActivities({
     DateTime? date,
   }) async {
@@ -42,12 +23,30 @@ class TaskProvider extends ChangeNotifier {
       notifyListeners();
       final result = await _patientRepository.getTodayActivities(date: date);
       if(result is ActionResultSuccess) {
-        _allTasks = result.data as List<PatientTaskModel>;
+        _allTasks = result.data.$1;
+        _activityId = result.data.$2;
+        _activitySetId = result.data.$3;
+        _apiStatus = ApiStatus.success;
+      } else {
+        _apiStatus = ApiStatus.failure;
+        _allTasks = [];
+      }
+      notifyListeners();
+    } catch(e) {
+      _apiStatus = ApiStatus.failure;
+    } finally {
+      notifyListeners();
+    }
+  }
+
+  Future<void> updateActivityCompletion(List<PatientTaskModel> tasks) async {
+    try {
+      final result = await _patientRepository.updateActivityCompletion(tasks: _allTasks, activityId: _activityId, activitySetId: _activitySetId);
+      if(result is ActionResultSuccess) {
         _apiStatus = ApiStatus.success;
       } else {
         _apiStatus = ApiStatus.failure;
       }
-      notifyListeners();
     } catch(e) {
       _apiStatus = ApiStatus.failure;
     } finally {
@@ -59,9 +58,11 @@ class TaskProvider extends ChangeNotifier {
 
   void setSelectedDate(DateTime date) {
     _selectedDate = date;
-    //updateActivityInBackground(); // TODO: Uncomment this when the backend is ready
-    //getTodayActivities(date: date); // TODO: Uncomment this when the backend is ready
     notifyListeners();
+    if(_allTasks.isNotEmpty) {
+      updateActivityCompletion(_allTasks);
+    }
+    getTodayActivities(date: date);
   }
 
   List<PatientTaskModel> get tasks {
@@ -73,18 +74,6 @@ class TaskProvider extends ChangeNotifier {
       (task) => task.activityId == activityId ? task.copyWith(isCompleted: isCompleted) : task)
       .toList();
     notifyListeners();
-  }
-
-  void updateActivityInBackground() {
-    compute(_updateActivityCompletion, _allTasks);
-  }
-
-  Future<void> _updateActivityCompletion(List<PatientTaskModel> tasks) async {
-    try {
-      await _patientRepository.updateActivityCompletion(tasks);
-    } catch(e) {
-      print(e);
-    }
   }
 
   int get completedTasksCount => tasks.where((task) => task.isCompleted ?? false).length;

@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:patient/core/result/result.dart';
 import 'package:patient/presentation/appointments/models/appointment_model.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
@@ -137,31 +139,44 @@ class SupabasePatientRepository implements PatientRepository {
   @override
   Future<ActionResult> getTodayActivities({DateTime? date}) async {
     try {
-      // TODO: Refactor this part when developing the therapist part of the same feature.
       final dateTime = date ?? DateTime.now();
-      final response = await _supabaseClient.from('daily_activity')
+      final response = await _supabaseClient.from('daily_activity_logs')
       .select('*')
       .eq('patient_id', _supabaseClient.auth.currentUser!.id)
-      .eq('date', dateTime.toIso8601String());
+      .eq('date', dateTime.toIso8601String()).maybeSingle();
       
-      if (response.isEmpty) {
+      if (response == null || response.isEmpty) {
         return ActionResultFailure(errorMessage: 'No activities found', statusCode: 404);
       }
-      return ActionResultSuccess(data: response, statusCode: 200);
+
+    final List<PatientTaskModel> activityItems = (response['activity_items'] as List).map((e) {
+      final activity = jsonDecode(e);
+      return PatientTaskModel(
+        activityId: activity['id'],
+        activityName: activity['activity'],
+        isCompleted: activity['is_completed']
+      );
+    }).toList();
+
+    return ActionResultSuccess(data: (activityItems, response['id'], response['activity_id']), statusCode: 200);
     } catch(e) {
       return ActionResultFailure(errorMessage: e.toString(), statusCode: 500);
     }
   }
 
   @override
-  Future<ActionResult> updateActivityCompletion(List<PatientTaskModel> tasks) async {
+  Future<ActionResult> updateActivityCompletion({
+    required List<PatientTaskModel> tasks,
+    String? activityId,
+    String? activitySetId,
+  }) async {
     try {
-      // Refactor this part when developing the therapist part of the same feature.
-      for(int i=0;i<tasks.length;i++) {
-        await _supabaseClient.from('daily_activity')
-        .update({'is_completed': tasks[i].isCompleted}).eq('id', tasks[i].activityId ?? '')
+        await _supabaseClient.from('daily_activity_logs')
+        .update({
+          'activity_items': tasks.map((e) => jsonEncode(e.toMap())).toList()
+          }).eq('id', activityId ?? '')
+        .eq('activity_id', activitySetId ?? '')
         .eq('patient_id', _supabaseClient.auth.currentUser!.id);
-      }
 
       return ActionResultSuccess(data: 'Activity updated successfully', statusCode: 200);
     } catch(e) {
