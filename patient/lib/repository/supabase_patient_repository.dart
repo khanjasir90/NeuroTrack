@@ -183,4 +183,63 @@ class SupabasePatientRepository implements PatientRepository {
       return ActionResultFailure(errorMessage: e.toString(), statusCode: 500);
     }
   }
+
+  @override
+  Future<ActionResult> getReports({required DateTime date}) async {
+    try {
+      final response = await _supabaseClient.from(
+        'daily_activities',
+      ).select('activity_name, daily_activity_logs(*)')
+      .eq('patient_id', _supabaseClient.auth.currentUser!.id)
+      .eq('is_active', 'true')
+      .lte('daily_activity_logs.date', date.toIso8601String());
+
+      if(response.isEmpty) {
+        return ActionResultFailure(errorMessage: 'No activities found', statusCode: 404);
+      }
+
+      List<String> completedActivities = [];
+      List<String> incompleteActivities = [];
+
+      for(var i = 0; i < response.length; i++) {
+        final dailyActivityLogs = response[i]['daily_activity_logs'];
+        for(var j = 0; j < dailyActivityLogs.length; j++) {
+          final activityItems = dailyActivityLogs[j]['activity_items'];
+          bool isCompleted = true;
+          for(var k = 0; k < activityItems.length; k++) {
+            final activityItem = activityItems[k] is String ? jsonDecode(activityItems[k]) : activityItems[k];
+            if(activityItem['is_completed'] == false) { 
+              isCompleted = false;
+              break;
+            }
+          }
+          if(isCompleted) {
+            completedActivities.add(response[i]['activity_name']);
+          } else {
+            incompleteActivities.add(response[i]['activity_name']);
+          }
+        }
+      }
+
+      final regresstionResponse = await _supabaseClient.from(
+        'therapy_goal'
+      ).select('regressions')
+      .eq('patient_id', _supabaseClient.auth.currentUser!.id)
+      .lte('performed_on', date.toIso8601String());
+
+      List<String> regressions = [];
+      for(var i = 0; i < regresstionResponse.length; i++) {
+        final regression = regresstionResponse[i]['regressions'];
+        for(var j = 0; j < regression.length; j++) {
+          final regressionItem = regression[j] is String ? jsonDecode(regression[j]) : regression[j];
+
+          regressions.add(regressionItem['name']);
+        }
+      }
+      
+      return ActionResultSuccess(data: (completedActivities, incompleteActivities, regressions), statusCode: 200);
+    } catch(e) {
+      return ActionResultFailure(errorMessage: e.toString(), statusCode: 500);
+    }
+  }
 }
