@@ -144,8 +144,15 @@ class SupabaseAuthRepository implements AuthRepository {
   Future<ActionResult> bookConsultation(
       ConsultationRequestEntity consultationRequestEntity) async {
     try {
+
+     final response = await _supabaseClient.from('patient')
+          .select('therapist_id')
+          .eq('id', _supabaseClient.auth.currentUser!.id)
+          .maybeSingle();
+
       final updateConsultationRequestEntity =
           consultationRequestEntity.copyWith(
+        therapistId: response?['therapist_id'] ?? '',
        patientId: _supabaseClient.auth.currentUser!.id,
         mode: 1,
         status: 'pending',

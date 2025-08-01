@@ -140,10 +140,14 @@ class SupabasePatientRepository implements PatientRepository {
   Future<ActionResult> getTodayActivities({DateTime? date}) async {
     try {
       final dateTime = date ?? DateTime.now();
+      final startDate = DateTime(dateTime.year, dateTime.month, dateTime.day, 0, 0, 0);
+      final endDate = startDate.add(const Duration(days: 1));
       final response = await _supabaseClient.from('daily_activity_logs')
       .select('*')
       .eq('patient_id', _supabaseClient.auth.currentUser!.id)
-      .eq('date', dateTime.toIso8601String()).maybeSingle();
+      .gte('date', startDate.toIso8601String())
+      .lte('date', endDate.toIso8601String())
+      .maybeSingle();
       
       if (response == null || response.isEmpty) {
         return ActionResultFailure(errorMessage: 'No activities found', statusCode: 404);
@@ -187,12 +191,15 @@ class SupabasePatientRepository implements PatientRepository {
   @override
   Future<ActionResult> getReports({required DateTime date}) async {
     try {
+      final startDate = DateTime(date.year, date.month, 1, 0, 0, 0);
+      final endDate = DateTime(date.year, date.month + 1, 1, 0, 0, 0);
       final response = await _supabaseClient.from(
         'daily_activities',
       ).select('activity_name, daily_activity_logs(*)')
       .eq('patient_id', _supabaseClient.auth.currentUser!.id)
       .eq('is_active', 'true')
-      .lte('daily_activity_logs.date', date.toIso8601String());
+      .gte('daily_activity_logs.date', startDate.toIso8601String())
+      .lte('daily_activity_logs.date', endDate.toIso8601String());
 
       if(response.isEmpty) {
         return ActionResultFailure(errorMessage: 'No activities found', statusCode: 404);
@@ -225,7 +232,8 @@ class SupabasePatientRepository implements PatientRepository {
         'therapy_goal'
       ).select('regressions')
       .eq('patient_id', _supabaseClient.auth.currentUser!.id)
-      .lte('performed_on', date.toIso8601String());
+      .gte('performed_on', startDate.toIso8601String())
+      .lte('performed_on', endDate.toIso8601String());
 
       List<String> regressions = [];
       for(var i = 0; i < regresstionResponse.length; i++) {

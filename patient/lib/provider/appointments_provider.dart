@@ -97,6 +97,11 @@ class AppointmentsProvider extends ChangeNotifier {
         _appointments.clear();
         _appointments.addAll(result.data as List<AppointmentModel>);
       }
+      if(result is ActionResultFailure) {
+        if(result.statusCode == 404) {
+          _appointments.clear();
+        }
+      }
     } catch(e) {
       print(e);
     } finally {
