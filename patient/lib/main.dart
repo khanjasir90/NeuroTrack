@@ -29,7 +29,7 @@ Future<void> main() async {
     url: dotenv.env['SUPABASE_URL']!,
     anonKey: dotenv.env['SUPABASE_ANON_KEY']!,
   );
-  Gemini.init(apiKey: ''); // Add your Gemini API key here
+  Gemini.init(apiKey: dotenv.env['GEMINI_API_KEY']!); // Add your Gemini API key here
   SystemChrome.setSystemUIOverlayStyle(
     const SystemUiOverlayStyle(
       statusBarColor: Colors.white,
