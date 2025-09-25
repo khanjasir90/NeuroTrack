@@ -55,6 +55,7 @@ dependencies:
   flutter_dotenv: ^5.2.1
   dotted_border: ^2.1.0
   uuid: ^4.5.1
+  flutter_gemini: ^3.0.0
 
 dev_dependencies:
   flutter_test:
