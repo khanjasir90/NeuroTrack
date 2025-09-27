@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:therapist/core/utils/api_status_enum.dart';
+import 'package:therapist/presentation/chatbot/chatbot_screen.dart';
 import 'package:therapist/presentation/consultation/consultation_requests_screen.dart';
 import 'package:therapist/presentation/home/widgets/pending_request_view.dart';
 import 'package:therapist/provider/consultation_provider.dart';
@@ -189,6 +190,21 @@ class HomeContent extends StatelessWidget {
             },
           ),
           const SizedBox(width: 8),
+           GestureDetector(
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => const ChatbotScreen()),
+              );
+            },
+            child: Align(
+              alignment: Alignment.centerRight,
+              child: Padding(
+                padding: const EdgeInsets.only(right: 10),
+                child: Image.asset('assets/chatbot.png'),
+              ),
+            ),
+          ),
         ],
       ),
       body: SafeArea(
