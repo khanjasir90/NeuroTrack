@@ -19,6 +19,7 @@ import 'package:therapist/provider/therapy_provider.dart';
 import 'package:therapist/repository/supabase_therapy_repository.dart';
 
 
+import 'core/utils/dependency_injector.dart';
 import 'presentation/splash_screen.dart';
 import 'provider/auth_provider.dart';
 import 'provider/daily_activities_provider.dart';
@@ -41,6 +42,8 @@ Future<void> main() async {
       systemNavigationBarIconBrightness: Brightness.dark,
     ),
   );
+
+  setupDependencyInjection();
 
   runApp(
     MultiProvider(
