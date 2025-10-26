@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_gemini/flutter_gemini.dart';
+import 'package:patient/core/core.dart';
 import 'package:patient/core/theme/theme.dart';
 import 'package:patient/presentation/splash_screen.dart';
 import 'package:patient/presentation/widgets/snackbar_service.dart';
@@ -19,7 +20,7 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 
 import 'provider/task_provider.dart';
 import 'provider/therapy_goals_provider.dart';
-import 'repository/supabase_patient_repository.dart';
+
 
 
 Future<void> main() async {
@@ -38,6 +39,8 @@ Future<void> main() async {
       systemNavigationBarIconBrightness: Brightness.dark,
     ),
   );
+
+  setupDependencyInjection();
 
   runApp(
     MultiProvider(
