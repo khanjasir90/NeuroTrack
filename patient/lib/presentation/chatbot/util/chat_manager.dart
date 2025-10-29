@@ -1,6 +1,11 @@
 import 'dart:async';
 
 import 'package:flutter_gemini/flutter_gemini.dart';
+import 'package:patient/core/core.dart';
+import 'package:patient/presentation/chatbot/util/data_formatters/activity_data_formatter.dart';
+import 'package:rxdart/rxdart.dart';
+
+import 'intent_detector.dart';
 
 enum ChatMessageType {
   user,
@@ -23,8 +28,8 @@ class ChatManager {
   static ChatManager get instance => _instance;
 
   final List<ChatMessageModel> _messages = <ChatMessageModel>[];
-  final StreamController<List<ChatMessageModel>> _messageController =
-      StreamController<List<ChatMessageModel>>.broadcast();
+  final BehaviorSubject<List<ChatMessageModel>> _messageController =
+      BehaviorSubject<List<ChatMessageModel>>.seeded([]);
 
   Stream<List<ChatMessageModel>> get messageStream => _messageController.stream;
 
@@ -50,8 +55,40 @@ class ChatManager {
     }
   }
 
-  void sendResponseFromChatbot(String input) {
+  void sendResponseFromChatbot(String input) async {
     _addTyping();
+    final intent = await IntentDetector.detectIntent(input);
+    switch(intent) {
+      case ChatIntent.activities:
+        _handleActivitiesIntent(input);
+        break;
+      case ChatIntent.general:
+        _handleGeneralIntent(input);
+        break;
+    }
+  }
+
+  void _handleActivitiesIntent(String input) async {
+    
+    try {
+      final result = await getIt<PatientRepository>().getTodayActivities();
+      _removeTypingIfPresent();
+      if (result is ActionResultSuccess) {
+        final activities = result.data.$1;
+        final formattedActivitiesResponse =
+            ActivityDataFormatter().formatResponse(activities);
+        addMessage(formattedActivitiesResponse, ChatMessageType.chatbot);
+      } else {
+        final failureData = result.errorMessage;
+        final failureMessage = '📋✨ $failureData';
+        addMessage(failureMessage, ChatMessageType.chatbot);
+      }
+    } catch (e) {
+      addMessage('⚠️ Oops! Failed to fetch activities', ChatMessageType.chatbot);
+    }
+  }
+
+  void _handleGeneralIntent(String input) {
     Gemini.instance
         .prompt(parts: [
           Part.text(_systemContext),
